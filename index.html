@@ -257,20 +257,25 @@
             Open <b>Terminal</b>: press <kbd>&#8984;</kbd><kbd>Space</kbd>, type
             <i>terminal</i>, press <kbd>Return</kbd>.
             <div class="copy" style="margin: 8px 0;">
-              <code>xattr -dr com.apple.quarantine /Applications/Clipr.app</code>
+              <code>xattr -dr com.apple.quarantine /Applications/Clipr.app &amp;&amp; open /Applications/Clipr.app</code>
               <button type="button" data-copy>Copy</button>
             </div>
-            Paste that line in and press <kbd>Return</kbd>. Nothing visible
-            happens &mdash; that means it worked.
+            Paste that in and press <kbd>Return</kbd>. It clears the flag and
+            opens Clipr for you &mdash; no need to go back to Applications.
           </li>
-          <li>Open <b>Clipr</b> from Applications. It opens normally from now on.</li>
         </ol>
+        <p class="note" style="border-left-color: rgba(255,255,255,0.14)">
+          <b>Two commands in one, if you are wondering.</b> The first half
+          removes the &ldquo;downloaded from the internet&rdquo; flag from
+          Clipr and nothing else; <code>&amp;&amp;</code> means the second half
+          only runs if that worked, and it launches the app. From then on you
+          double-click Clipr like anything else.
+        </p>
         <p class="note">
           You may have been told elsewhere to right-click the app and choose
           <b>Open</b>. On macOS Sequoia (15) and later that shortcut no longer
           exists &mdash; Apple removed it &mdash; which is why the line above is
-          the step that actually works. It removes the &ldquo;downloaded from
-          the internet&rdquo; flag from Clipr and nothing else.
+          the step that actually works.
         </p>
         <details>
           <summary><span class="tw">&#9656;</span> <b>I would rather not use Terminal</b></summary>
