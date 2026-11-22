@@ -1,0 +1,20 @@
+name: Question or idea
+description: Ask how to do something, or suggest a change that would save you time.
+labels: ["idea"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Clipr is built around getting more clips out of one long video per
+        hour. If something in that loop is slower than it should be, say so —
+        that is exactly the kind of thing worth changing.
+
+  - type: textarea
+    id: body
+    attributes:
+      label: What's on your mind?
+      placeholder: >-
+        I cut for four clients a day and I retype the same hashtags every
+        time.
+    validations:
+      required: true

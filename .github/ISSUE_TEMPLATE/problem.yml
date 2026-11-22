@@ -1,0 +1,73 @@
+name: Something went wrong
+description: Clipr crashed, froze, or did not do what you expected.
+labels: ["problem"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        You don't need to know anything technical to fill this in. Plain words
+        are perfect — *"I clicked Cut and nothing happened"* is a genuinely
+        useful report.
+
+        For the title above, one short line is enough, like
+        *"Export stops at 90%"*.
+
+  - type: textarea
+    id: doing
+    attributes:
+      label: What were you trying to do?
+      placeholder: Cutting three moments out of a two-hour interview into one clip.
+    validations:
+      required: true
+
+  - type: textarea
+    id: happened
+    attributes:
+      label: What happened instead?
+      description: >-
+        If there was a message on screen, copy it in. You can also drag a
+        screenshot or a screen recording straight into this box.
+      placeholder: It reached 90%, said "Export failed", and stopped.
+    validations:
+      required: true
+
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics
+      description: >-
+        The most useful thing you can include. When an error appears, look for
+        a **Copy diagnostics** button next to it — click that, then paste here
+        (⌘V on a Mac, Ctrl+V on Windows and Linux). It records the exact
+        version and the exact point it failed. Cookies, sign-in tokens and
+        your personal file paths are stripped out before it copies, so it is
+        safe to post in public.
+
+
+        No button next to the error? Leave this empty — it isn't offered for
+        every kind of failure.
+      render: text
+    validations:
+      required: false
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Which computer are you on?
+      options:
+        - macOS
+        - Windows
+        - Linux
+    validations:
+      required: true
+
+  - type: input
+    id: video
+    attributes:
+      label: Link to the video, if it only happens on one
+      description: >-
+        Some problems only happen on a particular video. If this is one of
+        those, paste the link so it can be reproduced.
+      placeholder: https://www.youtube.com/watch?v=...
+    validations:
+      required: false
