@@ -1,6 +1,6 @@
 name: Question or idea
 description: Ask how to do something, or suggest a change that would save you time.
-labels: ["idea"]
+labels: ["enhancement"]
 body:
   - type: markdown
     attributes:

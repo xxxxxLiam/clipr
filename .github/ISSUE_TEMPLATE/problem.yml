@@ -1,6 +1,6 @@
 name: Something went wrong
 description: Clipr crashed, froze, or did not do what you expected.
-labels: ["problem"]
+labels: ["bug"]
 body:
   - type: markdown
     attributes:
