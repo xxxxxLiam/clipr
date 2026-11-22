@@ -109,7 +109,11 @@ you'd rather not touch Terminal, let macOS refuse the app once, then go to
 **Keep**. That step catches most people out, because it happens before the
 file ever reaches your disk.
 
-The app updates itself after the first install.
+**Updates.** On Windows and Linux, Clipr updates itself in place — you
+download once. On macOS it checks for new versions and hands you a download
+link instead, because updating in place requires a signed app and Clipr is
+not signed yet. So Mac users re-download each version; it's two clicks, and
+the app tells you when there's one.
 
 ## Getting 1080p
 
