@@ -178,6 +178,18 @@
       }
       .note b { color: var(--fg); font-weight: 500; }
 
+      kbd {
+        display: inline-block;
+        min-width: 1.5em; padding: 1px 6px; margin: 0 1px;
+        border: 1px solid var(--hairline-strong);
+        border-bottom-width: 2px;
+        border-radius: 4px;
+        background: var(--raised);
+        color: var(--fg);
+        font: 500 12px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace;
+        text-align: center;
+      }
+
       footer {
         margin-top: 64px; padding-top: 24px;
         border-top: 1px solid var(--hairline);
@@ -241,19 +253,36 @@
         <h3>macOS</h3>
         <ol class="steps">
           <li>Open the <b>.dmg</b> and drag <b>Clipr</b> into Applications.</li>
-          <li><b>Right-click</b> (or Control-click) Clipr in Applications and choose <b>Open</b>. Double-clicking will not work the first time.</li>
-          <li>Click <b>Open</b> in the dialog. You only do this once.</li>
+          <li>
+            Open <b>Terminal</b>: press <kbd>&#8984;</kbd><kbd>Space</kbd>, type
+            <i>terminal</i>, press <kbd>Return</kbd>.
+            <div class="copy" style="margin: 8px 0;">
+              <code>xattr -dr com.apple.quarantine /Applications/Clipr.app</code>
+              <button type="button" data-copy>Copy</button>
+            </div>
+            Paste that line in and press <kbd>Return</kbd>. Nothing visible
+            happens &mdash; that means it worked.
+          </li>
+          <li>Open <b>Clipr</b> from Applications. It opens normally from now on.</li>
         </ol>
+        <p class="note">
+          You may have been told elsewhere to right-click the app and choose
+          <b>Open</b>. On macOS Sequoia (15) and later that shortcut no longer
+          exists &mdash; Apple removed it &mdash; which is why the line above is
+          the step that actually works. It removes the &ldquo;downloaded from
+          the internet&rdquo; flag from Clipr and nothing else.
+        </p>
         <details>
-          <summary><span class="tw">&#9656;</span> <b>It still says the app is damaged or cannot be opened</b></summary>
+          <summary><span class="tw">&#9656;</span> <b>I would rather not use Terminal</b></summary>
           <p style="margin-top: 10px;">
-            macOS has quarantined the file. Open <b>Terminal</b> and run this,
-            then open Clipr normally:
+            Double-click Clipr and let macOS refuse it. Then open
+            <b>System&nbsp;Settings &rarr; Privacy &amp; Security</b>, scroll
+            down to the Security section, and click <b>Open Anyway</b> next to
+            the message about Clipr. Confirm with Touch&nbsp;ID or your
+            password. The button only appears after macOS has blocked the app
+            once, so the refusal is a necessary first step rather than a
+            failure.
           </p>
-          <div class="copy">
-            <code>xattr -dr com.apple.quarantine /Applications/Clipr.app</code>
-            <button type="button" data-copy>Copy</button>
-          </div>
         </details>
       </div>
 
