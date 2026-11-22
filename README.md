@@ -15,7 +15,10 @@ single file.
 ![Platforms](https://img.shields.io/badge/macOS%20·%20Windows%20·%20Linux-1C1C1F?style=flat-square)
 ![Licence](https://img.shields.io/badge/licence-source--available-1C1C1F?style=flat-square)
 
-### [⬇&nbsp; Download the latest release](https://github.com/xxxxxLiam/clipr/releases/latest)
+### [⬇&nbsp; Download Clipr](https://xxxxxliam.github.io/clipr/)
+
+<sub>Picks the right file for your computer and walks you through the first launch<br/>
+<a href="https://github.com/xxxxxLiam/clipr/releases/latest">or browse the release files directly</a></sub>
 
 </div>
 
@@ -117,6 +120,11 @@ make are yours.
 
 Not open source: copying, redistributing, forking or reselling the
 application is not permitted. See [LICENSE](LICENSE).
+
+Clipr is published by **IDK Solutions (Pty) Ltd**, registered in South Africa
+(CIPC registration number 2022/757534/07). Earlier versions, released as
+*YouTube Clipper* up to 4.0.1, remain under the MIT licence they shipped
+with.
 
 Clipr ships alongside **ffmpeg**, which is licensed under the GPL v3 and
 carries its own terms that this licence does not override. See
