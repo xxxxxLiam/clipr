@@ -15,10 +15,9 @@ single file.
 ![Platforms](https://img.shields.io/badge/macOS%20·%20Windows%20·%20Linux-1C1C1F?style=flat-square)
 ![Licence](https://img.shields.io/badge/licence-source--available-1C1C1F?style=flat-square)
 
-### [⬇&nbsp; Download Clipr](https://xxxxxliam.github.io/clipr/)
+### [⬇&nbsp; Download Clipr](#install)
 
-<sub>Picks the right file for your computer and walks you through the first launch<br/>
-<a href="https://github.com/xxxxxLiam/clipr/releases/latest">or browse the release files directly</a></sub>
+<sub>macOS, Windows and Linux · no account, no sign-up</sub>
 
 </div>
 
