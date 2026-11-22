@@ -4,11 +4,13 @@
 
 # Clipr
 
-**Cut short vertical clips out of long podcasts and interviews, fast.**
+**Pull the moments you want out of a long video, ready to edit.**
 
-A desktop app for clippers: paste a link, read the transcript to find the
-moment, mark in and out, cut. One clip can be several ranges joined into a
-single file.
+A desktop downloader for clippers: paste a link, read the transcript to find
+the moment, mark in and out, download just that. Several moments can come
+down as one joined file. The editing happens in Final Cut, CapCut or
+Premiere — Clipr's job is to get you there with the right footage and the
+right text, fast.
 
 [![Latest release](https://img.shields.io/github/v/release/xxxxxLiam/clipr?label=latest&color=FF6363&style=flat-square)](https://github.com/xxxxxLiam/clipr/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/xxxxxLiam/clipr/total?color=FF6363&style=flat-square)](https://github.com/xxxxxLiam/clipr/releases)
@@ -22,12 +24,9 @@ macOS, Windows and Linux · no account, no sign-up · <a href="#install">or pick
 
 </div>
 
-<!-- A real screenshot belongs here — a loaded video, a transcript, two or
-     three marked segments. Save it as docs/screenshot.png and uncomment:
 <p align="center">
-  <img src="docs/screenshot.png" alt="The Clipr workspace" width="900" />
+  <img src="docs/screenshot.png" alt="The Clipr workspace: transcript on the left, preview in the middle, saved clips on the right" width="900" />
 </p>
--->
 
 ---
 
@@ -41,13 +40,19 @@ Clipr is shaped around that loop rather than around a single download.
 | | |
 |---|---|
 | **Transcript-first** | Read the transcript to find the moment and jump straight to it. Long transcripts stay responsive — only what you can see is drawn. |
-| **One clip, several ranges** | Mark 1:00–2:00 and 10:00–11:00 and get **one** file containing both, joined in order. |
+| **One file, several moments** | Mark 1:00–2:00 and 10:00–11:00 and get **one** download containing both, joined in order. |
 | **Campaigns** | Several clients a day, each with its own folders, naming and clip bank. Nothing crosses between them. |
 | **Clip bank** | Import a block of timestamps once per video, categorise them, give them tiers, and work down the list. |
 | **Used-range memory** | Clipr remembers what you have already cut and marks it on the transcript, so you do not ship the same moment twice. |
-| **Editor handoff** | Send a finished clip into a named Final Cut library and event, with the project created for you. CapCut too. |
+| **Editor handoff** | Send a download into a named Final Cut library and event, with the project created for you on a vertical 1080×1920 timeline, ready to reframe. CapCut too. Premiere Pro is coming. |
 | **Copy blocks** | Title, description, timestamps and the rest, each one click away. |
 | **Symbol palette** | Honorifics and other symbols that are a nuisance to type, copied exactly. |
+
+<p align="center">
+  <img src="docs/segments.png" alt="Two separate moments marked in one clip, with a warning that part of the second overlaps something already published" width="900" />
+</p>
+
+<p align="center"><sub>Two moments from different parts of the same interview, going out as one file &mdash; and a warning that part of the second was already published.</sub></p>
 
 Everything runs on your machine. Nothing is uploaded anywhere.
 
