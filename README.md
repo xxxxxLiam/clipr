@@ -66,11 +66,7 @@ Everything runs on your machine. Nothing is uploaded anywhere.
 
 [Download .dmg](https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-macOS-AppleSilicon.dmg)
 
-Apple Silicon. Drag to Applications, then run this once in Terminal:
-
-```
-xattr -dr com.apple.quarantine /Applications/Clipr.app
-```
+Apple Silicon. Drag to Applications, then run one Terminal line — below.
 
 </td>
 <td width="33%" valign="top">
@@ -98,11 +94,20 @@ Clipr is not signed with a paid certificate yet, so your computer will warn
 you the first time. That warning means "we cannot verify who published this",
 not "this is dangerous".
 
-**macOS:** right-click → Open no longer works — Apple removed that shortcut in
-Sequoia (15). The Terminal line above is the step that actually works; it
-clears the "downloaded from the internet" flag on Clipr and nothing else. If
-you'd rather not touch Terminal, let macOS refuse the app once, then go to
-**System Settings → Privacy & Security** and click **Open Anyway**.
+**macOS — the one Terminal line.** Once Clipr is in Applications, open
+Terminal (<kbd>⌘</kbd><kbd>Space</kbd>, type *terminal*) and paste:
+
+```
+xattr -dr com.apple.quarantine /Applications/Clipr.app && open /Applications/Clipr.app
+```
+
+That clears the "downloaded from the internet" flag and opens Clipr straight
+away. From then on, double-click it like anything else.
+
+Right-click → Open, which you may have been told to use, no longer works —
+Apple removed that shortcut in Sequoia (15). If you'd rather not touch
+Terminal at all, let macOS refuse the app once, then go to **System Settings
+→ Privacy & Security** and click **Open Anyway**.
 
 **Windows: if your browser blocks the download**, press
 <kbd>Ctrl</kbd>+<kbd>J</kbd>, click the `⋯` next to the file and choose
