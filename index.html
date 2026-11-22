@@ -39,7 +39,48 @@
         line-height: 1.5;
         min-height: 100vh;
       }
-      main { max-width: 760px; margin: 0 auto; padding: 56px 20px 96px; }
+      main { max-width: 1180px; margin: 0 auto; padding: 56px 24px 96px; }
+
+      /* ---- hero: text beside the product, so the width shows the app ---- */
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+        gap: 56px;
+        align-items: center;
+        margin-bottom: 72px;
+      }
+      .hero-copy { min-width: 0; }
+      .shot {
+        min-width: 0;
+        border: 1px solid var(--hairline);
+        border-radius: var(--r-panel);
+        overflow: hidden;
+        box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255,255,255,0.05);
+      }
+      .shot img { display: block; width: 100%; height: auto; }
+      .shot figcaption {
+        padding: 10px 14px;
+        border-top: 1px solid var(--hairline);
+        background: var(--panel);
+        font-size: 12px; color: var(--fg-dim);
+      }
+
+      /* ---- what it does: four short claims across the width ---- */
+      .features { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+      .feature {
+        padding: 16px;
+        border: 1px solid var(--hairline);
+        border-radius: var(--r-panel);
+        background: var(--panel);
+      }
+      .feature h3 { margin: 0 0 5px; font-size: 14px; }
+      .feature p { margin: 0; font-size: 13px; color: var(--fg-dim); line-height: 1.45; }
+
+      /* ---- the three setup cards, side by side ---- */
+      .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; align-items: start; }
+      .cards .card { margin-top: 0; }
+
+      .two-col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; align-items: start; }
 
       /* ---- masthead ------------------------------------------------- */
       .mast { display: flex; align-items: center; gap: 10px; margin-bottom: 40px; }
@@ -48,8 +89,8 @@
 
       h1 {
         margin: 0 0 12px;
-        font-size: 34px;
-        line-height: 1.12;
+        font-size: 40px;
+        line-height: 1.08;
         font-weight: 600;
         letter-spacing: -0.02em;
       }
@@ -58,7 +99,7 @@
       .free b { color: var(--fg); font-weight: 500; }
 
       h2 {
-        margin: 48px 0 14px;
+        margin: 56px 0 16px;
         font-size: 13px;
         font-weight: 600;
         letter-spacing: 0.08em;
@@ -115,6 +156,7 @@
         padding: 20px;
       }
       .card + .card { margin-top: 12px; }
+      .cards .card + .card, .two-col .card + .card { margin-top: 0; }
       .card p { margin: 0 0 10px; font-size: 14px; color: var(--fg-dim); }
       .card p:last-child { margin-bottom: 0; }
       .card b { color: var(--fg); font-weight: 500; }
@@ -138,7 +180,7 @@
         padding: 11px 13px;
         font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
         font-size: 13px; color: var(--fg);
-        white-space: pre-wrap; word-break: break-all;
+        white-space: pre-wrap; overflow-wrap: anywhere;
       }
       .copy button {
         flex: none;
@@ -199,9 +241,15 @@
       footer a:hover { color: var(--fg); }
       footer p { margin: 0 0 8px; }
 
+      @media (max-width: 1040px) {
+        .hero { grid-template-columns: minmax(0, 1fr); gap: 36px; margin-bottom: 52px; }
+        .features { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .cards, .two-col { grid-template-columns: minmax(0, 1fr); }
+      }
       @media (max-width: 560px) {
         main { padding: 36px 16px 72px; }
         h1 { font-size: 27px; }
+        .features { grid-template-columns: minmax(0, 1fr); }
         .primary { padding: 15px 16px; gap: 11px; }
       }
       @media (prefers-reduced-motion: reduce) {
@@ -218,28 +266,60 @@
         <span class="name">Clipr</span>
       </div>
 
-      <h1>Cut clips out of long videos, fast.</h1>
-      <p class="lede">
-        Paste a link, read the transcript to find the moment, mark in and out,
-        cut. A clip can be several ranges joined into one file. Campaigns,
-        folders and naming stay apart, and the finished clip goes straight to
-        your editor.
-      </p>
-      <p class="free">
-        <b>Free to use</b>, including for paid client work. Runs entirely on
-        your machine.
-      </p>
+      <div class="hero">
+        <div class="hero-copy">
+          <h1>Pull the moments you want out of a long video.</h1>
+          <p class="lede">
+            Paste a link, read the transcript to find the moment, mark in and
+            out, download just that. Several moments from across a two-hour
+            interview come down as one joined file, ready to edit.
+          </p>
+          <p class="free">
+            <b>Free to use</b>, including for paid client work. Runs entirely on
+            your machine &mdash; nothing is uploaded anywhere.
+          </p>
 
-      <h2>Download</h2>
-      <a class="primary" id="primary" href="https://github.com/xxxxxLiam/clipr/releases/latest">
-        <span class="glyph" id="primary-glyph"></span>
-        <span class="label">
-          <span class="what" id="primary-what">Choose your platform</span>
-          <span class="file" id="primary-file">Pick the file for your computer below</span>
-        </span>
-        <span class="arrow" aria-hidden="true">&#8595;</span>
-      </a>
-      <div class="others" id="others"></div>
+          <a class="primary" id="primary" href="https://github.com/xxxxxLiam/clipr/releases/latest">
+            <span class="glyph" id="primary-glyph"></span>
+            <span class="label">
+              <span class="what" id="primary-what">Choose your platform</span>
+              <span class="file" id="primary-file">Pick the file for your computer below</span>
+            </span>
+            <span class="arrow" aria-hidden="true">&#8595;</span>
+          </a>
+          <div class="others" id="others"></div>
+        </div>
+
+        <figure class="shot" style="margin: 0;">
+          <img src="docs/segments.png" width="1440" height="900"
+               alt="Clipr with two separate moments marked in one clip: the transcript on the left shows ranges already published, and the panel below lists both segments going out as a single file." />
+          <figcaption>
+            Two moments from different parts of one interview, going out as a
+            single file &mdash; with a warning that part of the second was
+            already published.
+          </figcaption>
+        </figure>
+      </div>
+
+      <h2>What it saves you</h2>
+      <div class="features">
+        <div class="feature">
+          <h3>Several moments, one file</h3>
+          <p>Mark 1:02&ndash;1:30 and 14:10&ndash;14:40. They arrive joined, in order, as a single download.</p>
+        </div>
+        <div class="feature">
+          <h3>Find it by what was said</h3>
+          <p>Search the transcript and jump straight there. No scrubbing a two-hour timeline.</p>
+        </div>
+        <div class="feature">
+          <h3>A tab per client</h3>
+          <p>Each campaign keeps its own folder, naming and clip length. Nothing crosses over.</p>
+        </div>
+        <div class="feature">
+          <h3>It remembers what you used</h3>
+          <p>Ranges you have already published are marked on the transcript, so you never ship one twice.</p>
+        </div>
+      </div>
 
       <h2>After you download</h2>
       <p style="margin: 0 0 14px; font-size: 14px; color: var(--fg-dim); max-width: 56ch;">
@@ -249,106 +329,108 @@
         it, once, on each platform.
       </p>
 
-      <div class="card" id="card-mac">
-        <h3>macOS</h3>
-        <ol class="steps">
-          <li>Open the <b>.dmg</b> and drag <b>Clipr</b> into Applications.</li>
-          <li>
-            Open <b>Terminal</b>: press <kbd>&#8984;</kbd><kbd>Space</kbd>, type
-            <i>terminal</i>, press <kbd>Return</kbd>.
-            <div class="copy" style="margin: 8px 0;">
-              <code>xattr -dr com.apple.quarantine /Applications/Clipr.app &amp;&amp; open /Applications/Clipr.app</code>
+      <div class="cards">
+        <div class="card" id="card-mac">
+          <h3>macOS</h3>
+          <ol class="steps">
+            <li>Open the <b>.dmg</b> and drag <b>Clipr</b> into Applications.</li>
+            <li>
+              Open <b>Terminal</b>: press <kbd>&#8984;</kbd><kbd>Space</kbd>, type
+              <i>terminal</i>, press <kbd>Return</kbd>.
+              <div class="copy" style="margin: 8px 0;">
+                <code>xattr -dr com.apple.quarantine /Applications/Clipr.app &amp;&amp; open /Applications/Clipr.app</code>
+                <button type="button" data-copy>Copy</button>
+              </div>
+              Paste that in and press <kbd>Return</kbd>. It clears the flag and
+              opens Clipr for you &mdash; no need to go back to Applications.
+            </li>
+          </ol>
+          <p class="note" style="border-left-color: rgba(255,255,255,0.14)">
+            <b>Two commands in one, if you are wondering.</b> The first half
+            removes the &ldquo;downloaded from the internet&rdquo; flag from
+            Clipr and nothing else; <code>&amp;&amp;</code> means the second half
+            only runs if that worked, and it launches the app. From then on you
+            double-click Clipr like anything else.
+          </p>
+          <p class="note">
+            You may have been told elsewhere to right-click the app and choose
+            <b>Open</b>. On macOS Sequoia (15) and later that shortcut no longer
+            exists &mdash; Apple removed it &mdash; which is why the line above is
+            the step that actually works.
+          </p>
+          <details>
+            <summary><span class="tw">&#9656;</span> <b>I would rather not use Terminal</b></summary>
+            <p style="margin-top: 10px;">
+              Double-click Clipr and let macOS refuse it. Then open
+              <b>System&nbsp;Settings &rarr; Privacy &amp; Security</b>, scroll
+              down to the Security section, and click <b>Open Anyway</b> next to
+              the message about Clipr. Confirm with Touch&nbsp;ID or your
+              password. The button only appears after macOS has blocked the app
+              once, so the refusal is a necessary first step rather than a
+              failure.
+            </p>
+          </details>
+        </div>
+
+        <div class="card" id="card-win">
+          <h3>Windows</h3>
+          <p>
+            Windows gets in the way twice: once in the browser, once when you run
+            the file. These are the steps that work, in order.
+          </p>
+          <ol class="steps">
+            <li>
+              <b>If your browser blocks the download</b> — press <b>Ctrl&nbsp;+&nbsp;J</b>
+              to open Downloads, click the <b>&ctdot;</b> next to the file and
+              choose <b>Keep</b>. If it asks again, choose <b>Keep anyway</b>.
+            </li>
+            <li>
+              <b>Before you open it</b> — right-click the downloaded file &rarr;
+              <b>Properties</b> &rarr; tick <b>Unblock</b> at the bottom &rarr;
+              <b>OK</b>. Do this even if nothing looks wrong; it is what stops the
+              next warning appearing without a way past it.
+            </li>
+            <li>
+              <b>Double-click the file.</b> If a blue screen says &ldquo;Windows
+              protected your PC&rdquo;, click the small <b>More info</b> link, then
+              <b>Run anyway</b>.
+            </li>
+            <li>Finish the installer. Done.</li>
+          </ol>
+          <details>
+            <summary><span class="tw">&#9656;</span> <b>There is no Unblock tick box</b></summary>
+            <p style="margin-top: 10px;">
+              Some Windows versions hide it. Open <b>PowerShell</b> and run this
+              instead, then carry on from step 3:
+            </p>
+            <div class="copy">
+              <code>Unblock-File -Path "$env:USERPROFILE\Downloads\Clipr-Windows-x64-Setup.exe"</code>
               <button type="button" data-copy>Copy</button>
             </div>
-            Paste that in and press <kbd>Return</kbd>. It clears the flag and
-            opens Clipr for you &mdash; no need to go back to Applications.
-          </li>
-        </ol>
-        <p class="note" style="border-left-color: rgba(255,255,255,0.14)">
-          <b>Two commands in one, if you are wondering.</b> The first half
-          removes the &ldquo;downloaded from the internet&rdquo; flag from
-          Clipr and nothing else; <code>&amp;&amp;</code> means the second half
-          only runs if that worked, and it launches the app. From then on you
-          double-click Clipr like anything else.
-        </p>
-        <p class="note">
-          You may have been told elsewhere to right-click the app and choose
-          <b>Open</b>. On macOS Sequoia (15) and later that shortcut no longer
-          exists &mdash; Apple removed it &mdash; which is why the line above is
-          the step that actually works.
-        </p>
-        <details>
-          <summary><span class="tw">&#9656;</span> <b>I would rather not use Terminal</b></summary>
-          <p style="margin-top: 10px;">
-            Double-click Clipr and let macOS refuse it. Then open
-            <b>System&nbsp;Settings &rarr; Privacy &amp; Security</b>, scroll
-            down to the Security section, and click <b>Open Anyway</b> next to
-            the message about Clipr. Confirm with Touch&nbsp;ID or your
-            password. The button only appears after macOS has blocked the app
-            once, so the refusal is a necessary first step rather than a
-            failure.
-          </p>
-        </details>
-      </div>
+            <p>Adjust the path if you saved the file somewhere other than Downloads.</p>
+          </details>
+          <div class="note">
+            <b>Why all this?</b> Clipr is not signed with a paid Windows
+            certificate yet. Every warning above is Windows saying it cannot
+            verify who published the file &mdash; not that it found anything wrong
+            with it.
+          </div>
+        </div>
 
-      <div class="card" id="card-win">
-        <h3>Windows</h3>
-        <p>
-          Windows gets in the way twice: once in the browser, once when you run
-          the file. These are the steps that work, in order.
-        </p>
-        <ol class="steps">
-          <li>
-            <b>If your browser blocks the download</b> — press <b>Ctrl&nbsp;+&nbsp;J</b>
-            to open Downloads, click the <b>&ctdot;</b> next to the file and
-            choose <b>Keep</b>. If it asks again, choose <b>Keep anyway</b>.
-          </li>
-          <li>
-            <b>Before you open it</b> — right-click the downloaded file &rarr;
-            <b>Properties</b> &rarr; tick <b>Unblock</b> at the bottom &rarr;
-            <b>OK</b>. Do this even if nothing looks wrong; it is what stops the
-            next warning appearing without a way past it.
-          </li>
-          <li>
-            <b>Double-click the file.</b> If a blue screen says &ldquo;Windows
-            protected your PC&rdquo;, click the small <b>More info</b> link, then
-            <b>Run anyway</b>.
-          </li>
-          <li>Finish the installer. Done.</li>
-        </ol>
-        <details>
-          <summary><span class="tw">&#9656;</span> <b>There is no Unblock tick box</b></summary>
-          <p style="margin-top: 10px;">
-            Some Windows versions hide it. Open <b>PowerShell</b> and run this
-            instead, then carry on from step 3:
-          </p>
+        <div class="card" id="card-linux">
+          <h3>Linux</h3>
+          <ol class="steps">
+            <li>Make the <b>.AppImage</b> executable, then run it. In a terminal, in the folder you downloaded it to:</li>
+          </ol>
           <div class="copy">
-            <code>Unblock-File -Path "$env:USERPROFILE\Downloads\Clipr-Windows-x64-Setup.exe"</code>
+            <code>chmod +x Clipr-Linux-x64.AppImage &amp;&amp; ./Clipr-Linux-x64.AppImage</code>
             <button type="button" data-copy>Copy</button>
           </div>
-          <p>Adjust the path if you saved the file somewhere other than Downloads.</p>
-        </details>
-        <div class="note">
-          <b>Why all this?</b> Clipr is not signed with a paid Windows
-          certificate yet. Every warning above is Windows saying it cannot
-          verify who published the file &mdash; not that it found anything wrong
-          with it.
+          <p>
+            Or right-click the file, choose <b>Properties</b>, and allow it to run
+            as a program.
+          </p>
         </div>
-      </div>
-
-      <div class="card" id="card-linux">
-        <h3>Linux</h3>
-        <ol class="steps">
-          <li>Make the <b>.AppImage</b> executable, then run it. In a terminal, in the folder you downloaded it to:</li>
-        </ol>
-        <div class="copy">
-          <code>chmod +x Clipr-Linux-x64.AppImage &amp;&amp; ./Clipr-Linux-x64.AppImage</code>
-          <button type="button" data-copy>Copy</button>
-        </div>
-        <p>
-          Or right-click the file, choose <b>Properties</b>, and allow it to run
-          as a program.
-        </p>
       </div>
 
       <h2>Getting 1080p</h2>
