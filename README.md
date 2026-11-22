@@ -15,9 +15,10 @@ single file.
 ![Platforms](https://img.shields.io/badge/macOS%20·%20Windows%20·%20Linux-1C1C1F?style=flat-square)
 ![Licence](https://img.shields.io/badge/licence-source--available-1C1C1F?style=flat-square)
 
-### [⬇&nbsp; Download Clipr](#install)
+### [⬇&nbsp; Download Clipr](https://xxxxxliam.github.io/clipr/)
 
-<sub>macOS, Windows and Linux · no account, no sign-up</sub>
+<sub>Picks the right file for your computer and walks you through first launch<br/>
+macOS, Windows and Linux · no account, no sign-up · <a href="#install">or pick a file yourself</a></sub>
 
 </div>
 
@@ -105,12 +106,35 @@ file stays on your computer and is never uploaded.
 You can skip it and work at 360p — the header always says which you are
 getting, and you can sign in later from the status chip.
 
-## Reporting a problem
+## Something went wrong?
 
-Open an [issue](https://github.com/xxxxxLiam/clipr/issues). If Clipr showed a
-**Copy diagnostics** button next to the error, use it and paste the result —
-it collects the logs for that one failure, with cookies, tokens and personal
-paths removed.
+Say so. You don't need to be technical about it — *"it got to 90% and said
+export failed"* is a genuinely useful report.
+
+<div align="center">
+
+### [🛟&nbsp; Report a problem](https://github.com/xxxxxLiam/clipr/issues/new/choose)
+
+</div>
+
+That opens a short form with the questions already in it. It asks three
+things:
+
+1. **What you were trying to do**, in plain words.
+2. **What happened instead.** You can drag a screenshot or a screen recording
+   straight into the box if that's easier than describing it.
+3. **Diagnostics**, if Clipr offered them.
+
+On that last one: when an error appears, look for a **Copy diagnostics**
+button next to it. Click it, then paste into the form. That single paste is
+worth more than everything else combined — it records the exact version and
+the exact point things failed, so the problem can be found without a
+back-and-forth. Cookies, sign-in tokens and your personal file paths are
+stripped out before it copies, so it's safe to post in public. If there's no
+button next to your error, skip it; it isn't offered for every failure.
+
+Posting needs a free GitHub account — it's a minute to make, and it's how
+replies reach you.
 
 ## Licence
 
