@@ -374,9 +374,9 @@ for (const [n, p] of Object.entries(NAMES)) check(`run 3: ${n} page exists`, !!p
     check("run 5 G3-1: an earlier version with nothing to say (empty after cleaning) is hidden, not shown as '0 changes'", !/11\.0\.0/.test(body) && !/\b0 changes\b/.test(body));
     check("run 4: each earlier version offers its three installers", (await page.locator(".wn-row").nth(1).locator(".wn-dls a").count()) === 3 && (await page.locator(".wn-row").nth(1).locator(".wn-dls a").first().getAttribute("href")).includes("/releases/download/v12.0.0/Clipr-macOS-AppleSilicon.dmg"));
     await ctx.close();
-    for (const w of [1440, 375]) {
+    for (const [vt, w] of [["v19.0.0", 1440], ["v19.0.0", 375], ["v19.1.0", 1440], ["v19.1.0", 375]]) {
       const cv = await browser.newContext({ userAgent: MAC, viewport: { width: w, height: 900 }, reducedMotion: "reduce" });
-      await cv.route("https://api.github.com/**", (r) => r.fulfill({ json: [{ tag_name: "v19.0.0", published_at: "2026-11-25T11:04:56Z", draft: false, prerelease: false, body: "- x" }] }));
+      await cv.route("https://api.github.com/**", (r) => r.fulfill({ json: [{ tag_name: vt, published_at: "2026-11-25T11:04:56Z", draft: false, prerelease: false, body: "- x" }] }));
       const pv = await cv.newPage();
       await pv.goto(url + "whats-new/");
       await pv.waitForSelector(".wn-latest");
@@ -388,12 +388,40 @@ for (const [n, p] of Object.entries(NAMES)) check(`run 3: ${n} page exists`, !!p
         const split = [...document.querySelectorAll(".wn-split")].map((x) => { const c = x.querySelector(".wn-copy").getBoundingClientRect(), v = x.querySelector(".wn-win").getBoundingClientRect(); return { sideBySide: Math.abs(c.top + c.height / 2 - (v.top + v.height / 2)) < 120 && c.right <= v.left + 1 || v.right <= c.left + 1, flip: x.classList.contains("flip") }; });
         return { n: secs.length, nums: secs.every((x) => x.querySelector(".wn-num") && x.querySelector("h3") && x.querySelector(".wn-copy p")), hero: !!document.querySelector(".wn-sec:not(.wn-split) .wn-stage .wn-win img"), splits: split, cards: cards.length, cardsOk: cards.every((c) => c.querySelector("img") && c.querySelector("h4") && c.querySelector(".chip")), imgsOk, eyebrows: document.querySelectorAll(".wn-eyebrow").length };
       });
-      check("run 6 reference: at " + w + "px the newest release has a hero with a framed app screenshot and glow stage, two split sections (one flipped), a two-card grid, eyebrow labels, and every image loads with alt text", info.n === 3 && info.nums && info.hero && info.splits.length === 2 && info.splits.filter((x) => x.flip).length === 1 && info.cards === 2 && info.cardsOk && info.imgsOk && info.eyebrows >= 4, JSON.stringify(info));
-      if (w >= 1000) check("run 6 reference: at " + w + "px the split sections put the copy beside the screenshot", info.splits.every((x) => x.sideBySide), JSON.stringify(info.splits));
-      else check("run 6 reference: at " + w + "px the split sections stack with the copy above the screenshot", await pv.evaluate(() => [...document.querySelectorAll(".wn-split")].every((x) => x.querySelector(".wn-copy").getBoundingClientRect().bottom <= x.querySelector(".wn-win").getBoundingClientRect().top + 1 || x.classList.contains("flip"))));
-      check("run 6 reference: the screenshots add no sideways scroll at " + w + "px", (await pv.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)) <= 0);
-      if (w === 1440) { await pv.screenshot({ path: "/tmp/claude-0/wn-v19.png", fullPage: true }); }
+      check("run 6 reference: " + vt + " at " + w + "px the newest release has a hero with a framed app screenshot and glow stage, two split sections (one flipped), a two-card grid, eyebrow labels, and every image loads with alt text", info.n === 3 && info.nums && info.hero && info.splits.length === 2 && info.splits.filter((x) => x.flip).length === 1 && info.cards === 2 && info.cardsOk && info.imgsOk && info.eyebrows >= 4, JSON.stringify(info));
+      if (w >= 1000) check("run 6 reference: " + vt + " at " + w + "px the split sections put the copy beside the screenshot", info.splits.every((x) => x.sideBySide), JSON.stringify(info.splits));
+      else check("run 6 reference: " + vt + " at " + w + "px the split sections stack with the copy above the screenshot", await pv.evaluate(() => [...document.querySelectorAll(".wn-split")].every((x) => x.querySelector(".wn-copy").getBoundingClientRect().bottom <= x.querySelector(".wn-win").getBoundingClientRect().top + 1 || x.classList.contains("flip"))));
+      check("run 6 reference: " + vt + " screenshots add no sideways scroll at " + w + "px", (await pv.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)) <= 0);
+      if (vt === "v19.1.0" && w === 1440) { await pv.screenshot({ path: "/tmp/claude-0/wn-v19.png", fullPage: true }); }
       await cv.close();
+    }
+    {
+      for (const w of [1440, 375]) {
+        let openFeed, openImgs;
+        const feedGate = new Promise((r) => (openFeed = r)), imgGate = new Promise((r) => (openImgs = r));
+        const cs = await browser.newContext({ userAgent: MAC, viewport: { width: w, height: 900 }, reducedMotion: "reduce" });
+        await cs.route("https://api.github.com/**", async (r) => { await feedGate; r.fulfill({ json: [{ tag_name: "v19.0.0", published_at: "2026-11-25T11:04:56Z", draft: false, prerelease: false, body: "- x" }] }); });
+        await cs.route("**/docs/whats-new/**", async (r) => { await imgGate; r.continue(); });
+        const ps = await cs.newPage();
+        await ps.goto(url + "whats-new/", { waitUntil: "domcontentloaded" });
+        await ps.waitForSelector(".wn-skel");
+        const sk = await ps.evaluate(() => { const k = document.querySelector(".wn-skel"); return { role: k.getAttribute("role"), bars: k.querySelectorAll(".sk").length, label: /Loading the list of versions/.test(k.querySelector(".wn-sr").textContent), frame: k.querySelector(".sk-frame").getBoundingClientRect().height, over: document.documentElement.scrollWidth - document.documentElement.clientWidth, head: !!k.querySelector(".sk-between"), pills: k.querySelectorAll(".sk-pills .sk").length, rows: k.querySelectorAll(".sk-item").length }; });
+        check("run 7 skeleton: while the version list loads, What's new shows a layout-shaped skeleton at " + w + "px (header, button, intro, three chips, a framed image, earlier rows), announced as a status, with no sideways scroll", sk.role === "status" && sk.bars >= 14 && sk.label && sk.frame > 100 && sk.over <= 0 && sk.head && sk.pills === 3 && sk.rows === 3, JSON.stringify(sk));
+        if (w === 1440) {
+          await ps.screenshot({ path: "/tmp/claude-0/wn-skeleton.png" });
+          openFeed();
+          await ps.waitForSelector(".wn-latest");
+          await ps.waitForSelector(".wn-win.is-loading");
+          const img = await ps.evaluate(() => { const f = [...document.querySelectorAll(".wn-win")]; return { n: f.length, loading: f.filter((x) => x.classList.contains("is-loading")).length, hidden: f.every((x) => getComputedStyle(x.querySelector("img")).opacity === "0"), reserved: f.every((x) => x.getBoundingClientRect().height > 100), skGone: !document.querySelector(".wn-skel") }; });
+          check("run 7 skeleton: the skeleton goes when the list arrives, and every screenshot is a shimmering placeholder of its final size until its image loads", img.n === 5 && img.loading === 5 && img.hidden && img.reserved && img.skGone, JSON.stringify(img));
+          await ps.screenshot({ path: "/tmp/claude-0/wn-img-skeleton.png" });
+          openImgs();
+          await ps.evaluate(() => document.querySelectorAll("img[loading=lazy]").forEach((i) => { i.loading = "eager"; }));
+          await ps.waitForFunction(() => document.querySelectorAll(".wn-win.is-loading").length === 0, null, { timeout: 8000 }).catch(() => {});
+          check("run 7 skeleton: each screenshot shows once its image has loaded, and none is left as a placeholder", (await ps.locator(".wn-win.is-loading").count()) === 0 && (await ps.evaluate(() => [...document.querySelectorAll(".wn-win img")].every((i) => i.naturalWidth > 0 && getComputedStyle(i).opacity === "1"))));
+        }
+        await cs.close();
+      }
     }
     const c2 = await browser.newContext({ userAgent: WIN, viewport: { width: 375, height: 900 }, reducedMotion: "reduce" });
     await c2.route("https://api.github.com/**", (r) => r.fulfill({ json: [{ tag_name: "v99.0.0", published_at: "2026-12-01T10:00:00Z", draft: false, prerelease: false, body: "- A new thing [skip release]\n- Another thing" }] }));

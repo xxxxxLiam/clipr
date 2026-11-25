@@ -116,6 +116,21 @@ EXTRA_CSS = """
       .wn-sec .wn-num { width: 32px; height: 32px; font-size: 13px; flex: none; }
       .wn-sec h3 { margin: 0; font-size: 28px; font-weight: 500; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
       .wn-sec p { margin: 16px 0 0; font-size: 15px; line-height: 1.7; color: var(--fg-dim); max-width: 640px; }
+      .wn-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+      .sk, .wn-win.is-loading { background: var(--raised); position: relative; overflow: hidden; }
+      .sk { display: block; border-radius: var(--r-chip); }
+      .sk::after, .wn-win.is-loading::after { content: ""; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.06) 50%, rgba(255, 255, 255, 0) 100%); animation: sk-shimmer 1.4s ease-in-out infinite; }
+      @keyframes sk-shimmer { to { transform: translateX(100%); } }
+      @media (prefers-reduced-motion: reduce) { .sk::after, .wn-win.is-loading::after { animation: none; } }
+      .wn-win.is-loading img { opacity: 0; }
+      .wn-skel { display: block; }
+      .wn-skel .sk-row { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+      .wn-skel .sk-between { justify-content: space-between; }
+      .wn-skel .sk-pills { margin-top: 16px; gap: 8px; }
+      .wn-skel .sk-sec { padding: 48px 0; border-bottom: 1px solid var(--hairline); }
+      .wn-skel .sk-frame { margin-top: 32px; border: 1px solid var(--hairline-strong); border-radius: var(--r-panel); aspect-ratio: 1360 / 860; }
+      .wn-skel .sk-list { border-top: 1px solid var(--hairline); margin-top: 48px; }
+      .wn-skel .sk-item { height: 64px; border-bottom: 1px solid var(--hairline); display: flex; align-items: center; padding: 0 24px; gap: 16px; }
       .wn-eyebrow { display: block; margin: 0 0 12px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-dim); }
       .wn-win { margin: 0; border: 1px solid var(--hairline-strong); border-radius: var(--r-panel); background: var(--panel); overflow: hidden; position: relative; z-index: 1; }
       .wn-win-bar { display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 16px; border-bottom: 1px solid var(--hairline); background: var(--raised); }
@@ -126,11 +141,13 @@ EXTRA_CSS = """
       .wn-stage::before { content: ""; position: absolute; inset: -64px -48px; z-index: 0; pointer-events: none; background: radial-gradient(55% 55% at 50% 50%, rgba(95, 216, 202, 0.24), rgba(184, 228, 234, 0.08) 60%, rgba(184, 228, 234, 0) 100%); }
       .wn-split { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 48px; align-items: center; }
       .wn-split.flip { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
-      .wn-split .wn-win { width: fit-content; max-width: 100%; justify-self: end; }
+      .wn-split .wn-win { width: 100%; justify-self: end; }
+      .wn-stage-split { margin-top: 0; width: 100%; justify-self: end; }
+      .wn-stage-split .wn-win { justify-self: auto; }
       .wn-split.flip .wn-win { justify-self: start; }
-      .wn-split .wn-win img { width: auto; max-width: 100%; }
       .wn-split.flip .wn-copy { order: 2; }
       .wn-split .wn-sec-head { margin-bottom: 0; }
+      .wn-split .wn-sec h3, .wn-split h3 { font-size: 24px; }
       .wn-cards { margin-top: 48px; }
       .wn-cards-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
       .wn-card { border: 1px solid var(--hairline); border-radius: var(--r-panel); background: var(--panel); padding: 24px; min-width: 0; display: flex; flex-direction: column; }
@@ -441,12 +458,17 @@ JS_WHATS_NEW = r"""
           ASSETS.forEach(function (a) { d.appendChild(el("a", { href: "https://github.com/xxxxxLiam/clipr/releases/download/" + r.tag_name + "/" + a[1] }, a[0])); });
           return d;
         }
-        function win(file, alt) {
-          var f = el("figure", { "class": "wn-win" });
+        function win(file, alt, w, h) {
+          var f = el("figure", { "class": "wn-win" }); if (w) f.style.maxWidth = w + "px";
           var bar = el("div", { "class": "wn-win-bar", "aria-hidden": "true" }); bar.appendChild(el("i")); bar.appendChild(el("i")); bar.appendChild(el("i"));
           f.appendChild(bar);
-          var im = el("img", { src: "../docs/whats-new/" + file, alt: alt || "", loading: "lazy", decoding: "async" });
-          f.appendChild(im); return f;
+          var at = { src: "../docs/whats-new/" + file, alt: alt || "", loading: "lazy", decoding: "async" };
+          if (w && h) { at.width = String(w); at.height = String(h); }
+          var im = el("img", at);
+          f.classList.add("is-loading");
+          function done() { f.classList.remove("is-loading"); }
+          im.addEventListener("load", done); im.addEventListener("error", done);
+          f.appendChild(im); if (im.complete && im.naturalWidth) done(); return f;
         }
         function cards(list) {
           var wrap = el("section", { "class": "wn-cards", id: "wn-also" });
@@ -454,7 +476,7 @@ JS_WHATS_NEW = r"""
           var g = el("div", { "class": "wn-cards-grid" });
           list.slice(0, 2).forEach(function (x) {
             var c = el("article", { "class": "wn-card" });
-            c.appendChild(win(x.shot, x.alt));
+            c.appendChild(win(x.shot, x.alt, x.w, x.h));
             c.appendChild(el("span", { "class": "chip" }, x.tag));
             c.appendChild(el("h4", {}, x.title)); c.appendChild(el("p", {}, x.text));
             if (x.caption) c.appendChild(el("p", { "class": "wn-cap" }, x.caption));
@@ -487,10 +509,10 @@ JS_WHATS_NEW = r"""
               var hd = el("div", { "class": "wn-sec-head" }), h3 = el("h3", {}, x.title);
               hd.appendChild(el("span", { "class": "wn-num" }, String(i + 1))); hd.appendChild(h3); hd.appendChild(el("span", { "class": "chip" }, x.tag));
               copy.appendChild(hd); copy.appendChild(el("p", {}, x.text));
-              if (split) { if (x.caption) copy.appendChild(el("p", { "class": "wn-cap" }, x.caption)); d.appendChild(copy); d.appendChild(win(x.shot, x.alt)); }
+              if (split) { if (x.caption) copy.appendChild(el("p", { "class": "wn-cap" }, x.caption)); d.appendChild(copy); var vw = win(x.shot, x.alt, x.w, x.h); if (x.glow) { var gs = el("div", { "class": "wn-stage wn-stage-split" }); gs.appendChild(vw); vw = gs; } d.appendChild(vw); }
               else {
                 d.appendChild(copy);
-                if (x.shot) { var st = el("div", { "class": "wn-stage" }); st.appendChild(win(x.shot, x.alt)); d.appendChild(st); if (x.caption) d.appendChild(el("p", { "class": "wn-cap" }, x.caption)); }
+                if (x.shot) { var st = el("div", { "class": "wn-stage" }); st.appendChild(win(x.shot, x.alt, x.w, x.h)); d.appendChild(st); if (x.caption) d.appendChild(el("p", { "class": "wn-cap" }, x.caption)); }
               }
               secs.appendChild(d);
             });
@@ -595,6 +617,19 @@ OS_TILES = """
 <a class="os" href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-Linux-x64.AppImage"><h2>Linux</h2><p>64-bit Linux</p></a>
 """
 
+WN_SKELETON = (
+    '<div class="wn-skel" role="status"><span class="wn-sr">Loading the list of versions&hellip;</span>'
+    '<span class="sk" style="width:120px;height:16px"></span>'
+    '<div class="sk-row sk-between" style="margin-top:16px"><span class="sk" style="width:min(320px,70%);height:36px"></span><span class="sk" style="width:180px;height:44px;border-radius:var(--r-control)"></span></div>'
+    '<span class="sk" style="width:min(560px,90%);height:16px;margin-top:20px"></span><span class="sk" style="width:min(420px,70%);height:16px;margin-top:8px"></span>'
+    '<div class="sk-row sk-pills"><span class="sk" style="width:110px;height:44px;border-radius:var(--r-control)"></span><span class="sk" style="width:170px;height:44px;border-radius:var(--r-control)"></span><span class="sk" style="width:96px;height:44px;border-radius:var(--r-control)"></span></div>'
+    '<div class="sk-sec"><div class="sk-row"><span class="sk" style="width:32px;height:32px;border-radius:50%"></span><span class="sk" style="width:min(260px,60%);height:28px"></span></div>'
+    '<span class="sk" style="width:min(520px,90%);height:16px;margin-top:20px"></span><span class="sk" style="width:min(380px,70%);height:16px;margin-top:8px"></span>'
+    '<span class="sk sk-frame"></span></div>'
+    '<div class="sk-list"><div class="sk-item"><span class="sk" style="width:120px;height:16px"></span><span class="sk" style="width:140px;height:14px"></span></div><div class="sk-item"><span class="sk" style="width:120px;height:16px"></span><span class="sk" style="width:140px;height:14px"></span></div><div class="sk-item"><span class="sk" style="width:120px;height:16px"></span><span class="sk" style="width:140px;height:14px"></span></div></div>'
+    '</div>'
+)
+
 pages = {
     "download": page(
         "download", "Download Clipr", "Download Clipr for macOS, Windows or Linux. Free, including for paid client work. No ads, no account.",
@@ -605,7 +640,7 @@ pages = {
     "whats-new": page(
         "whats-new", "What's new", "What changed in each version of Clipr, newest first.",
         "What's new", "What&rsquo;s new", "Every version of Clipr, newest first.", "",
-        '<div id="releases"><p class="status">Loading the list of versions&hellip;</p></div>',
+        '<div id="releases">' + WN_SKELETON + '</div>',
         JS_WHATS_NEW, '<noscript><p class="status">Turn on JavaScript to see what changed in each version.</p></noscript>', wide=True),
     "licence": page(
         "licence", "Licence", "Clipr is free to use, including for paid client work. It is not open source: copying, forking, reselling or sharing it is not permitted.",
