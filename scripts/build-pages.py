@@ -98,26 +98,26 @@ EXTRA_CSS = """
       .dl-mini { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border-radius: var(--r-control); background: var(--ice); color: var(--bg); font-size: 15px; font-weight: 500; }
       .dl-mini .glyph { display: inline-flex; align-items: center; }
       .dl-mini .glyph svg { width: 16px; height: 16px; }
-      .wn-latest { background: var(--panel); border: 1px solid var(--hairline-strong); border-radius: var(--r-panel); padding: 32px; }
+      .wn-latest { background: none; border: 0; padding: 0; }
+      .wn-date { display: inline-flex; align-items: center; gap: 8px; color: var(--fg-dim); font-size: 13px; margin-bottom: 16px; }
+      .wn-date svg { width: 14px; height: 14px; flex: none; }
       .wn-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
       .wn-title { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-      .wn-title h2 { margin: 0; font-size: 24px; }
-      .wn-title time, .wn-row time { color: var(--fg-dim); font-size: 13px; }
-      .wn-intro { margin: 16px 0 0; font-size: 15px; line-height: 1.7; color: var(--fg-dim); max-width: 640px; }
+      .wn-title h2 { margin: 0; font-size: 32px; font-weight: 500; letter-spacing: -0.01em; }
+      .wn-row time { color: var(--fg-dim); font-size: 13px; }
+      .wn-intro { margin: 16px 0 0; font-size: 16px; line-height: 1.7; color: var(--fg-dim); max-width: 640px; }
       .wn-jump { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
       .prose a.wn-pill { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border: 1px solid var(--hairline-strong); border-radius: var(--r-control); font-size: 13px; color: var(--fg); text-decoration: none; }
       .prose a.wn-pill:hover { background: var(--hover); }
       .wn-num { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--hairline-strong); font-size: 12px; color: var(--fg); }
-      .wn-tilehead { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
-      .wn-tilehead .chip { margin: 0; }
-      .wn-tile { scroll-margin-top: 96px; }
-      .wn-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 24px; }
-      .wn-tile { background: var(--raised); border: 1px solid var(--hairline); border-radius: var(--r-panel); padding: 20px; }
-      .wn-tile h3 { margin: 0 0 4px; font-size: 15px; font-weight: 500; }
-      .wn-tile p { margin: 0; font-size: 13px; line-height: 1.6; color: var(--fg-dim); }
+      .wn-sections { margin-top: 32px; border-top: 1px solid var(--hairline); }
+      .wn-sec { display: grid; grid-template-columns: 56px 1fr; gap: 0 16px; padding: 32px 0; border-bottom: 1px solid var(--hairline); scroll-margin-top: 96px; }
+      .wn-sec .wn-num { width: 32px; height: 32px; font-size: 13px; }
+      .wn-sec h3 { margin: 0; font-size: 20px; font-weight: 500; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+      .wn-sec p { margin: 8px 0 0; font-size: 15px; line-height: 1.7; color: var(--fg-dim); max-width: 640px; }
       .wn-all > summary, .wn-row > summary { cursor: pointer; list-style: none; display: flex; align-items: center; min-height: 44px; color: var(--fg); font-size: 13px; }
       .wn-all > summary::-webkit-details-marker, .wn-row > summary::-webkit-details-marker { display: none; }
-      .wn-all { margin-top: 24px; border-top: 1px solid var(--hairline); padding-top: 8px; }
+      .wn-all { margin-top: 32px; }
       .wn-all > summary { font-size: 15px; font-weight: 500; }
       .wn-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 8px 32px; margin-top: 8px; }
       .wn-group { min-width: 0; }
@@ -127,13 +127,12 @@ EXTRA_CSS = """
       .wn-group li:first-child { border-top: 0; }
       .wn-group li b { color: var(--fg); font-weight: 500; }
       .wn-earlier { font-size: 20px; font-weight: 500; margin: 48px 0 16px; }
-      .wn-list { background: var(--panel); border: 1px solid var(--hairline); border-radius: var(--r-panel); overflow: hidden; }
-      .wn-row { border-top: 1px solid var(--hairline); }
-      .wn-row:first-child { border-top: 0; }
+      .wn-list { background: none; border-top: 1px solid var(--hairline); }
+      .wn-row { border-bottom: 1px solid var(--hairline); }
       .wn-row > summary { min-height: 64px; padding: 8px 24px; gap: 16px; display: grid; grid-template-columns: 160px 200px 1fr auto; font-size: 15px; }
       .wn-row > summary b { font-weight: 500; }
       .wn-row > summary .count { color: var(--fg-dim); font-size: 13px; }
-      .wn-row > summary:hover { background: var(--hover); }
+      .wn-row > summary:hover .more { text-decoration: underline; text-underline-offset: 3px; }
       .wn-row > summary .more { font-size: 13px; }
       .wn-row .less, .wn-row[open] .more { display: none; }
       .wn-row[open] .less { display: inline; }
@@ -141,7 +140,7 @@ EXTRA_CSS = """
       .wn-row .wn-groups { grid-template-columns: 1fr; }
       .wn-dls { display: flex; gap: 8px 16px; flex-wrap: wrap; margin-top: 8px; font-size: 13px; }
       .wn-dls a { color: var(--fg); text-decoration: underline; text-underline-offset: 3px; display: inline-flex; min-height: 44px; align-items: center; }
-      @media (max-width: 760px) { .wn-tiles { grid-template-columns: 1fr; } .wn-latest { padding: 24px 16px; } .wn-row > summary { padding: 8px 16px; gap: 4px 16px; grid-template-columns: 1fr auto; } .wn-row > summary b { grid-column: 1 / -1; } .wn-row .body { padding: 0 16px 16px; } }
+      @media (max-width: 760px) { .wn-sec { grid-template-columns: 40px 1fr; } .wn-sec .wn-num { width: 28px; height: 28px; } .wn-title h2 { font-size: 28px; } .wn-row > summary { padding: 8px 16px; gap: 4px 16px; grid-template-columns: 1fr auto; } .wn-row > summary b { grid-column: 1 / -1; } .wn-row .body { padding: 0 16px 16px; } }
       .status { color: var(--fg-dim); font-size: 15px; padding: 24px 0; }
       .rail-note { color: var(--fg-dim); font-size: 13px; margin-top: 16px; }
       @media (max-width: 1040px) { .p-hero { padding: 64px 24px 80px; } .p-body { padding: 16px 24px 64px; } }
@@ -362,9 +361,12 @@ JS_WHATS_NEW = r"""
         }
         function latest(r) {
           var e = entry(r), c = el("article", { "class": "wn-latest" });
+          var dt = el("time", { "class": "wn-date", datetime: r.published_at || "" });
+          dt.innerHTML = '<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/></svg>';
+          dt.appendChild(document.createTextNode(when(r)));
+          c.appendChild(dt);
           var h = el("div", { "class": "wn-head" }), t = el("div", { "class": "wn-title" });
           t.appendChild(el("h2", {}, "Version " + e.v)); t.appendChild(el("span", { "class": "chip ice" }, "Latest"));
-          t.appendChild(el("time", { datetime: r.published_at || "" }, when(r)));
           h.appendChild(t);
           var a = el("a", { "class": "dl-mini dl", href: "../download/" }); a.appendChild(el("span", { "class": "glyph", "aria-hidden": "true" })); a.appendChild(el("span", { "class": "dl-what" }, "Download Clipr"));
           h.appendChild(a); c.appendChild(h);
@@ -373,13 +375,14 @@ JS_WHATS_NEW = r"""
             var jump = el("nav", { "class": "wn-jump", "aria-label": "In this version" });
             e.highlights.slice(0, 3).forEach(function (x, i) { jump.appendChild(el("a", { "class": "wn-pill", href: "#wn-h" + (i + 1) }, x.title)); });
             c.appendChild(jump);
-            var tiles = el("div", { "class": "wn-tiles" });
+            var secs = el("div", { "class": "wn-sections" });
             e.highlights.slice(0, 3).forEach(function (x, i) {
-              var d = el("div", { "class": "wn-tile", id: "wn-h" + (i + 1) });
-              var th = el("div", { "class": "wn-tilehead" }); th.appendChild(el("span", { "class": "wn-num" }, String(i + 1))); th.appendChild(el("span", { "class": "chip" }, x.tag)); d.appendChild(th);
-              d.appendChild(el("h3", {}, x.title)); d.appendChild(el("p", {}, x.text)); tiles.appendChild(d);
+              var d = el("section", { "class": "wn-sec", id: "wn-h" + (i + 1) });
+              d.appendChild(el("span", { "class": "wn-num" }, String(i + 1)));
+              var body = el("div"), h3 = el("h3", {}, x.title); h3.appendChild(el("span", { "class": "chip" }, x.tag));
+              body.appendChild(h3); body.appendChild(el("p", {}, x.text)); d.appendChild(body); secs.appendChild(d);
             });
-            c.appendChild(tiles);
+            c.appendChild(secs);
           }
           if (e.changes.length) {
             var all = el("details", { "class": "wn-all", open: "" });
