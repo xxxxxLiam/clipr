@@ -51,7 +51,7 @@ check("page has no 1080p section (G-7: the app and Help cover it)", !/Getting 10
 check("README 1080p copy points at the footer pill", /Sign in for 1080p/.test(readme) && /bottom of the window/.test(readme));
 check("no mock-up leftovers (Decided here tag, dashed outline)", !/Decided here|decided|dashed/.test(html));
 check("Inter is self-hosted (no Google Fonts)", !/fonts\.(googleapis|gstatic)/.test(html) && fs.existsSync(path.join(ROOT, "fonts/inter-latin-wght.woff2")));
-check("only Clean Cut colours in the page CSS", [...html.matchAll(/#[0-9a-f]{6}\b/gi)].every((m) => ["0a0d0f","121619","181d21","232a2f","f2f5f6","94a0a5","8b979c","5fd8ca","b8e4ea","ff6363"].includes(m[0].slice(1).toLowerCase())), [...new Set([...html.matchAll(/#[0-9a-f]{6}\b/gi)].map((m) => m[0]))].join(" "));
+check("only Clean Cut colours in the page CSS", [...html.matchAll(/#[0-9a-f]{6}\b/gi)].every((m) => ["0a0d0f","121619","181d21","232a2f","f2f5f6","94a0a5","8b979c","5fd8ca","b8e4ea","ff6363","141f22","2a4247","6f959b","121a1d","22363a","3f5b60"].includes(m[0].slice(1).toLowerCase())), [...new Set([...html.matchAll(/#[0-9a-f]{6}\b/gi)].map((m) => m[0]))].join(" "));
 check("editors named as plain text, four of them", ["Final Cut Pro", "Premiere Pro", "DaVinci Resolve", "CapCut"].every((e) => new RegExp(`<b>${e}</b>`).test(html)));
 check("ticker is decoration only (aria-hidden) and stops under reduced motion", /class="ticker" aria-hidden="true"/.test(html) && /prefers-reduced-motion[^}]*\.track \{ animation: none/.test(html));
 
@@ -122,7 +122,7 @@ check("PowerShell line does not hard-code the filename", !/Unblock-File[^<]*Setu
     const { page, ctx } = await open(PHONE, 375);
     const note = page.locator("#desktop-note");
     check("phone UA shows the desktop note", (await note.isVisible()) && /Clipr is a desktop app\. Open this page on your computer/.test(await note.innerText()));
-    check("phone keeps the download links", (await page.locator(".also a").count()) >= 2);
+    check("phone keeps the download links (all three) and drops the big button", (await page.locator(".also a").count()) >= 6 && !(await page.locator(".cta-row").first().isVisible()));
     await ctx.close();
   }
   {

@@ -70,11 +70,8 @@
       .h3 { font-size: 18px; line-height: 1.5; font-weight: 600; letter-spacing: -0.01em; }
       .sub { font-size: 18px; color: var(--fg-dim); max-width: 560px; margin: 24px auto 0; }
 
-      .btn-ice { display: inline-flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 24px; border-radius: var(--r-control); font-weight: 600; font-size: 16px; background: var(--ice); color: var(--bg); }
-      .btn-ice .glyph { display: inline-flex; width: 18px; height: 18px; }
-      .btn-ice .glyph:empty { display: none; }
-      .btn-ice .glyph svg { width: 100%; height: 100%; }
-      .btn-ice:hover, .pill:hover { background: var(--frost); }
+      .btn-dark .glyph { display: inline-flex; width: 18px; height: 18px; }
+      .btn-dark .glyph svg { width: 100%; height: 100%; }
       .cta-row { display: flex; justify-content: center; margin-top: 32px; }
       .also { margin-top: 12px; font-size: 14px; color: var(--fg-dim); }
       .also a { color: var(--fg); text-decoration: underline; text-underline-offset: 3px; }
@@ -85,8 +82,6 @@
       .hero-c { position: relative; border-radius: var(--r-panel); overflow: hidden; background: var(--panel); border: 1px solid var(--hairline); padding: 96px 48px 0; }
       .hero-copy { text-align: center; position: relative; z-index: 2; }
       .stage { position: relative; width: 100%; max-width: 960px; margin: 64px auto 0; container-type: inline-size; }
-      .rise { position: absolute; left: 50%; top: -80px; transform: translateX(-50%); width: 130%; aspect-ratio: 1240 / 820; border-radius: 50%;
-        background: radial-gradient(closest-side, rgba(95, 216, 202, 0.5), rgba(184, 228, 234, 0.12) 60%, rgba(0, 0, 0, 0) 100%); pointer-events: none; }
       .win { position: relative; overflow: hidden; border: 1px solid var(--hairline-strong); background: var(--panel); border-radius: var(--r-panel) var(--r-panel) 0 0; border-bottom: 0; box-shadow: 0 0 0 1px rgba(95, 216, 202, 0.25); }
       .win img { display: block; width: 100%; height: auto; }
       .pin { position: absolute; left: 80.4%; top: 79.5%; display: flex; gap: 8px; align-items: center; white-space: nowrap; background: var(--bg); border: 1px solid var(--ice); border-radius: var(--r-control); padding: 6px 12px; font-size: clamp(10px, 1.35cqw, 13px); box-shadow: 0 0 24px rgba(95, 216, 202, 0.35); }
@@ -204,6 +199,80 @@
         footer { padding: 24px 16px; }
       }
 
+
+      /* ===== audit pass (25 Nov): weights 400/500, scale 56/32/20/15/13, 8px tabs, 44px targets, Ice only on pin, bars, cut-r ===== */
+      body, p { font-size: 15px; }
+      h1, h2, h3, h4, h5, b, .btn-dark, .pill, .n, .lbl, .code button, .word { font-weight: 500; }
+      h1 { font-size: 56px; line-height: 1.2; letter-spacing: -0.01em; }
+      h2 { font-size: 32px; line-height: 1.2; letter-spacing: -0.01em; }
+      h3, .h3, .split h3 { font-size: 20px; line-height: 1.2; letter-spacing: -0.01em; }
+      h4 { font-size: 15px; }
+      .h5 { font-size: 13px; font-weight: 500; color: var(--fg); margin-bottom: 8px; }
+      .sub { font-size: 20px; line-height: 1.45; max-width: 620px; }
+      .sec-head p, .three p, .step p { font-size: 15px; }
+      .lbl { text-transform: none; letter-spacing: 0; font-size: 13px; color: var(--fg-dim); }
+      .split h3 { margin: 8px 0 24px; }
+      .nav nav a { font-size: 13px; min-height: 44px; display: inline-flex; align-items: center; }
+      .pill { min-height: 44px; gap: 8px; background: var(--raised); color: var(--fg); border: 1px solid var(--hairline-strong); }
+      .pill:hover { background: var(--hover); }
+      .pill .glyph, .btn-dark .glyph { display: inline-flex; width: 16px; height: 16px; }
+      .pill .glyph:empty { display: none; }
+      .pill .glyph svg, .btn-dark .glyph svg { width: 100%; height: 100%; }
+      .btn-dark { display: inline-flex; align-items: center; gap: 12px; padding: 0 24px; border-radius: var(--r-control); font-size: 16px; background: var(--bg); color: var(--fg); min-height: 52px; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14); }
+      .btn-dark .glyph { width: 18px; height: 18px; }
+      .btn-dark:hover { background: var(--panel); }
+      .also { font-size: 13px; }
+      .tabs { align-items: center; }
+      .tab { min-height: 44px; border-radius: var(--r-control); padding: 0 16px; font-size: 13px; }
+      .tab[aria-selected="true"] { background: var(--hover); color: var(--fg); border-color: var(--fg); font-weight: 500; }
+      .ver { margin-left: 16px; font-size: 13px; color: var(--fg-dim); }
+      .ico { color: var(--fg); }
+      .bar.two { position: relative; }
+      .bar.two span { position: absolute; top: 0; height: 100%; }
+      .code code, .code button, .pin, .ticker { font-size: 13px; }
+      .after li svg { flex: none; }
+
+      /* Frost grain gradient: a logged site-only exception to the "no gradients" rule. Text sits on the dark top part. */
+      .grain { position: relative; overflow: hidden; }
+      .grain::before { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+        background: linear-gradient(118deg, rgba(255,255,255,0) 0 52%, rgba(255,255,255,.10) 56%, rgba(255,255,255,0) 61%, rgba(255,255,255,0) 66%, rgba(255,255,255,.07) 70%, rgba(255,255,255,0) 76%); }
+      .grain::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; mix-blend-mode: overlay; opacity: .85; background-size: 240px;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 1.6 -.3'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+      .grain-frost { background: radial-gradient(120% 70% at 50% 100%, #b8e4ea 0%, rgba(184,228,234,0) 70%), linear-gradient(180deg, #141f22 0%, #2a4247 40%, #6f959b 80%, #b8e4ea 100%); }
+      .grain-frost-up { background: radial-gradient(65% 30% at 50% 100%, #b8e4ea 0%, rgba(184,228,234,0) 100%), linear-gradient(180deg, #0a0d0f 0%, #121a1d 45%, #22363a 80%, #3f5b60 100%); }
+      .hero-wrap { padding: 0; }
+      .hero-c { border: 0; border-radius: 0; padding: 96px 48px 64px; background-color: var(--panel); }
+      .hero-c .hero-copy, .hero-c .stage { z-index: 2; }
+      .hero-c .sub, .hero-c .also, .hero-c .also a { color: var(--fg); }
+      .hero-c .phone-note { color: var(--fg); }
+      .stage { margin-top: 64px; }
+      .win { border-radius: var(--r-panel); border-bottom: 1px solid var(--hairline-strong); box-shadow: 0 0 0 1px rgba(255,255,255,.18); }
+      .final { padding: 0; }
+      .final-card { border: 0; border-radius: 0; padding: 96px 48px 0; text-align: center; }
+      .final-card > * { position: relative; z-index: 2; }
+      .final-card .big { font-size: 56px; line-height: 1.2; max-width: 820px; margin: 0 auto; }
+      .final-card > p { color: var(--fg); font-size: 20px; margin-top: 16px; }
+      .final-card .also { font-size: 13px; margin-top: 12px; }
+      .final-card .also, .final-card .also a { color: var(--fg); }
+      .appicon { display: inline-flex; width: 72px; height: 72px; align-items: center; justify-content: center; border-radius: var(--r-panel); background: var(--raised); border: 1px solid var(--hairline-strong); margin-bottom: 32px; box-shadow: 0 0 32px rgba(184,228,234,.25); }
+      .final-card .ticker { margin: 112px -48px 0; border: 0; border-top: 1px solid rgba(255,255,255,.14); border-radius: 0; background: rgba(10,13,15,.55); color: var(--fg); height: 56px; position: relative; z-index: 2;
+        -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+      footer.big-foot { display: block; padding: 0; }
+      .foot-top { display: grid; grid-template-columns: 1.3fr 2fr; gap: 48px; padding: 64px 48px 48px; }
+      .foot-top small { grid-column: 1 / -1; }
+      .foot-brand p { color: var(--fg-dim); font-size: 15px; margin-top: 16px; }
+      .cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+      .cols a { display: flex; align-items: center; min-height: 44px; color: var(--fg-dim); font-size: 13px; }
+      .cols a:hover { color: var(--fg); }
+      .report-row { font-size: 13px; color: var(--fg-dim); margin-top: 8px; }
+      .foot-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px 24px; min-height: 64px; padding: 8px 48px; border-top: 1px solid var(--hairline); font-size: 13px; color: var(--fg-dim); }
+      .foot-bottom b { color: var(--fg); }
+      @media (max-width: 1040px) { .hero-c { padding: 64px 24px 48px; } .foot-top { grid-template-columns: 1fr; padding: 48px 24px 32px; } .foot-bottom { padding: 8px 24px; } .final-card { padding: 64px 24px 0; } .final-card .ticker { margin: 80px -24px 0; } }
+      @media (max-width: 560px) { h1 { font-size: 36px; } .final-card .big { font-size: 32px; } .sub, .final-card > p { font-size: 16px; } .cols { grid-template-columns: 1fr 1fr; } .hero-c { padding: 48px 16px 32px; } .final-card { padding: 64px 16px 0; } .final-card .ticker { margin: 64px -16px 0; } .foot-top { padding: 32px 16px; } .foot-bottom { padding: 8px 16px; } .stage { margin-top: 40px; } }
+
+      .phone-note { margin: 24px auto 0; max-width: 440px; padding: 16px; border: 1px solid var(--hairline-strong); border-radius: var(--r-control); background: rgba(10,13,15,.6); color: var(--fg); font-size: 15px; }
+      .phone .cta-row { display: none; }
+      @media (max-width: 560px) { .pill { display: none; } }
     </style>
   </head>
   <body>
@@ -212,32 +281,31 @@
       <header class="nav">
         <a href="#top" class="lockup-link"><span class="lockup" role="img" aria-label="Clipr"><svg width="25.3" height="25.3" viewBox="0 0 64 64" aria-hidden="true"><use href="#mflat"/></svg><span class="word" style="font-size:22px" aria-hidden="true">Clip<svg class="cutr" viewBox="0 0 66.2 100" aria-hidden="true"><polygon points="0,0 66.2,0 66.2,22 0,50.4" fill="#5FD8CA"/><rect x="0" y="60.7" width="25" height="39.3" fill="#F2F5F6"/></svg></span></span></a>
         <nav aria-label="Page"><a href="#how">How it works</a><a href="#install">Install help</a></nav>
-        <a class="pill dl" id="dl-nav" href="https://github.com/xxxxxLiam/clipr/releases/latest"><span class="dl-short">Download</span></a>
+        <a class="pill dl" id="dl-nav" href="https://github.com/xxxxxLiam/clipr/releases/latest"><span class="glyph" aria-hidden="true"></span><span class="dl-short">Download</span></a>
       </header>
 
       <main id="top">
         <section class="hero-wrap">
-          <div class="hero-c">
+          <div class="hero-c grain grain-frost">
             <div class="hero-copy">
               <h1>Only the seconds you need</h1>
-              <p class="sub">Paste a YouTube link, mark the moments, and Clipr downloads just those sections, ready for your editor. No ads, no account.</p>
-              <div class="cta-row"><a class="btn-ice dl" id="dl-hero" href="https://github.com/xxxxxLiam/clipr/releases/latest"><span class="glyph" aria-hidden="true"></span><span class="dl-what">Download Clipr</span></a></div>
-        <p class="also">Free &middot; <span class="dl-spec">macOS, Windows and Linux</span><span class="dl-others"> &middot; also for <a href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-Windows-x64-Setup.exe">Windows</a> and <a href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-Linux-x64.AppImage">Linux</a></span></p>
-              <p class="phone-note" id="desktop-note" hidden><b>Clipr is a desktop app. Open this page on your computer</b> to install it. The links above are 230 to 300 MB installers, so save them for the computer.</p>
+              <p class="sub">Stop downloading two-hour videos for forty seconds. Paste a link, mark the moments, and Clipr downloads just those.</p>
+              <div class="cta-row"><a class="btn-dark dl" id="dl-hero" href="https://github.com/xxxxxLiam/clipr/releases/latest"><span class="glyph" aria-hidden="true"></span><span class="dl-what">Download Clipr</span></a></div>
+        <p class="also"><span class="dl-others">Also for <a href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-Windows-x64-Setup.exe">Windows</a> and <a href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-Linux-x64.AppImage">Linux</a></span></p>
+              <p class="phone-note" id="desktop-note" hidden><b>Clipr is a desktop app. Open this page on your computer</b> to get it.</p>
             </div>
             <div class="stage">
-              <div class="rise" aria-hidden="true"></div>
               <div class="win lit"><img src="docs/screenshot.png" width="2880" height="1800" alt="The Clipr workspace: your videos on the left, the video in the middle with a timeline below it showing a 42-second range marked from 1:12:04 to 1:12:46, a Clip button with an editor menu beside it, and the clips waiting to be made on the right." /></div>
-              <div class="pin" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="#5FD8CA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>0:42</b> of 2:14:33 downloads</span></div>
+              <div class="pin" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="#5FD8CA" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg><span><b>0:42</b> of 2:14:33 downloads</span></div>
             </div>
           </div>
         </section>
 
         <section class="band" id="how">
           <div class="three">
-            <div><span class="ico"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#F2F5F6" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="5" cy="15" r="2.5"/><circle cx="15" cy="15" r="2.5"/><path d="M6.8 13.2L15 3M13.2 13.2L5 3"/></svg></span><h2 class="h3">Only the part you mark</h2><p>Set in and out. Clipr fetches that section and nothing else, so a two-hour podcast costs you seconds.</p></div>
-            <div><span class="ico"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#F2F5F6" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><rect x="2" y="7" width="5" height="6" rx="1.5"/><rect x="13" y="7" width="5" height="6" rx="1.5"/><path d="M7 10h6"/></svg></span><h2 class="h3">Several moments, one file</h2><p>A line from minute 3 and an answer from minute 71 come down joined, in order, as one clip.</p></div>
-            <div><span class="ico"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#F2F5F6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="11" height="11" rx="2"/><path d="M11 9l6-6M12.5 3H17v4.5"/></svg></span><h2 class="h3">Straight to your editor</h2><p>Open the clip in Final Cut Pro, Premiere Pro, DaVinci Resolve or CapCut from the Clip menu.</p></div>
+            <div><span class="ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M0 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2h2a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2H2a2 2 0 0 1-2-2zm5 10v2a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-2v5a2 2 0 0 1-2 2zm6-8V2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h2V6a2 2 0 0 1 2-2z"/></svg></span><h2 class="h3">Several moments, one file</h2><p>A line from minute 3 and an answer from minute 71 come down joined, in order, as one clip.</p></div>
+            <div><span class="ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M3.5 3.5c-.614-.884-.074-1.962.858-2.5L8 7.226 11.642 1c.932.538 1.472 1.616.858 2.5L8.81 8.61l1.556 2.661a2.5 2.5 0 1 1-.794.637L8 9.73l-1.572 2.177a2.5 2.5 0 1 1-.794-.637L7.19 8.61zm2.5 10a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0m7 0a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0"/></svg></span><h2 class="h3">Only the part you mark</h2><p>Set in and out. Clipr fetches that section and nothing else, so a two-hour podcast costs you seconds.</p></div>
+            <div><span class="ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/><path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/></svg></span><h2 class="h3">Straight to your editor</h2><p>Open the clip in <b>Final Cut Pro</b>, <b>Premiere Pro</b>, <b>DaVinci Resolve</b> or <b>CapCut</b> from the Clip menu.</p></div>
           </div>
         </section>
 
@@ -248,13 +316,13 @@
               <span class="lbl">The usual way</span>
               <h3>Download the whole video</h3>
               <div class="bar" aria-hidden="true"><span style="width:100%"></span></div>
-              <ul><li>2:14:33 of video to get one moment</li><li>Ads before every download</li><li>Scrub the file again in your editor</li></ul>
+              <ul><li>2:14:33 of video to get two moments</li><li>Ads before every download</li><li>Find and cut them again in your editor</li></ul>
             </div>
             <div class="after">
-              <span class="lbl ice">With Clipr</span>
-              <h3>Download the moment</h3>
-              <div class="bar on" aria-hidden="true"><span style="width:6%;margin-left:52%"></span></div>
-              <ul><li><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="#5FD8CA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>0:42, ready to edit</li><li><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="#5FD8CA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>No ads, no account</li><li><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="#5FD8CA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Lands in that campaign's folder</li></ul>
+              <span class="lbl">With Clipr</span>
+              <h3>Download just the moments</h3>
+              <div class="bar on two" aria-hidden="true"><span style="left:8%;width:5%"></span><span style="left:58%;width:7%"></span></div>
+              <ul><li><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>0:12 + 0:42, joined into one file</li><li><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>No ads, no account</li><li><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>Lands in that campaign's folder</li></ul>
             </div>
           </div>
         </section>
@@ -262,23 +330,24 @@
         <section class="works" aria-label="Works with"><span>Hands off to</span><b>Final Cut Pro</b><b>Premiere Pro</b><b>DaVinci Resolve</b><b>CapCut</b></section>
 
         <section class="block" id="install">
-          <div class="sec-head"><h2>Opening it the first time</h2><p>Clipr isn't signed with a paid certificate yet, so your computer asks once. It means &ldquo;unknown publisher&rdquo;, not &ldquo;unsafe&rdquo;.</p></div>
+          <div class="sec-head"><h2>Safe to open, it just asks once</h2><p>Clipr isn't signed with a paid certificate yet, so your computer asks the first time. It means &ldquo;unknown publisher&rdquo;, not &ldquo;unsafe&rdquo;.</p></div>
           <div class="tabs" role="tablist" aria-label="Your computer">
             <button class="tab" role="tab" type="button" id="tab-mac" aria-controls="panel-mac" aria-selected="true">macOS</button>
             <button class="tab" role="tab" type="button" id="tab-win" aria-controls="panel-win" aria-selected="false" tabindex="-1">Windows</button>
             <button class="tab" role="tab" type="button" id="tab-linux" aria-controls="panel-linux" aria-selected="false" tabindex="-1">Linux</button>
+            <span class="ver" id="ver" hidden></span>
           </div>
 
           <div class="panel" role="tabpanel" id="panel-mac" aria-labelledby="tab-mac">
             <h3 class="panel-title">macOS</h3>
-            <p class="lead"><b>This download is for Apple Silicon Macs (M1 and newer).</b> It will not run on an Intel Mac. To check, choose the Apple menu &rarr; <b>About This Mac</b>: it says &ldquo;Chip: Apple M&hellip;&rdquo; on a Mac that works, or &ldquo;Processor: Intel&rdquo; on one that does not.</p>
             <div class="steps">
-              <div class="step"><span class="n">1</span><h4>Drag to Applications</h4><p>Open the <b>.dmg</b> and drag <b>Clipr</b> into Applications.</p></div>
+              <div class="step"><span class="n">1</span><h4>Drag to Applications</h4><p>Open the <b>.dmg</b> and drag <b>Clipr</b> into Applications. Needs an Apple Silicon Mac (M1 or newer).</p></div>
               <div class="step"><span class="n">2</span><h4>Paste one line in Terminal</h4><p>Press <kbd>&#8984;</kbd><kbd>Space</kbd>, type <i>terminal</i>, press <kbd>Return</kbd>, then paste this and press <kbd>Return</kbd>.</p>
                 <div class="code"><code>xattr -dr com.apple.quarantine /Applications/Clipr.app &amp;&amp; open /Applications/Clipr.app</code><button type="button" data-copy>Copy</button></div></div>
               <div class="step"><span class="n">3</span><h4>Done</h4><p>Clipr opens. From now on, double-click it like any app.</p></div>
             </div>
             <div class="notes">
+              <p><b>Not sure which Mac you have?</b> Choose the Apple menu &rarr; <b>About This Mac</b>. &ldquo;Chip: Apple M&hellip;&rdquo; works. &ldquo;Processor: Intel&rdquo; does not: this download will not run on an Intel Mac.</p>
               <p><b>Two commands in one, if you are wondering.</b> The first half removes the &ldquo;downloaded from the internet&rdquo; flag from Clipr and nothing else; <code>&amp;&amp;</code> means the second half only runs if that worked, and it launches the app.</p>
               <p><b>Right-click &rarr; Open no longer works.</b> On macOS Sequoia (15) and later that shortcut no longer exists. Apple removed it, which is why the line above is the step that works.</p>
               <details class="more"><summary><svg class="chev" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"></path></svg><b>I would rather not use Terminal</b></summary>
@@ -316,26 +385,29 @@
         </section>
 
         <section class="final">
-          <div class="final-card">
-            <h2>Get every campaign's clips done sooner</h2>
-            <p>Free, including for paid client work. Runs on your computer; nothing is uploaded.</p>
-            <div class="cta-row"><a class="btn-ice dl" id="dl-final" href="https://github.com/xxxxxLiam/clipr/releases/latest"><span class="glyph" aria-hidden="true"></span><span class="dl-what">Download Clipr</span></a></div>
-        <p class="also">Free &middot; <span class="dl-spec">macOS, Windows and Linux</span><span class="dl-others"> &middot; also for <a href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-Windows-x64-Setup.exe">Windows</a> and <a href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-Linux-x64.AppImage">Linux</a></span></p>
-            <div class="sunrise small" aria-hidden="true"></div>
+          <div class="final-card grain grain-frost-up">
+            <span class="appicon" aria-hidden="true"><svg width="40" height="40" viewBox="0 0 64 64"><use href="#mflat"/></svg></span>
+            <h2 class="big">Get every campaign's clips done sooner</h2>
+            <p>Free, including paid client work. Runs on your computer; nothing is uploaded.</p>
+            <div class="cta-row"><a class="btn-dark dl" id="dl-final" href="https://github.com/xxxxxLiam/clipr/releases/latest"><span class="glyph" aria-hidden="true"></span><span class="dl-what">Download Clipr</span></a></div>
+        <p class="also"><span class="dl-others">Also for <a href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-Windows-x64-Setup.exe">Windows</a> and <a href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-Linux-x64.AppImage">Linux</a></span></p>
+            <p class="phone-note" hidden><b>Clipr is a desktop app. Open this page on your computer</b> to get it.</p>
+            <div class="ticker" aria-hidden="true"><div class="track"><span><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>No ads</span><span><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>No account</span><span><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>Nothing uploaded</span><span><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>Free for client work</span><span><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>macOS and Windows</span><span><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>No ads</span><span><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>No account</span><span><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>Nothing uploaded</span><span><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>Free for client work</span><span><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>macOS and Windows</span></div></div>
           </div>
-          <div class="ticker" aria-hidden="true"><div class="track"><span><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="#5FD8CA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>No ads</span><span><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="#5FD8CA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>No account</span><span><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="#5FD8CA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Nothing uploaded</span><span><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="#5FD8CA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Free for client work</span><span><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="#5FD8CA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>macOS and Windows</span><span><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="#5FD8CA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>No ads</span><span><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="#5FD8CA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>No account</span><span><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="#5FD8CA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Nothing uploaded</span><span><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="#5FD8CA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Free for client work</span><span><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="#5FD8CA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>macOS and Windows</span></div></div>
         </section>
       </main>
 
-      <footer>
-        <a href="#top" class="lockup-link"><span class="lockup" role="img" aria-label="Clipr"><svg width="20.7" height="20.7" viewBox="0 0 64 64" aria-hidden="true"><use href="#mflat"/></svg><span class="word" style="font-size:18px" aria-hidden="true">Clip<svg class="cutr" viewBox="0 0 66.2 100" aria-hidden="true"><polygon points="0,0 66.2,0 66.2,22 0,50.4" fill="#5FD8CA"/><rect x="0" y="60.7" width="25" height="39.3" fill="#F2F5F6"/></svg></span></span></a>
-        <nav aria-label="Links">
-          <a href="https://github.com/xxxxxLiam/clipr/releases">Releases</a>
-          <a href="https://github.com/xxxxxLiam/clipr/blob/main/LICENSE">Licence</a>
-          <a href="https://github.com/xxxxxLiam/clipr/blob/main/THIRD-PARTY-NOTICES.md">Third-party notices</a>
-        </nav>
-        <p class="report">Report a problem: <b>Help &rarr; Report a problem</b> in Clipr</p>
-        <small>Free to use, including for paid client work. Copying, redistributing, forking or reselling the application is not permitted. Clipr ships alongside ffmpeg, which is licensed under the GPL v3 and carries its own terms.</small>
+      <footer class="big-foot">
+        <div class="foot-top">
+          <div class="foot-brand"><a href="#top" class="lockup-link"><span class="lockup" role="img" aria-label="Clipr"><svg width="32.2" height="32.2" viewBox="0 0 64 64" aria-hidden="true"><use href="#mflat"/></svg><span class="word" style="font-size:28px" aria-hidden="true">Clip<svg class="cutr" viewBox="0 0 66.2 100" aria-hidden="true"><polygon points="0,0 66.2,0 66.2,22 0,50.4" fill="#5FD8CA"/><rect x="0" y="60.7" width="25" height="39.3" fill="#F2F5F6"/></svg></span></span></a><p>Only the seconds you need.</p></div>
+          <div class="cols">
+            <div><h2 class="h5">Download</h2><a class="f-mac" href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-macOS-AppleSilicon.dmg">macOS</a><a class="f-win" href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-Windows-x64-Setup.exe">Windows</a><a class="f-linux" href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-Linux-x64.AppImage">Linux</a><a href="https://github.com/xxxxxLiam/clipr/releases">All releases</a></div>
+            <div><h2 class="h5">Help</h2><a href="#how">How it works</a><a href="#install">Install help</a><p class="report-row">Report a problem: <b>Help &rarr; Report a problem</b> in Clipr</p></div>
+            <div><h2 class="h5">Legal</h2><a href="https://github.com/xxxxxLiam/clipr/blob/main/LICENSE">Licence</a><a href="https://github.com/xxxxxLiam/clipr/blob/main/THIRD-PARTY-NOTICES.md">Third-party notices</a><a href="https://github.com/xxxxxLiam/clipr/blob/main/README.md">Privacy: nothing is uploaded</a></div>
+          </div>
+          <small>Free to use, including for paid client work. Copying, redistributing, forking or reselling the application is not permitted. Clipr ships alongside ffmpeg, which is licensed under the GPL v3 and carries its own terms.</small>
+        </div>
+        <div class="foot-bottom"><span>&copy; 2026 Clipr<span id="ver-foot" hidden></span></span><span>Proudly developed by <b>IDK Solutions</b></span></div>
       </footer>
     </div>
 
@@ -366,7 +438,10 @@
         }
         var found = detect();
         document.documentElement.className += " js";
-        if (phone) document.getElementById("desktop-note").hidden = false;
+        if (phone) {
+          document.querySelectorAll(".phone-note").forEach(function (n) { n.hidden = false; });
+          document.documentElement.className += " phone";
+        }
 
         document.querySelectorAll(".dl").forEach(function (a) {
           if (!found) return;
@@ -378,13 +453,36 @@
           if (w) w.textContent = o.what;
         });
         document.querySelectorAll(".also").forEach(function (p) {
+          if (phone) {
+            p.querySelector(".dl-others").innerHTML = "Installers: " + order.map(function (k) {
+              return '<a href="' + BASE + OS[k].asset + '">' + OS[k].short + "</a>";
+            }).join(" &middot; ");
+            return;
+          }
           if (!found) return;
-          p.querySelector(".dl-spec").textContent = OS[found].spec;
           var others = p.querySelector(".dl-others");
-          others.innerHTML = " &middot; also for " + order.filter(function (k) { return k !== found; }).map(function (k) {
+          others.innerHTML = "Also for " + order.filter(function (k) { return k !== found; }).map(function (k) {
             return '<a href="' + BASE + OS[k].asset + '">' + OS[k].short + "</a>";
           }).join(" and ");
         });
+
+        // Latest version and date, from the public release. The page works without it.
+        try {
+          fetch("https://api.github.com/repos/xxxxxLiam/clipr/releases/latest", { headers: { Accept: "application/vnd.github+json" } })
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .then(function (j) {
+              if (!j || !j.tag_name) return;
+              var v = String(j.tag_name).replace(/^v/, "");
+              var d = j.published_at ? new Date(j.published_at).toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : "";
+              var ver = document.getElementById("ver");
+              ver.textContent = "Version " + v + (d ? " \u00b7 updated " + d : "");
+              ver.hidden = false;
+              var f = document.getElementById("ver-foot");
+              f.textContent = " \u00b7 Version " + v;
+              f.hidden = false;
+            })
+            .catch(function () {});
+        } catch (e) {}
 
         // Install tabs: open on the detected computer; arrow keys move between tabs.
         function select(key, focus) {
