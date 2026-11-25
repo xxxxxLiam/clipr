@@ -392,6 +392,20 @@ for (const [n, p] of Object.entries(NAMES)) check(`run 3: ${n} page exists`, !!p
       if (w >= 1000) check("run 6 reference: " + vt + " at " + w + "px the split sections put the copy beside the screenshot", info.splits.every((x) => x.sideBySide), JSON.stringify(info.splits));
       else check("run 6 reference: " + vt + " at " + w + "px the split sections stack with the copy above the screenshot", await pv.evaluate(() => [...document.querySelectorAll(".wn-split")].every((x) => x.querySelector(".wn-copy").getBoundingClientRect().bottom <= x.querySelector(".wn-win").getBoundingClientRect().top + 1 || x.classList.contains("flip"))));
       check("run 6 reference: " + vt + " screenshots add no sideways scroll at " + w + "px", (await pv.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)) <= 0);
+      // Liam, 25 Nov: glows are never cut off, are not behind every block, and are not all the same colour.
+      const gl = await pv.evaluate(() => {
+        const st = [...document.querySelectorAll(".wn-stage")];
+        const bg = st.map((s) => getComputedStyle(s, "::before").backgroundImage);
+        // The framed page column clips what overflows it, so a glow is not cut as long as its whole box sits inside that frame.
+        const fr = document.querySelector(".frame").getBoundingClientRect();
+        const clipped = st.some((s) => {
+          for (let e = s.parentElement; e && !e.classList.contains("frame") && e !== document.documentElement; e = e.parentElement) { const c = getComputedStyle(e); if (/hidden|clip|auto|scroll/.test(c.overflowX + c.overflowY)) return true; }
+          const r = s.getBoundingClientRect(), b = getComputedStyle(s, "::before"), px = (v) => parseFloat(v) || 0;
+          return r.left + px(b.left) < fr.left || r.right - px(b.right) > fr.right;
+        });
+        return { n: st.length, secs: document.querySelectorAll(".wn-sec").length, fades: bg.every((b) => /radial-gradient\(closest-side/.test(b)), colours: new Set(bg.map((b) => (b.match(/rgba\((\d+, \d+, \d+)/) || [])[1])).size, clipped };
+      });
+      if (vt === "v19.2.1") check("run 11 glow: at " + w + "px every glow fades out inside its box and no parent clips it, glow is behind only some blocks, and the colours differ", gl.fades && !gl.clipped && gl.n >= 2 && gl.n < gl.secs && gl.colours >= 2, JSON.stringify(gl));
       if (vt === "v19.2.1" && w === 1440) { await pv.screenshot({ path: "/tmp/claude-0/wn-v19.png", fullPage: true }); }
       await cv.close();
     }
@@ -474,7 +488,8 @@ for (const [n, p] of Object.entries(NAMES)) check(`run 3: ${n} page exists`, !!p
       }
       if (hl[0] && hl[0].glow === false) bad.push("hero has glow");
       if (hl[1] && !hl[2]) bad.push("third highlight");
-      if (hl[2] && hl[2].glow !== true) bad.push("flipped split has glow");
+      if (hl[2] && !hl[2].glow) bad.push("flipped split has glow");
+      if (hl[1] && hl[1].glow) bad.push("the middle split has no glow (glow is here and there)");
       for (const x of cd) {
         if (!x.caption || !x.alt || x.alt.length < 20 || !x.title) bad.push("card parts on " + x.title);
         if (!x.shot || !fs.existsSync(path.join(ROOT, "docs/whats-new", x.shot || "none"))) bad.push("shot file for card " + x.title);
@@ -483,7 +498,7 @@ for (const [n, p] of Object.entries(NAMES)) check(`run 3: ${n} page exists`, !!p
     };
     const refProbs = [];
     for (const [v, n] of Object.entries(notes)) if (parseInt(v, 10) >= 19 && !(v === "19.0.0")) refProbs.push(...refSpec(n).map((m) => v + ": " + m));
-    check("run 9 reference spec: every entry from 19.1.0 has a hero, a split and a flipped split with glow, two cards, eyebrows, captions, alt text and real screenshot files", refProbs.length === 0, refProbs.join("; "));
+    check("run 9 reference spec: every entry from 19.1.0 has a hero, a plain split and a flipped split with glow, two cards, eyebrows, captions, alt text and real screenshot files", refProbs.length === 0, refProbs.join("; "));
     const broken = JSON.parse(JSON.stringify(notes["19.2"]));
     broken.highlights[1].layout = "split-flip"; broken.cards.pop();
     check("run 9 negative control: an entry that drops the hero/split/flip order or a card fails the reference spec", refSpec(broken).length >= 2);

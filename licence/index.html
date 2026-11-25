@@ -452,7 +452,12 @@
       .wn-win img { display: block; width: 100%; height: auto; }
       .wn-cap { margin: 16px 0 0; font-size: 12px; line-height: 1.5; color: var(--fg-dim); }
       .wn-stage { position: relative; margin-top: 32px; }
-      .wn-stage::before { content: ""; position: absolute; inset: -64px -48px; z-index: 0; pointer-events: none; background: radial-gradient(55% 55% at 50% 50%, rgba(95, 216, 202, 0.24), rgba(184, 228, 234, 0.08) 60%, rgba(184, 228, 234, 0) 100%); }
+      .wn-stage { --glow: 95, 216, 202; --glow-soft: 184, 228, 234; }
+      .wn-stage.g-frost { --glow: 184, 228, 234; --glow-soft: 184, 228, 234; }
+      .wn-stage.g-violet { --glow: 150, 130, 255; --glow-soft: 190, 176, 255; }
+      .wn-stage.g-amber { --glow: 255, 176, 102; --glow-soft: 255, 214, 170; }
+      /* closest-side ends the fade exactly at the box edge, so the glow never shows a cut-off edge; the box reaches well past the window. */
+      .wn-stage::before { content: ""; position: absolute; inset: -88px -72px; z-index: 0; pointer-events: none; background: radial-gradient(closest-side, rgba(var(--glow), 0.24), rgba(var(--glow-soft), 0.08) 62%, rgba(var(--glow-soft), 0) 100%); }
       .wn-split { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 48px; align-items: center; }
       .wn-split.flip { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
       .wn-split .wn-win { width: 100%; justify-self: end; }

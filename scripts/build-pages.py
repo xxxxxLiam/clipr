@@ -138,7 +138,12 @@ EXTRA_CSS = """
       .wn-win img { display: block; width: 100%; height: auto; }
       .wn-cap { margin: 16px 0 0; font-size: 12px; line-height: 1.5; color: var(--fg-dim); }
       .wn-stage { position: relative; margin-top: 32px; }
-      .wn-stage::before { content: ""; position: absolute; inset: -64px -48px; z-index: 0; pointer-events: none; background: radial-gradient(55% 55% at 50% 50%, rgba(95, 216, 202, 0.24), rgba(184, 228, 234, 0.08) 60%, rgba(184, 228, 234, 0) 100%); }
+      .wn-stage { --glow: 95, 216, 202; --glow-soft: 184, 228, 234; }
+      .wn-stage.g-frost { --glow: 184, 228, 234; --glow-soft: 184, 228, 234; }
+      .wn-stage.g-violet { --glow: 150, 130, 255; --glow-soft: 190, 176, 255; }
+      .wn-stage.g-amber { --glow: 255, 176, 102; --glow-soft: 255, 214, 170; }
+      /* closest-side ends the fade exactly at the box edge, so the glow never shows a cut-off edge; the box reaches well past the window. */
+      .wn-stage::before { content: ""; position: absolute; inset: -88px -72px; z-index: 0; pointer-events: none; background: radial-gradient(closest-side, rgba(var(--glow), 0.24), rgba(var(--glow-soft), 0.08) 62%, rgba(var(--glow-soft), 0) 100%); }
       .wn-split { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 48px; align-items: center; }
       .wn-split.flip { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
       .wn-split .wn-win { width: 100%; justify-self: end; }
@@ -391,6 +396,8 @@ JS_WHATS_NEW = r"""
           });
           wrap.appendChild(g); return wrap;
         }
+        // A glow is true (Ice) or a colour name: ice, frost, violet or amber. The glow is used here and there, not behind every block.
+        function glowOf(g) { return /^(frost|violet|amber)$/.test(g) ? g : "ice"; }
         function latest(r) {
           var e = entry(r), c = el("article", { "class": "wn-latest" });
           var dt = el("time", { "class": "wn-date", datetime: r.published_at || "" });
@@ -416,10 +423,10 @@ JS_WHATS_NEW = r"""
               var hd = el("div", { "class": "wn-sec-head" }), h3 = el("h3", {}, x.title);
               hd.appendChild(el("span", { "class": "wn-num" }, String(i + 1))); hd.appendChild(h3); hd.appendChild(el("span", { "class": "chip" }, x.tag));
               copy.appendChild(hd); copy.appendChild(el("p", {}, x.text));
-              if (split) { if (x.caption) copy.appendChild(el("p", { "class": "wn-cap" }, x.caption)); d.appendChild(copy); var vw = win(x.shot, x.alt, x.w, x.h); if (x.glow) { var gs = el("div", { "class": "wn-stage wn-stage-split" }); gs.appendChild(vw); vw = gs; } d.appendChild(vw); }
+              if (split) { if (x.caption) copy.appendChild(el("p", { "class": "wn-cap" }, x.caption)); d.appendChild(copy); var vw = win(x.shot, x.alt, x.w, x.h); if (x.glow) { var gs = el("div", { "class": "wn-stage wn-stage-split g-" + glowOf(x.glow) }); gs.appendChild(vw); vw = gs; } d.appendChild(vw); }
               else {
                 d.appendChild(copy);
-                if (x.shot) { var st = el("div", { "class": "wn-stage" }); st.appendChild(win(x.shot, x.alt, x.w, x.h)); d.appendChild(st); if (x.caption) d.appendChild(el("p", { "class": "wn-cap" }, x.caption)); }
+                if (x.shot) { var st = el("div", { "class": "wn-stage g-" + glowOf(x.glow === false ? "ice" : x.glow) }); st.appendChild(win(x.shot, x.alt, x.w, x.h)); d.appendChild(st); if (x.caption) d.appendChild(el("p", { "class": "wn-cap" }, x.caption)); }
               }
               secs.appendChild(d);
             });

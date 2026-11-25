@@ -24,8 +24,7 @@
         "h": 210,
         "alt": "A section dragged over another one, with a light outline around both, grips on the edges and the note Joins when you let go.",
         "text": "Drag a range with the Pointer and a small pill shows its exact start and end times. Drop it on another section, or draw or resize a range until it touches one, and a light outline shows the result: they join into one. The edges have grips with hover and press looks.",
-        "caption": "Joins when you let go.",
-        "glow": true
+        "caption": "Joins when you let go."
       },
       {
         "tag": "New",
@@ -38,7 +37,7 @@
         "alt": "The timeline and footer, with the In and Out times as two fields beside the clip length and the new tool icons above the timeline.",
         "text": "In and Out in the footer are now fields. Type or paste a time like 1:12:04 and the range moves to it. The tools above the timeline have new icons: the Pointer faces left, Range reads as a range, and Hand stays open.",
         "caption": "In and Out are fields.",
-        "glow": true
+        "glow": "violet"
       }
     ],
     "cards": [
@@ -80,6 +79,11 @@
         "text": "Each clip gets one Final Cut project with all its languages inside."
       },
       {
+        "group": "New",
+        "title": "Twitch and Kick",
+        "text": "Paste a Twitch or Kick video or clip link and cut it like a YouTube one. These have no transcript."
+      },
+      {
         "group": "Improved",
         "title": "Preview",
         "text": "Preview plays only the range you picked, not the whole video."
@@ -113,6 +117,16 @@
         "group": "Improved",
         "title": "Pasted links",
         "text": "A pasted link opens in the background, and a failed open says why."
+      },
+      {
+        "group": "Improved",
+        "title": "DaVinci Resolve",
+        "text": "Resolve now gets the same timeline file as Final Cut."
+      },
+      {
+        "group": "Improved",
+        "title": "Premiere Pro",
+        "text": "Premiere Pro shows as Coming soon in the Clip menu and can't be picked yet."
       },
       {
         "group": "Fixed",
@@ -164,7 +178,7 @@
         "alt": "The Sign in for 1080p page inside the Settings drawer, with three short steps.",
         "text": "Sign in for 1080p now lives in Settings, behind a gear icon, along with each campaign's export settings.",
         "caption": "Settings, Sign in for 1080p.",
-        "glow": true
+        "glow": "amber"
       }
     ],
     "cards": [
@@ -279,7 +293,8 @@
         "text": "No folders are made in Downloads until a clip is saved, and the prompt asks only once per session.",
         "caption": "Your campaigns, bank and history go into a backup first.",
         "w": 600,
-        "h": 440
+        "h": 440,
+        "glow": "frost"
       }
     ],
     "changes": [
