@@ -275,7 +275,7 @@ JS_RELEASES = r"""
         var ASSETS = [["macOS", "Clipr-macOS-AppleSilicon.dmg"], ["Windows", "Clipr-Windows-x64-Setup.exe"], ["Linux", "Clipr-Linux-x64.AppImage"]];
         var DEV = /^(refactor|chore|test|docs|ci|build)\b|^fix\(ci\)/i;
         function clean(body) {
-          return String(body || "").split("\n").map(function (l) { return l.replace(/^\s*[-*]\s*/, "").replace(/\s*\[skip release\]\s*/gi, "").trim(); })
+          return String(body || "").split("\n").map(function (l) { return l.replace(/^\s*[-*]\s*/, "").replace(/\s*\[skip release\]\s*/gi, "").replace(/\s*\((?:#\d+|[A-Z]\d?-\d+(?:, [A-Z]\d?-\d+)*)\)/g, "").replace(/^Renderer:\s*/i, "").trim(); })
             .filter(function (l) { return l && !/^Release v?\d/i.test(l) && !DEV.test(l); });
         }
         function el(tag, attrs, text) {
@@ -331,7 +331,7 @@ JS_WHATS_NEW = r"""
         var box = document.getElementById("releases");
         function el(tag, attrs, text) { var e = document.createElement(tag); Object.keys(attrs || {}).forEach(function (k) { e.setAttribute(k, attrs[k]); }); if (text) e.textContent = text; return e; }
         function clean(body) {
-          return String(body || "").split("\n").map(function (l) { return l.replace(/^\s*[-*]\s*/, "").replace(/\s*\[skip release\]\s*/gi, "").trim(); })
+          return String(body || "").split("\n").map(function (l) { return l.replace(/^\s*[-*]\s*/, "").replace(/\s*\[skip release\]\s*/gi, "").replace(/\s*\((?:#\d+|[A-Z]\d?-\d+(?:, [A-Z]\d?-\d+)*)\)/g, "").replace(/^Renderer:\s*/i, "").trim(); })
             .filter(function (l) { return l && !/^Release v?\d/i.test(l) && !DEV.test(l); });
         }
         function entry(r) {
