@@ -1,4 +1,120 @@
 {
+  "19.1.0": {
+    "intro": "Paste a link right in the top bar, three-dot menus on every row, and a lot of timeline polish.",
+    "highlights": [
+      {
+        "tag": "New",
+        "title": "Paste a link in the top bar",
+        "eyebrow": "Top bar",
+        "layout": "hero",
+        "shot": "v191-app.webp",
+        "w": 1360,
+        "h": 820,
+        "alt": "The Clipr window with a YouTube link typed into the field in the middle of the top bar.",
+        "text": "The middle of the top bar is now a link field. Click it, paste a link and press Enter: the video opens and is added to your list. Esc puts the title back.",
+        "caption": "The real app with sample data."
+      },
+      {
+        "tag": "New",
+        "title": "Three-dot menus on every row",
+        "eyebrow": "Videos list",
+        "layout": "split",
+        "shot": "v191-row-menu.webp",
+        "w": 300,
+        "h": 380,
+        "alt": "A video row's menu open, showing Mark done, Open on YouTube and Remove video.",
+        "text": "Each video row has a ⋯ button that is always there. It holds Mark done, Open on YouTube and Remove video. Videos search is now only for searching your own list.",
+        "caption": "Sample data."
+      },
+      {
+        "tag": "Improved",
+        "title": "Sign-in moves to Settings",
+        "eyebrow": "Settings",
+        "layout": "split-flip",
+        "shot": "v191-sign-in.webp",
+        "w": 440,
+        "h": 420,
+        "alt": "The Sign in for 1080p page inside the Settings drawer, with three short steps.",
+        "text": "Sign in for 1080p now lives in Settings, behind a gear icon, along with each campaign's export settings.",
+        "caption": "Settings, Sign in for 1080p.",
+        "glow": true
+      }
+    ],
+    "cards": [
+      {
+        "tag": "Improved",
+        "title": "Timeline",
+        "shot": "v191-timeline.webp",
+        "w": 704,
+        "h": 250,
+        "alt": "The timeline with a selected range and the clip's name on its bar.",
+        "text": "Audio lanes can be turned on and off, and a line on the range bar shows where a clip gets too long. Space plays or pauses from anywhere, and joined clips skip the gaps.",
+        "caption": "Sample data."
+      },
+      {
+        "tag": "New",
+        "title": "Export and History rows",
+        "shot": "v191-export-rows.webp",
+        "w": 300,
+        "h": 182,
+        "alt": "Export list rows, each with a three-dot button on the right.",
+        "text": "The same always-there ⋯ menu is on every Export and History row.",
+        "caption": "Sample data."
+      }
+    ],
+    "changes": [
+      {
+        "group": "New",
+        "title": "Walkthrough",
+        "text": "Tips dim everything except the control they point at."
+      },
+      {
+        "group": "New",
+        "title": "5 seconds either side",
+        "text": "Clipr always adds 5 seconds at both ends of a clip, so the Extra seconds choice is gone."
+      },
+      {
+        "group": "Improved",
+        "title": "Transcripts",
+        "text": "Language matching is wider, and a failed fetch now says so instead of staying empty."
+      },
+      {
+        "group": "Improved",
+        "title": "Timeline room",
+        "text": "There is extra room at the end, and you can zoom out to a third of the lane."
+      },
+      {
+        "group": "Improved",
+        "title": "Settings",
+        "text": "The campaign folder picks the campaign you are editing, and Clips folder Change is inline."
+      },
+      {
+        "group": "Improved",
+        "title": "Editor files",
+        "text": "Files for your editor keep the clip's name and never overwrite an earlier file."
+      },
+      {
+        "group": "Fixed",
+        "title": "Interrupted cuts",
+        "text": "An interrupted cut's range comes back, and Stop works while the download is starting."
+      },
+      {
+        "group": "Fixed",
+        "title": "Ctrl+Enter",
+        "text": "The walkthrough card no longer blocks Ctrl+Enter."
+      },
+      {
+        "group": "Fixed",
+        "title": "Logo glow",
+        "text": "The glow behind the logo on the start screen is no longer cropped."
+      },
+      {
+        "group": "Fixed",
+        "title": "Final Cut",
+        "text": "Saved frame rates follow the video, and an older look gets its size when chosen again."
+      }
+    ]
+  },
   "19.0.0": {
     "intro": "A quiet download-progress pill for updates, safer end points, and a round of timeline polish.",
     "highlights": [
@@ -10,7 +126,9 @@
         "shot": "v19-app.webp",
         "alt": "The Clipr window with a quiet Downloading update 42% pill in the top bar.",
         "text": "While an update downloads, a small pill in the top bar shows how far along it is. Nothing to click and nothing in the way.",
-        "caption": "The real app with sample data. The pill sits beside the layout and help buttons."
+        "caption": "The real app with sample data. The pill sits beside the layout and help buttons.",
+        "w": 1360,
+        "h": 820
       },
       {
         "tag": "Improved",
@@ -20,7 +138,9 @@
         "shot": "v19-bank-row.webp",
         "alt": "An Export row reading Ran past the end; stops at 1:13:10.",
         "text": "If an out point lands beyond the end of the video, the clip stops at the end and its row says so in one dim line. An in point past the end is refused.",
-        "caption": "The line under the clip's times."
+        "caption": "The line under the clip's times.",
+        "w": 300,
+        "h": 192
       },
       {
         "tag": "Fixed",
@@ -30,7 +150,9 @@
         "shot": "v19-start-fresh.webp",
         "alt": "The Clipr has changed a lot dialog with Start fresh and Keep my data buttons.",
         "text": "No folders are made in Downloads until a clip is saved, and the prompt asks only once per session.",
-        "caption": "Your campaigns, bank and history go into a backup first."
+        "caption": "Your campaigns, bank and history go into a backup first.",
+        "w": 600,
+        "h": 440
       }
     ],
     "changes": [
@@ -62,7 +184,9 @@
         "shot": "v19-timeline.webp",
         "alt": "The timeline with a range selected and the clip name on its bar.",
         "text": "Zoom keeps its centre and follows the pointer. Both ends of a range move together, and clip names show on the bars.",
-        "caption": "Sample data."
+        "caption": "Sample data.",
+        "w": 704,
+        "h": 250
       },
       {
         "tag": "New",
@@ -70,7 +194,9 @@
         "shot": "v19-start-screen.webp",
         "alt": "The Clipr start screen with a link field and a Paste button.",
         "text": "The start and crash screens can be dragged by a strip along the top edge.",
-        "caption": "The start screen."
+        "caption": "The start screen.",
+        "w": 760,
+        "h": 420
       }
     ]
   },
