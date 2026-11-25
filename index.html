@@ -3,8 +3,22 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Download Clipr</title>
+    <title>Clipr: download just the part of a video you need</title>
     <meta name="description" content="Clipr downloads just the part of a YouTube video you pick, ready to edit. Downloads for macOS, Windows and Linux." />
+    <link rel="canonical" href="https://xxxxxliam.github.io/clipr/" />
+    <meta name="theme-color" content="#0b0b0c" />
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Clipr" />
+    <meta property="og:title" content="Clipr: download just the part of a video you need" />
+    <meta property="og:description" content="Find the moment in the transcript, mark in and out, and download only that. Free, runs on your computer." />
+    <meta property="og:url" content="https://xxxxxliam.github.io/clipr/" />
+    <meta property="og:image" content="https://xxxxxliam.github.io/clipr/docs/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="The Clipr workspace with a clip marked on the timeline." />
+    <meta name="twitter:card" content="summary_large_image" />
     <style>
       /* Tokens are the app's own, so the page and the product look like one
          thing. Do not introduce values outside this block.
@@ -142,16 +156,6 @@
       .row-body > p { color: var(--fg-dim); max-width: 64ch; }
       .row-body > p + p { margin-top: 16px; }
       .row-body b { color: var(--fg); }
-
-      /* the moments panel: crop of the real app, so it shows the job */
-      .crop { aspect-ratio: 805 / 240; overflow: hidden; position: relative; }
-      .crop img {
-        position: absolute;
-        width: 178.9%;
-        max-width: none;
-        left: -42%;
-        top: -254.2%;
-      }
 
       /* ---- setup: one card open for your computer, the others a tap away */
       .cards { display: flex; flex-direction: column; gap: 8px; }
@@ -321,8 +325,8 @@
           <h1>Download just the part of a video you need.</h1>
           <p class="lede">
             Paste a YouTube link, find the moment in the transcript, mark in and
-            out, and download only that. Edit it in Final Cut, CapCut or
-            Premiere (coming).
+            out, and download only that. Then open it in Final Cut Pro, Premiere Pro,
+            DaVinci Resolve or CapCut, from the Clip menu.
           </p>
 
           <a class="primary" id="primary" href="https://github.com/xxxxxLiam/clipr/releases/latest">
@@ -336,13 +340,14 @@
             </span>
           </a>
           <div class="others" id="others"></div>
+          <p class="free" id="desktop-note" hidden><b>Clipr is a desktop app. Open this page on your computer</b> to install it. The links above are 230 to 300 MB installers, so save them for the computer.</p>
           <p class="free">Free, including for paid client work. Runs on your computer; nothing is uploaded.</p>
         </div>
 
         <figure class="shot">
           <img src="docs/screenshot.png" width="1440" height="900"
-               alt="The Clipr workspace: a searchable transcript on the left with the current line highlighted, the video in the middle with in and out points set below it, and the list of saved clips on the right." />
-          <figcaption>Search the transcript, set in and out, cut. Only that section downloads.</figcaption>
+               alt="The Clipr workspace: your videos on the left, the video in the middle with a timeline below it showing a 42-second range marked from 1:12:04 to 1:12:46, a Clip button with an editor menu beside it, and the clips waiting to be made on the right." />
+          <figcaption>Mark the range on the timeline, press Clip. Only that section downloads.</figcaption>
         </figure>
       </section>
 
@@ -353,10 +358,8 @@
         </div>
         <div class="row-body">
           <figure class="shot">
-            <div class="crop">
-              <img src="docs/segments.png" width="1440" height="900"
-                   alt="Two moments listed in order under the video, numbered 1 and 2, each with its start and end time. Clipr warns that the second overlaps a range already published from this video, and offers Add segment and Cut as one file." />
-            </div>
+            <img src="docs/segments.png" width="1440" height="200"
+                 alt="The timeline with two marked moments, 1 (18 seconds) and 2 (16 seconds), roughly nine minutes apart. The gap is folded away, and one clip called Hook Question shows 0:34 in total, ready for the Clip button." />
           </figure>
         </div>
       </section>
@@ -372,10 +375,16 @@
               <summary>
                 <span class="os" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M11.182.008C11.148-.03 9.923.023 8.857 1.18c-1.066 1.156-.902 2.482-.878 2.516s1.52.087 2.475-1.258.762-2.391.728-2.43m3.314 11.733c-.048-.096-2.325-1.234-2.113-3.422s1.675-2.789 1.698-2.854-.597-.79-1.254-1.157a3.7 3.7 0 0 0-1.563-.434c-.108-.003-.483-.095-1.254.116-.508.139-1.653.589-1.968.607-.316.018-1.256-.522-2.267-.665-.647-.125-1.333.131-1.824.328-.49.196-1.422.754-2.074 2.237-.652 1.482-.311 3.83-.067 4.56s.625 1.924 1.273 2.796c.576.984 1.34 1.667 1.659 1.899s1.219.386 1.843.067c.502-.308 1.408-.485 1.766-.472.357.013 1.061.154 1.782.539.571.197 1.111.115 1.652-.105.541-.221 1.324-1.059 2.238-2.758q.52-1.185.473-1.282"></path><path d="M11.182.008C11.148-.03 9.923.023 8.857 1.18c-1.066 1.156-.902 2.482-.878 2.516s1.52.087 2.475-1.258.762-2.391.728-2.43m3.314 11.733c-.048-.096-2.325-1.234-2.113-3.422s1.675-2.789 1.698-2.854-.597-.79-1.254-1.157a3.7 3.7 0 0 0-1.563-.434c-.108-.003-.483-.095-1.254.116-.508.139-1.653.589-1.968.607-.316.018-1.256-.522-2.267-.665-.647-.125-1.333.131-1.824.328-.49.196-1.422.754-2.074 2.237-.652 1.482-.311 3.83-.067 4.56s.625 1.924 1.273 2.796c.576.984 1.34 1.667 1.659 1.899s1.219.386 1.843.067c.502-.308 1.408-.485 1.766-.472.357.013 1.061.154 1.782.539.571.197 1.111.115 1.652-.105.541-.221 1.324-1.059 2.238-2.758q.52-1.185.473-1.282"></path></svg></span>
                 <h3 class="name">macOS</h3>
-                <span class="hint">Drag to Applications, paste one line</span>
+                <span class="hint">Apple Silicon (M1 and newer)</span>
                 <svg class="chev" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"></path></svg>
               </summary>
               <div class="card-body">
+                <p>
+                  <b>This download is for Apple Silicon Macs (M1 and newer).</b> It
+                  will not run on an Intel Mac. To check, choose the Apple menu &rarr;
+                  <b>About This Mac</b>: it says &ldquo;Chip: Apple M&hellip;&rdquo; on a
+                  Mac that works, or &ldquo;Processor: Intel&rdquo; on one that does not.
+                </p>
                 <ol class="steps">
                   <li>Open the <b>.dmg</b> and drag <b>Clipr</b> into Applications.</li>
                   <li>
@@ -463,10 +472,10 @@
                       instead, then carry on from step 3:
                     </p>
                     <div class="copy">
-                      <code>Unblock-File -Path "$env:USERPROFILE\Downloads\Clipr-Windows-x64-Setup.exe"</code>
+                      <code>Get-ChildItem "$env:USERPROFILE\Downloads\Clipr-Windows-x64-Setup*.exe" | Unblock-File</code>
                       <button type="button" data-copy>Copy</button>
                     </div>
-                    <p>Adjust the path if you saved the file somewhere other than Downloads.</p>
+                    <p>The <code>*</code> also catches a copy your browser renamed, like <i>Setup (1).exe</i>. Change <code>Downloads</code> if you saved the file somewhere else.</p>
                   </div>
                 </details>
                 <div class="note">
@@ -518,8 +527,10 @@
             uploaded.
           </p>
           <p>
-            You can skip it and work at 360p &mdash; the header always tells you which
-            you are getting, and you can sign in later from the status chip.
+            You can skip it and work at 360p. The bar at the bottom of the window says
+            &ldquo;at 360p&rdquo; while you are, and its <b>Sign in for 1080p</b> button
+            opens the steps whenever you are ready. There is no quality setting to
+            pick: clips come down at 1080p, or the highest the video has.
           </p>
         </div>
       </section>
@@ -529,19 +540,18 @@
           <h2>Something went wrong?</h2>
         </div>
         <div class="row-body">
-          <a class="btn" href="https://github.com/xxxxxLiam/clipr/issues/new/choose">Report a problem</a>
           <p>
-            It opens a short form with the questions already in it. You don&rsquo;t
-            need to be technical: <i>&ldquo;it got to 90% and said export failed&rdquo;</i> is
-            a genuinely useful report.
+            In Clipr, open <b>Help</b> (the <b>?</b> at the top right) and choose
+            <b>Report a problem</b>. Write what you were doing in plain words:
+            <i>&ldquo;it got to 90% and said export failed&rdquo;</i> is a genuinely
+            useful report. Then press <b>Send report</b>. You do not need an account
+            of any kind.
           </p>
           <p>
-            If Clipr showed a <b>Copy diagnostics</b> button next to the error,
-            click it and paste the result into the form. That one paste is worth
-            more than everything else combined &mdash; it records the exact version and
-            the exact point things failed. Cookies, sign-in tokens and your
-            personal file paths are stripped out before it copies, so it is safe
-            to post in public.
+            Clipr adds the error, the version numbers and a cleaned-up log. Nothing
+            is sent unless you press <b>Send report</b>. If a crash screen appears,
+            it has the same <b>Send report</b> button, and <b>Copy details</b> if you
+            would rather pass the details on yourself.
           </p>
         </div>
       </section>
@@ -589,6 +599,9 @@
         }
 
         var found = detect();
+        if (/android|iphone|ipad|ipod/i.test((navigator.userAgent || "") + " " + (navigator.platform || ""))) {
+          document.getElementById("desktop-note").hidden = false;
+        }
         var order = ["mac", "win", "linux"];
         var primary = document.getElementById("primary");
 
