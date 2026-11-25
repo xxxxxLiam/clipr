@@ -73,10 +73,71 @@ check("run 2 G2-7: hero image served as WebP under 300 KB with PNG fallback", /<
 check("install notes are cards, not loose paragraphs", (html.match(/class="(note|tile)[ "]/g) || []).length >= 4 && !/<div class="notes">\s*<p>/.test(html));
 check("version line sits below the tabs, centred", /role="tablist"[\s\S]*?<\/div>\s*<p class="ver" id="ver"/.test(html) && /\.ver \{ text-align: center/.test(html));
 
-check("closing card is an inset Ice gradient with a Frost sunrise and dark text", /grain-ice/.test(html) && /#b8e4ea 0%[^;]*\),\s*linear-gradient[^;]*#5fd8ca/.test(html) && /\.final-card\.grain-ice \.big[^}]*color: var\(--bg\)/.test(html));
+check("closing card is an Ice gradient with a Frost sunrise and dark text", /grain-ice/.test(html) && /#b8e4ea 0%[^;]*\),\s*linear-gradient[^;]*#5fd8ca/.test(html) && /\.final-card\.grain-ice \.big[^}]*color: var\(--bg\)/.test(html));
 
 // ---- static: download guidance (G-9)
 check("PowerShell line does not hard-code the filename", !/Unblock-File[^<]*Setup\.exe"/.test(html) && /Clipr-Windows-x64-Setup\*\.exe/.test(html));
+
+// ---- run 3: the site's own pages (no trip to GitHub for pages), shared design, full-bleed closing section
+const PAGES = ["", "download/", "whats-new/", "licence/", "notices/", "privacy/"];
+const pageHtml = Object.fromEntries(PAGES.map((p) => [p, read(p + "index.html")]));
+const NAMES = { download: "download/", "whats-new": "whats-new/", licence: "licence/", notices: "notices/", privacy: "privacy/" };
+for (const [n, p] of Object.entries(NAMES)) check(`run 3: ${n} page exists`, !!pageHtml[p] && /<h1>/.test(pageHtml[p]));
+{
+  const bad = [];
+  for (const [p, t] of Object.entries(pageHtml)) {
+    for (const m of t.matchAll(/<a [^>]*href="(https?:\/\/[^"]+)"/g)) {
+      const h = m[1];
+      if (/github\.com\/xxxxxLiam\/clipr\//i.test(h) && !/\/releases\/(latest\/)?download\//.test(h) && !/\/issues$/.test(h)) bad.push((p || "index") + " -> " + h);
+    }
+  }
+  check("run 3: no page link goes to GitHub except installer downloads (and the licence's own issues line)", bad.length === 0, bad.join("; "));
+}
+{
+  const bad = [];
+  for (const [p, tt] of Object.entries(pageHtml)) {
+    const t = tt.replace(/<script[\s\S]*?<\/script>/g, "");
+    for (const m of t.matchAll(/<a [^>]*href="([^"#:]*)(#[^"]*)?"/g)) {
+      if (!m[1]) continue;
+      let target = path.normalize(path.join(p, m[1]));
+      if (m[1].endsWith("/") || m[1] === "") target = path.join(target, "index.html");
+      if (!fs.existsSync(path.join(ROOT, target))) bad.push((p || "index") + " -> " + m[1]);
+    }
+  }
+  check("run 3: every site-internal link resolves to a file", bad.length === 0, bad.join("; "));
+}
+{
+  const need = ["How it works", "What&rsquo;s new", "Install help"];
+  check("run 3: every page has the same nav (How it works, What's new, Install help) and the IDK Solutions credit", Object.values(pageHtml).every((t) => need.every((n) => t.includes(n)) && /Proudly developed by <a[^>]+href="https:\/\/idksolutions\.co\.za"/.test(t)));
+  check("run 3: footer links to the site's own Licence, Notices, Privacy and All versions", ["licence/", "notices/", "privacy/", "download/"].every((h) => html.includes(`href="${h}"`)) && /All versions/.test(html));
+  const ok = Object.entries(pageHtml).filter(([p]) => p).every(([p, t]) => /<link rel="canonical" href="https:\/\/xxxxxliam\.github\.io\/clipr\/[a-z-]+\/"/.test(t) && /<title>[^<]+ · Clipr<\/title>/.test(t) && /name="description"/.test(t) && /<h1>[^<]+<\/h1>/.test(t));
+  check("run 3: inner pages have title, description, canonical and one h1", ok);
+  const tokens = Object.entries(pageHtml).every(([p, t]) => [...t.matchAll(/--([a-z-]+): (#[0-9a-f]{6});/gi)].every((m) => tok[m[1]] === m[2].toLowerCase()));
+  check("run 3: inner pages use only the Clean Cut token values", tokens);
+}
+{
+  const norm = (x) => x.replace(/<[^>]+>/g, " ").replace(/&rsquo;/g, "\u2019").replace(/&ldquo;/g, "\u201c").replace(/&rdquo;/g, "\u201d").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#x27;|&#39;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/\s+/g, " ").trim();
+  const lic = fs.readFileSync(path.join(ROOT, "src/LICENSE.txt"), "utf8");
+  const pageText = norm(pageHtml["licence/"]);
+  const paras = lic.split(/\n\s*\n/).map((p) => p.replace(/^\s*[a-f]\.\s+/, "").replace(/^\d\. [A-Z0-9 ,'-]+\n/, "").replace(/\s+/g, " ").trim()).filter((p) => p.length > 30);
+  const missing = paras.filter((p) => !pageText.includes(p));
+  check("run 3: the Licence page carries every paragraph of the licence text word for word", paras.length >= 15 && missing.length === 0, paras.length + " paragraphs; missing: " + missing.map((m) => m.slice(0, 50)).join(" | "));
+  const rootLic = fs.existsSync(path.join(ROOT, "LICENSE")) ? fs.readFileSync(path.join(ROOT, "LICENSE"), "utf8").replace(/\s+/g, " ").trim() : null;
+  check("run 3: src/LICENSE.txt is the same text as LICENSE", rootLic === null || rootLic === lic.replace(/\s+/g, " ").trim());
+  const notices = norm(pageHtml["notices/"]);
+  check("run 3: Notices page names ffmpeg (GPL v3), yt-dlp, Deno, Electron and Inter, with the corresponding-source link", ["ffmpeg", "yt-dlp", "Deno", "Electron", "Inter", "GNU General Public License v3.0 or later", "eugeneware/ffmpeg-static/releases/tag/b6.0"].every((w) => notices.includes(w) || pageHtml["notices/"].includes(w)));
+  check("run 3: Privacy page says nothing is uploaded and reports only go when Send report is pressed", /Nothing you watch, mark or make is uploaded/.test(norm(pageHtml["privacy/"])) && /Nothing is sent unless you press Send report/.test(norm(pageHtml["privacy/"])));
+  const { execFileSync } = require("child_process");
+  let fresh = false, why = "";
+  try {
+    const tmp = fs.mkdtempSync(path.join(require("os").tmpdir(), "clipr-pages-"));
+    execFileSync("python3", [path.join(ROOT, "scripts/build-pages.py"), "--out", tmp], { stdio: "pipe" });
+    const stale = PAGES.slice(1).filter((p) => fs.readFileSync(path.join(tmp, p, "index.html"), "utf8") !== read(p + "index.html"));
+    fresh = stale.length === 0;
+    if (!fresh) why = "out of step: " + stale.join(", ") + "; run python3 scripts/build-pages.py and commit the result";
+  } catch (e) { why = String(e.message).slice(0, 120); }
+  check("run 3: inner pages are in step with index.html (python3 scripts/build-pages.py changes nothing)", fresh, why);
+}
 
 // ---- browser
 (async () => {
@@ -152,7 +213,7 @@ check("PowerShell line does not hard-code the filename", !/Unblock-File[^<]*Setu
     await page.goto(url);
     const all = await Promise.all(["mac", "win", "linux"].map((k) => page.locator("#panel-" + k).isVisible()));
     check("run 2 G2-4: JavaScript off hides the dead tab buttons", !(await page.locator(".tabs").isVisible()));
-    check("JavaScript off: all three install panels show, download goes to the releases page", all.every(Boolean) && (await page.locator("#dl-hero").getAttribute("href")).endsWith("/releases/latest"));
+    check("JavaScript off: all three install panels show, download goes to the site's own download page", all.every(Boolean) && (await page.locator("#dl-hero").getAttribute("href")) === "download/");
     await ctx.close();
   }
   {
@@ -196,6 +257,100 @@ check("PowerShell line does not hard-code the filename", !/Unblock-File[^<]*Setu
     const { page, ctx } = await open(WIN, 1440);
     const r = await page.request.get(url + icon);
     check("favicon served 200", r.status() === 200);
+    await ctx.close();
+  }
+  // ---- run 3 browser checks
+  const FEED = [
+    { tag_name: "v15.0.0", published_at: "2026-11-25T06:46:23Z", draft: false, prerelease: false, body: "- Release v15.0.0\n- Help answers as numbered steps [skip release]\n- refactor(main): split things [skip release]\n- chore: tidy [skip release]\n- One\n- Two\n- Three\n- Four\n- Five\n- Six\n- Seven" },
+    { tag_name: "v14.0.0", published_at: "2026-11-23T10:37:27Z", draft: false, prerelease: false, body: "- Enforce two-word names for clips" },
+    { tag_name: "v13.0.0", published_at: "2026-11-20T10:00:00Z", draft: true, prerelease: false, body: "- hidden draft" }
+  ];
+  const openPage = async (rel, ua, width, opts = {}) => {
+    const ctx = await browser.newContext({ userAgent: ua, viewport: { width, height: 900 }, reducedMotion: "reduce", ...opts });
+    await ctx.route("https://api.github.com/**", (r) => r.fulfill({ json: r.request().url().includes("per_page") ? FEED : FEED[0] }));
+    const page = await ctx.newPage();
+    const errors = [];
+    page.on("console", (m) => (m.type() === "error" || m.type() === "warning") && errors.push(m.text()));
+    page.on("pageerror", (e) => errors.push(String(e)));
+    page.on("response", (r) => r.status() >= 400 && errors.push(`${r.status()} ${r.url()}`));
+    await page.goto(url + rel);
+    return { page, errors, ctx };
+  };
+  for (const rel of PAGES) {
+    for (const w of [375, 768, 1440, 2560]) {
+      const { page, errors, ctx } = await openPage(rel, WIN, w);
+      const over = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      check(`run 3: /${rel || "(home)"} at ${w}px: no horizontal overflow, no console errors`, over <= 0 && errors.length === 0, `overflow ${over}, ${errors.join("; ")}`);
+      await ctx.close();
+    }
+  }
+  for (const rel of PAGES) {
+    for (const w of [375, 1440, 2560]) {
+      const { page, ctx } = await openPage(rel, WIN, w);
+      const g = await page.evaluate(() => {
+        const sec = document.querySelector(".final"), card = document.querySelector(".final-card"), r = card.getBoundingClientRect();
+        const top = document.querySelector(".hero-c, .p-hero").getBoundingClientRect(), fr = document.querySelector(".frame").getBoundingClientRect();
+        return { left: r.left, right: r.right, heroLeft: top.left, heroRight: top.right, radius: getComputedStyle(card).borderTopLeftRadius, padL: getComputedStyle(sec).paddingLeft, padT: getComputedStyle(sec).paddingTop, inFrame: !!sec.closest(".frame"), frameW: fr.width };
+      });
+      check(`run 3: /${rel || "(home)"} at ${w}px: closing section is as wide as the hero, flush with the column (no inset, no rounded corners)`, Math.abs(g.left - g.heroLeft) < 0.5 && Math.abs(g.right - g.heroRight) < 0.5 && g.radius === "0px" && g.padL === "0px" && g.padT === "0px" && g.inFrame, JSON.stringify(g));
+      await ctx.close();
+    }
+  }
+  for (const rel of PAGES) {
+    for (const [w, ua] of [[375, PHONE], [1440, WIN]]) {
+      const { page, ctx } = await openPage(rel, ua, w);
+      await page.evaluate(() => window.scrollTo({ top: 1800, behavior: "instant" }));
+      await page.waitForTimeout(150);
+      const n = await page.evaluate(() => { const el = document.querySelector(".nav"), r = el.getBoundingClientRect(), hit = document.elementFromPoint(r.left + 40, r.top + r.height / 2); return { y: scrollY, top: r.top, h: r.height, hit: !!hit && !!hit.closest(".nav"), pad: parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) }; });
+      check(`run 3: /${rel || "(home)"} at ${w}px: header stays at the top of the screen after scrolling and is not covered`, n.y > 500 && Math.abs(n.top) < 0.5 && n.hit && n.pad >= n.h, JSON.stringify(n));
+      await ctx.close();
+    }
+  }
+  for (const rel of PAGES) {
+    for (const [w, want] of [[375, 48], [768, 48], [1440, 96], [2560, 96]]) {
+      const { page, ctx } = await openPage(rel, WIN, w);
+      const g = await page.evaluate(() => { const a = document.querySelector(".final-card .also").getBoundingClientRect(), tk = document.querySelector(".final-card .ticker").getBoundingClientRect(); return Math.round(tk.top - a.bottom); });
+      check(`run 3: /${rel || "(home)"} at ${w}px: gap between the download links and the ticker is ${want}px (a step of the 4px scale, not more)`, g === want, String(g));
+      await ctx.close();
+    }
+  }
+  for (const rel of PAGES.slice(1)) {
+    const { page, ctx } = await openPage(rel, WIN, 1440);
+    const m = await page.evaluate(() => { const h = document.querySelector(".p-hero h1"), lh = parseFloat(getComputedStyle(h).lineHeight), n = [...document.querySelectorAll(".nav nav a, .nav .pill")]; return { lines: Math.round(h.getBoundingClientRect().height / lh), nav: n.every((a) => a.getBoundingClientRect().height < 48), credit: (() => { const [x, y] = [...document.querySelectorAll(".foot-bottom > span")].map((e) => e.getBoundingClientRect()); return Math.abs(x.top + x.height / 2 - (y.top + y.height / 2)) < 6 && y.height < 48; })() }; });
+    check(`run 3: /${rel} at 1440px: title on one line, nav and credit not wrapped`, m.lines === 1 && m.nav && m.credit, JSON.stringify(m));
+    await ctx.close();
+    const p2 = await openPage(rel, PHONE, 375);
+    const m2 = await p2.page.evaluate(() => { const h = document.querySelector(".p-hero h1"), lh = parseFloat(getComputedStyle(h).lineHeight); const words = h.textContent.trim().split(/\s+/).length; return { lines: Math.round(h.getBoundingClientRect().height / lh), words, facts: [...document.querySelectorAll(".p-hero .facts > *")].every((f) => f.getBoundingClientRect().width > 250) }; });
+    check(`run 3: /${rel} at 375px: title is at most two lines, key facts stack full width`, m2.lines <= 2 && m2.facts, JSON.stringify(m2));
+    await p2.ctx.close();
+  }
+  {
+    const { page, ctx } = await openPage("whats-new/", WIN, 1440);
+    await page.waitForSelector(".rel");
+    const t = await page.locator("#releases").innerText();
+    check("run 3: What's new lists newest first, hides drafts, strips [skip release], drops refactor/chore lines", /Version 15\.0\.0[\s\S]*Version 14\.0\.0/.test(t) && !/13\.0\.0|hidden draft|skip release|refactor|chore|Release v15/.test(t), t.slice(0, 300));
+    check("run 3: What's new folds long lists behind a 'Show more' control", /Show 2 more changes/.test(t) && (await page.locator(".rel details").count()) === 1);
+    check("run 3: each version offers its three installers", (await page.locator(".rel").first().locator(".dls a").count()) === 3 && (await page.locator(".rel .dls a").first().getAttribute("href")).includes("/releases/download/v15.0.0/Clipr-macOS-AppleSilicon.dmg"));
+    await ctx.close();
+  }
+  {
+    const { page, ctx } = await openPage("download/", MAC, 1440);
+    await page.waitForSelector(".rel");
+    check("run 3: Download page shows the latest version line and lists only older versions below", /Version 15\.0\.0/.test(await page.locator("#ver").innerText()) && (await page.locator(".rel").count()) === 1 && /14\.0\.0/.test(await page.locator(".rel").innerText()));
+    check("run 3: Download page tiles point at the three installers", (await page.locator(".facts a.os").evaluateAll((a) => a.map((x) => x.getAttribute("href").split("/").pop()))).join() === "Clipr-macOS-AppleSilicon.dmg,Clipr-Windows-x64-Setup.exe,Clipr-Linux-x64.AppImage");
+    await ctx.close();
+    const off = await browser.newContext({ userAgent: WIN, javaScriptEnabled: false });
+    const pg = await off.newPage();
+    await pg.goto(url + "download/");
+    check("run 3: Download page without JavaScript still shows the installers and says how to see older versions", (await pg.locator(".facts a.os").count()) === 3 && /Turn on JavaScript/.test(await pg.locator("noscript").first().innerHTML().catch(() => "")) || /Turn on JavaScript/.test(await pg.content()));
+    await off.close();
+  }
+  {
+    const { page, ctx } = await openPage("download/", WIN, 1440);
+    await page.route("https://api.github.com/**", (r) => r.abort());
+    await page.reload();
+    await page.waitForSelector(".status:has-text('could not load')");
+    check("run 3: when the version list cannot load, the page says so and the installers still work", (await page.locator(".facts a.os").count()) === 3);
     await ctx.close();
   }
   await browser.close();

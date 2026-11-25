@@ -1,0 +1,362 @@
+#!/usr/bin/env python3
+"""Builds the Clipr site's own pages from index.html (so the style, nav, footer and
+closing section never drift) and the text sources in src/.
+
+Run from the repo root:  python3 scripts/build-pages.py   (add --out <dir> to write elsewhere)
+Writes: download/ whats-new/ licence/ notices/ privacy/  (each an index.html)
+Re-run it after any change to index.html's <style>, nav, footer or closing section.
+"""
+import html, os, re, sys
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SRC = os.path.join(ROOT, "src")
+index = open(os.path.join(ROOT, "index.html"), encoding="utf-8").read()
+
+style = re.search(r"<style>(.*?)</style>", index, re.S).group(1)
+svgdefs = re.search(r'<svg width="0" height="0".*?</svg>', index, re.S).group(0)
+nav = re.search(r'<header class="nav">.*?</header>', index, re.S).group(0)
+final = re.search(r'<section class="final">.*?</section>', index, re.S).group(0)
+foot = re.search(r'<footer class="big-foot">.*?</footer>', index, re.S).group(0)
+scripts = re.findall(r"<script>(.*?)</script>", index, re.S)
+dl_script = [s for s in scripts if "var BASE" in s][0]
+motion_script = [s for s in scripts if "IntersectionObserver(function" in s][0]
+
+# the download/OS script without the install tabs and copy buttons (those only exist on the landing page)
+dl_script = dl_script[: dl_script.index("// Install tabs")] + "})();\n"
+dl_script = dl_script.replace('var ver = document.getElementById("ver");', 'var ver = document.getElementById("ver"); if (!ver) return;')
+dl_script = dl_script.replace('var f = document.getElementById("ver-foot");', 'var f = document.getElementById("ver-foot"); if (!f) return;')
+
+
+def up(markup):
+    """Re-point a landing-page fragment's own links for a page one folder down."""
+    markup = markup.replace('href="#top"', 'href="../"')
+    markup = re.sub(r'href="#(how|install)"', r'href="../#\1"', markup)
+    markup = re.sub(r'href="(download|whats-new|licence|notices|privacy)/"', r'href="../\1/"', markup)
+    return markup
+
+
+FONT = 'url("../fonts/'
+page_style = style.replace('url("fonts/', FONT)
+
+EXTRA_CSS = """
+      /* inner pages (run 3): same tokens, no new values */
+      .p-hero { padding: 72px 48px 64px; text-align: center; background-color: var(--panel); }
+      .p-hero > * { position: relative; z-index: 2; }
+      .p-hero .crumb { font-size: 13px; color: var(--fg); margin-bottom: 16px; }
+      .p-hero .crumb a { text-decoration: underline; text-underline-offset: 3px; }
+      .p-hero h1 { font-size: 48px; line-height: 1.15; font-weight: 500; letter-spacing: -0.02em; text-wrap: balance; }
+      .p-hero .lead { font-size: 18px; color: var(--fg); max-width: 620px; margin: 16px auto 0; text-wrap: balance; }
+      .p-hero .facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 40px auto 0; max-width: 1000px; text-align: left; }
+      .p-hero .facts > * { background: rgba(10,13,15,.62); border: 1px solid var(--hairline-strong); border-radius: var(--r-panel); padding: 20px; color: var(--fg); display: block; }
+      .p-hero .facts h2 { font-size: 15px; font-weight: 500; }
+      .p-hero .facts p { font-size: 13px; color: var(--fg-dim); margin-top: 4px; }
+      .p-hero .facts a.os { min-height: 44px; }
+      .p-hero .facts a.os:hover { background: rgba(35,42,47,.8); }
+      .p-hero .facts a.os h2 { display: flex; align-items: center; gap: 8px; }
+      .p-hero .facts a.os svg { width: 16px; height: 16px; flex: none; }
+      .p-body { max-width: 792px; margin: 0 auto; padding: 16px 48px 96px; }
+      .prose h2 { font-size: 20px; font-weight: 500; margin: 40px 0 8px; text-wrap: balance; }
+      .prose h3 { font-size: 15px; font-weight: 500; margin: 24px 0 8px; }
+      .prose p, .prose li { color: var(--fg-dim); font-size: 15px; line-height: 1.7; }
+      .prose p { margin: 0 0 12px; }
+      .prose b, .prose strong { color: var(--fg); font-weight: 500; }
+      .prose a { color: var(--fg); text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
+      .prose ol, .prose ul { margin: 0 0 12px; padding-left: 24px; }
+      .prose li { margin-bottom: 8px; }
+      .prose code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; color: var(--fg); background: var(--raised); border: 1px solid var(--hairline); border-radius: var(--r-chip); padding: 1px 6px; overflow-wrap: anywhere; }
+      .prose pre { background: var(--panel); border: 1px solid var(--hairline); border-radius: var(--r-control); padding: 16px; overflow-x: auto; margin: 0 0 12px; }
+      .prose pre code { background: none; border: 0; padding: 0; }
+      .prose blockquote { margin: 0 0 12px; padding: 4px 0 4px 16px; border-left: 1px solid var(--hairline-strong); }
+      .prose hr { border: 0; border-top: 1px solid var(--hairline); margin: 40px 0 0; }
+      .prose .legal-caps { font-size: 13px; }
+      .tbl { overflow-x: auto; margin: 0 0 16px; border: 1px solid var(--hairline); border-radius: var(--r-control); }
+      .tbl table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 13px; }
+      .tbl th, .tbl td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--hairline); color: var(--fg-dim); vertical-align: top; }
+      .tbl th { color: var(--fg); font-weight: 500; }
+      .tbl tr:last-child td { border-bottom: 0; }
+      .rel { border: 1px solid var(--hairline); border-radius: var(--r-panel); background: var(--panel); padding: 24px; margin: 0 0 16px; }
+      .rel header { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+      .rel h2 { margin: 0; font-size: 20px; }
+      .rel time { color: var(--fg-dim); font-size: 13px; }
+      .rel ul { margin: 16px 0 0; padding-left: 24px; }
+      .rel li { color: var(--fg-dim); font-size: 15px; line-height: 1.6; margin-bottom: 8px; }
+      .rel details { margin-top: 8px; }
+      .rel summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; color: var(--fg); font-size: 13px; }
+      .rel .dls { display: flex; gap: 8px 16px; flex-wrap: wrap; margin-top: 16px; font-size: 13px; }
+      .rel .dls a { color: var(--fg); text-decoration: underline; text-underline-offset: 3px; display: inline-flex; min-height: 44px; align-items: center; }
+      .status { color: var(--fg-dim); font-size: 15px; padding: 24px 0; }
+      .rail-note { color: var(--fg-dim); font-size: 13px; margin-top: 16px; }
+      @media (max-width: 1040px) { .p-hero { padding: 64px 24px 48px; } .p-body { padding: 16px 24px 64px; } }
+      @media (max-width: 760px) { .p-hero .facts { grid-template-columns: 1fr; } .p-hero h1 { font-size: 36px; } .p-hero .lead { font-size: 16px; } }
+      @media (max-width: 560px) { .p-hero { padding: 48px 16px 32px; } .p-body { padding: 8px 16px 48px; } .rel { padding: 16px; } }
+"""
+
+
+def esc(s):
+    return html.escape(s, quote=True)
+
+
+def inline_md(s):
+    s = esc(s)
+    s = re.sub(r"`([^`]+)`", r"<code>\1</code>", s)
+    s = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", s)
+    s = re.sub(r"(?<![*\w])\*([^*\n]+)\*(?!\*)", r"<em>\1</em>", s)
+    s = re.sub(r"\[([^\]]+)\]\(([^)\s]+)\)", lambda m: '<a href="%s">%s</a>' % (fix_href(m.group(2)), m.group(1)), s)
+    s = re.sub(r"&lt;(https?://[^&\s]+)&gt;", r'<a href="\1">\1</a>', s)
+    return s
+
+
+def fix_href(h):
+    h = h.replace("&amp;", "&")
+    if h == "LICENSE":
+        return "../licence/"
+    return h
+
+
+def md_to_html(md):
+    out, lines, i = [], md.split("\n"), 0
+    while i < len(lines):
+        ln = lines[i]
+        if ln.strip().startswith('<div align="center">') or ln.strip() == "</div>":
+            i += 1; continue
+        if ln.startswith("```"):
+            j = i + 1
+            while not lines[j].startswith("```"): j += 1
+            out.append("<pre><code>%s</code></pre>" % esc("\n".join(lines[i + 1:j]))); i = j + 1; continue
+        m = re.match(r"(#{1,3}) (.*)", ln)
+        if m:
+            if len(m.group(1)) == 1: i += 1; continue  # the page title is the hero
+            heading = m.group(2)
+            hid = re.sub(r"[^a-z0-9]+", "-", heading.lower()).strip("-")
+            out.append('<h%d id="%s">%s</h%d>' % (len(m.group(1)), hid, inline_md(heading), len(m.group(1)))); i += 1; continue
+        if ln.strip() == "---":
+            out.append("<hr>"); i += 1; continue
+        if ln.startswith("|"):
+            rows = []
+            while i < len(lines) and lines[i].startswith("|"):
+                rows.append([c.strip() for c in lines[i].strip().strip("|").split("|")]); i += 1
+            head, body = rows[0], rows[2:]
+            t = "<div class=\"tbl\" tabindex=\"0\" role=\"region\" aria-label=\"Table\"><table><thead><tr>%s</tr></thead><tbody>%s</tbody></table></div>"
+            out.append(t % ("".join("<th>%s</th>" % inline_md(c) for c in head),
+                            "".join("<tr>%s</tr>" % "".join("<td>%s</td>" % inline_md(c) for c in r) for r in body)))
+            continue
+        if ln.startswith(">"):
+            buf = []
+            while i < len(lines) and lines[i].startswith(">"):
+                buf.append(lines[i].lstrip("> ")); i += 1
+            out.append("<blockquote><p>%s</p></blockquote>" % inline_md(" ".join(buf))); continue
+        if ln.strip() == "" or ln.strip().startswith("<sub>") and False:
+            i += 1; continue
+        buf = []
+        while i < len(lines) and lines[i].strip() != "" and not lines[i].startswith(("#", "|", ">", "```")) and lines[i].strip() != "---":
+            buf.append(lines[i].strip()); i += 1
+        text = " ".join(buf)
+        text = re.sub(r"</?sub>", "", text)
+        out.append("<p>%s</p>" % inline_md(text))
+    return "\n".join(out)
+
+
+def licence_body():
+    raw = open(os.path.join(SRC, "LICENSE.txt"), encoding="utf-8").read().strip("\n")
+    parts = re.split(r"\n\n\n+", raw)
+    out = []
+    for n, part in enumerate(parts):
+        paras = part.split("\n\n")
+        first = paras[0]
+        m = re.match(r"(\d)\. ([A-Z0-9 ,'-]+)\n?(.*)", first, re.S)
+        if m:
+            title = m.group(2).title().replace("Not Granted", "Not Granted")
+            out.append('<h2 id="s%s">%s. %s</h2>' % (m.group(1), m.group(1), esc(title)))
+            paras[0] = m.group(3)
+        elif n == 0:
+            out.append("<p><strong>%s</strong></p>" % esc(first.split("\n")[0]))
+            paras[0] = "\n".join(first.split("\n")[1:])
+        i = 0
+        listbuf = []
+        def flush():
+            nonlocal listbuf
+            if listbuf:
+                out.append('<ol type="a">%s</ol>' % "".join("<li>%s</li>" % lic_inline(x) for x in listbuf)); listbuf = []
+        for p in paras:
+            p = p.strip("\n")
+            if not p.strip(): continue
+            if re.match(r"\s+[a-f]\. ", p):
+                listbuf.append(re.sub(r"\s+", " ", re.sub(r"^\s+[a-f]\. ", "", p)).strip()); continue
+            flush()
+            cls = ' class="legal-caps"' if p.isupper() or p.startswith("THE SOFTWARE") else ""
+            out.append("<p%s>%s</p>" % (cls, lic_inline(re.sub(r"\s*\n\s*", " ", p))))
+        flush()
+    return "\n".join(out)
+
+
+def lic_inline(s):
+    s = esc(s)
+    s = s.replace("THIRD-PARTY-NOTICES.md", '<a href="../notices/">THIRD-PARTY-NOTICES.md</a>')
+    s = re.sub(r"(https://github\.com/[^\s<]+)", r'<a href="\1">\1</a>', s)
+    return s
+
+
+PRIVACY = """
+<h2 id="runs-here">Everything runs on your computer</h2>
+<p>Clipr is a desktop app. Cutting, downloading and joining all happen on your machine, and the clips go straight to the folder you chose. <strong>Nothing you watch, mark or make is uploaded to us.</strong></p>
+<h2 id="no-account">No account, no ads, no tracking</h2>
+<p>You do not make an account to use Clipr. There are no ads in the app or on this site.</p>
+<h2 id="youtube-sign-in">Signing in to YouTube</h2>
+<p>YouTube serves 360p to anyone who is not signed in. For 1080p, Clipr asks once for a <code>cookies.txt</code> exported from your own browser, and walks you through it. That file stays on your computer and is never uploaded. You can skip it and work at 360p.</p>
+<h2 id="reports">Problem reports</h2>
+<p>If something goes wrong, you can choose <strong>Help</strong> then <strong>Report a problem</strong>, write what you were doing in plain words and press <strong>Send report</strong>. Clipr adds the error, the version numbers and a cleaned-up log. <strong>Nothing is sent unless you press Send report</strong>, and you do not need an account of any kind. A crash screen has the same button.</p>
+<h2 id="updates">Updates and this site</h2>
+<p>Clipr checks for new versions of itself, and the download and what's new pages on this site read the public list of releases to show the latest version number and date. Neither sends anything about you or your clips.</p>
+<h2 id="third-parties">Other services</h2>
+<p>To get a video, Clipr talks to the video service you pasted a link from, from your own computer, like a browser would. That service's own terms and privacy policy apply to that part.</p>
+"""
+
+JS_RELEASES = r"""
+      (function () {
+        var API = "https://api.github.com/repos/xxxxxLiam/clipr/releases?per_page=30";
+        var ASSETS = [["macOS", "Clipr-macOS-AppleSilicon.dmg"], ["Windows", "Clipr-Windows-x64-Setup.exe"], ["Linux", "Clipr-Linux-x64.AppImage"]];
+        var DEV = /^(refactor|chore|test|docs|ci|build)\b|^fix\(ci\)/i;
+        function clean(body) {
+          return String(body || "").split("\n").map(function (l) { return l.replace(/^\s*[-*]\s*/, "").replace(/\s*\[skip release\]\s*/gi, "").trim(); })
+            .filter(function (l) { return l && !/^Release v?\d/i.test(l) && !DEV.test(l); });
+        }
+        function el(tag, attrs, text) {
+          var e = document.createElement(tag);
+          Object.keys(attrs || {}).forEach(function (k) { e.setAttribute(k, attrs[k]); });
+          if (text) e.textContent = text;
+          return e;
+        }
+        function card(r, mode) {
+          var v = String(r.tag_name).replace(/^v/, "");
+          var d = r.published_at ? new Date(r.published_at).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "";
+          var c = el("article", { "class": "rel" });
+          var h = el("header");
+          h.appendChild(el("h2", {}, "Version " + v));
+          var t = el("time", { datetime: r.published_at || "" }, d);
+          h.appendChild(t); c.appendChild(h);
+          if (mode === "notes") {
+            var items = clean(r.body);
+            if (!items.length) items = ["Improvements and fixes."];
+            var ul = el("ul"), more = el("details");
+            var mu = el("ul");
+            items.forEach(function (x, i) { (i < 6 ? ul : mu).appendChild(el("li", {}, x)); });
+            c.appendChild(ul);
+            if (items.length > 6) { more.appendChild(el("summary", {}, "Show " + (items.length - 6) + " more changes")); more.appendChild(mu); c.appendChild(more); }
+          }
+          var dls = el("div", { "class": "dls" });
+          ASSETS.forEach(function (a) { dls.appendChild(el("a", { href: "https://github.com/xxxxxLiam/clipr/releases/download/" + r.tag_name + "/" + a[1] }, a[0])); });
+          c.appendChild(dls);
+          return c;
+        }
+        var mode = document.getElementById("releases").getAttribute("data-mode");
+        var box = document.getElementById("releases");
+        fetch(API, { headers: { Accept: "application/vnd.github+json" } })
+          .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+          .then(function (list) {
+            list = list.filter(function (r) { return !r.draft && !r.prerelease && r.published_at; });
+            box.textContent = "";
+            if (!list.length) { box.appendChild(el("p", { "class": "status" }, "No versions to list yet.")); return; }
+            list.forEach(function (r, i) { if (mode === "older" && i === 0) return; box.appendChild(card(r, mode)); });
+          })
+          .catch(function () { box.textContent = ""; box.appendChild(el("p", { "class": "status" }, "The version list could not load. Check your connection and reload; the download buttons above still work.")); });
+      })();
+"""
+
+
+def page(slug, title, desc, crumb, h1, lead, facts_html, body_html, extra_script="", noscript=""):
+    canon = "https://xxxxxliam.github.io/clipr/%s/" % slug
+    facts = '<div class="facts">%s</div>' % facts_html if facts_html else ""
+    n = up(nav).replace("</header>", "</header>")
+    return f"""<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>if (window.IntersectionObserver && !matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.className += " anim";</script>
+    <title>{esc(title)} · Clipr</title>
+    <meta name="description" content="{esc(desc)}" />
+    <link rel="canonical" href="{canon}" />
+    <meta name="theme-color" content="#0a0d0f" />
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png" />
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Clipr" />
+    <meta property="og:title" content="{esc(title)} · Clipr" />
+    <meta property="og:description" content="{esc(desc)}" />
+    <meta property="og:url" content="{canon}" />
+    <meta property="og:image" content="https://xxxxxliam.github.io/clipr/docs/og.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preload" href="../fonts/inter-latin-wght.woff2" as="font" type="font/woff2" crossorigin />
+    <style>{page_style}{EXTRA_CSS}    </style>
+  </head>
+  <body>
+    {svgdefs}
+    <div class="frame">
+      {n}
+      <main id="top">
+        <section class="p-hero grain grain-frost">
+          <p class="crumb"><a href="../">Clipr</a> &rsaquo; {esc(crumb)}</p>
+          <h1>{h1}</h1>
+          <p class="lead">{lead}</p>
+          {facts}
+        </section>
+        <div class="p-body prose">
+{body_html}
+{noscript}
+        </div>
+        {up(final)}
+      </main>
+      {up(foot)}
+    </div>
+    <script>
+{dl_script}
+{extra_script}
+    </script>
+    <script>
+{motion_script}
+    </script>
+  </body>
+</html>
+"""
+
+
+OS_TILES = """
+<a class="os" href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-macOS-AppleSilicon.dmg"><h2>macOS</h2><p>Apple Silicon (M1 and newer)</p></a>
+<a class="os" href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-Windows-x64-Setup.exe"><h2>Windows</h2><p>64-bit Windows</p></a>
+<a class="os" href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-Linux-x64.AppImage"><h2>Linux</h2><p>64-bit Linux</p></a>
+"""
+
+pages = {
+    "download": page(
+        "download", "Download Clipr", "Download Clipr for macOS, Windows or Linux. Free, including for paid client work. No ads, no account.",
+        "Download", "Download Clipr", 'Free for macOS, Windows and Linux. <span id="ver" hidden></span>', OS_TILES,
+        '<h2 id="first-launch">First time opening it?</h2>\n<p>Your computer asks once because Clipr is not signed with a paid certificate yet. It means &ldquo;unknown publisher&rdquo;, not &ldquo;unsafe&rdquo;. The <a href="../#install">install steps</a> take under a minute.</p>\n'
+        '<h2 id="older">Older versions</h2>\n<div id="releases" data-mode="older"><p class="status">Loading the list of versions&hellip;</p></div>',
+        JS_RELEASES, '<noscript><p class="status">Turn on JavaScript to see older versions. The three buttons above always get the newest one.</p></noscript>'),
+    "whats-new": page(
+        "whats-new", "What's new", "What changed in each version of Clipr, newest first.",
+        "What's new", "What&rsquo;s new", "Every version of Clipr, newest first.", "",
+        '<div id="releases" data-mode="notes"><p class="status">Loading the list of versions&hellip;</p></div>',
+        JS_RELEASES, '<noscript><p class="status">Turn on JavaScript to see what changed in each version.</p></noscript>'),
+    "licence": page(
+        "licence", "Licence", "Clipr is free to use, including for paid client work. It is not open source: copying, forking, reselling or sharing it is not permitted.",
+        "Legal", "Licence", "Free for client work. Not for sharing. Here is the short version, then the full text.",
+        '<div><h2>Free to use</h2><p>Including for paid client work. The clips you make are yours.</p></div><div><h2>Not for redistribution</h2><p>No copying, forking, reselling or sharing the application.</p></div><div><h2>Built with ffmpeg</h2><p>ffmpeg carries its own GPL v3 terms.</p></div>',
+        licence_body()),
+    "notices": page(
+        "notices", "Third-party notices", "The programs and fonts that ship alongside Clipr, and the licences they carry.",
+        "Legal", "Third-party notices", "The programs and fonts that ship alongside Clipr, and the licences they carry.", "",
+        md_to_html("\n".join(open(os.path.join(SRC, "notices.md"), encoding="utf-8").read().split("\n")[7:]))),
+    "privacy": page(
+        "privacy", "Privacy", "Clipr runs on your computer and nothing you watch, mark or make is uploaded. No account, no ads.",
+        "Legal", "Privacy", "Nothing is uploaded. Here is exactly what Clipr does and does not send.",
+        '<div><h2>Nothing uploaded</h2><p>Your clips and videos stay on your computer.</p></div><div><h2>No account</h2><p>Nothing to sign up for, and no ads.</p></div><div><h2>Reports only if you send one</h2><p>Nothing goes out unless you press Send report.</p></div>',
+        PRIVACY),
+}
+
+OUT = sys.argv[sys.argv.index("--out") + 1] if "--out" in sys.argv else ROOT
+for slug, content in pages.items():
+    d = os.path.join(OUT, slug)
+    os.makedirs(d, exist_ok=True)
+    open(os.path.join(d, "index.html"), "w", encoding="utf-8").write(content)
+    print("wrote", slug + "/index.html", len(content) // 1024, "KB")
