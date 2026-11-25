@@ -589,6 +589,58 @@
 
       (function () {
         var NOTES = {
+  "19.0.0": {
+    "intro": "A quiet download-progress pill for updates, safer end points, and a round of timeline polish.",
+    "highlights": [
+      {
+        "tag": "New",
+        "title": "Update progress",
+        "text": "While an update downloads, a small pill in the top bar shows how far along it is."
+      },
+      {
+        "tag": "Improved",
+        "title": "Out point past the end",
+        "text": "If you set an out point beyond the end of the video, it stops at the end with one dim line. An in point past the end is refused."
+      },
+      {
+        "tag": "Fixed",
+        "title": "Start fresh",
+        "text": "No folders are made in Downloads until a clip is saved, and the prompt asks only once per session."
+      }
+    ],
+    "changes": [
+      {
+        "group": "New",
+        "title": "Window strip",
+        "text": "The start and crash screens can be dragged by a strip along the top edge."
+      },
+      {
+        "group": "Improved",
+        "title": "Timeline",
+        "text": "Zoom keeps its centre and follows the pointer. Both ends of a range move together, and clip names show on the bars."
+      },
+      {
+        "group": "Improved",
+        "title": "Sign-in",
+        "text": "A rejected sign-in now shows in its own row, and private videos are told apart from members-only ones."
+      },
+      {
+        "group": "Improved",
+        "title": "Offline",
+        "text": "After repeated offline failures, Copy details is offered so you can send a report."
+      },
+      {
+        "group": "Fixed",
+        "title": "Updating",
+        "text": "Restart to update waits until the clip you are making is done."
+      },
+      {
+        "group": "Fixed",
+        "title": "Clip count and length",
+        "text": "Each clip made with the Clip button counts once, and a clip longer than 24 hours is refused."
+      }
+    ]
+  },
   "18.0.0": {
     "intro": "Clearer clip failures, a space check before each clip, and Final Cut timelines that follow your look.",
     "highlights": [
@@ -886,10 +938,12 @@
           }
           return c;
         }
+        function noted(r) { return !!NOTES[String(r.tag_name).replace(/^v/, "")]; }
         function row(r) {
-          var e = entry(r), d = el("details", { "class": "wn-row" });
+          var e = entry(r), plain = !noted(r), d = el("details", { "class": "wn-row" });
+          if (plain) e.changes = [{ group: "Improved", text: "Smaller improvements and fixes. See the installers below to get this version." }];
           var s = el("summary"); s.appendChild(el("b", {}, "Version " + e.v)); s.appendChild(el("time", { datetime: r.published_at || "" }, when(r)));
-          s.appendChild(el("span", { "class": "count" }, e.changes.length + (e.changes.length === 1 ? " change" : " changes")));
+          s.appendChild(el("span", { "class": "count" }, plain ? "Improvements and fixes" : e.changes.length + (e.changes.length === 1 ? " change" : " changes")));
           s.appendChild(el("span", { "class": "more" }, "Show changes")); s.appendChild(el("span", { "class": "more less" }, "Hide changes")); d.appendChild(s);
           var b = el("div", { "class": "body" }); if (e.changes.length) b.appendChild(groups(e.changes)); b.appendChild(installers(r)); d.appendChild(b);
           return d;
@@ -904,7 +958,7 @@
             if (window.cliprDl) window.cliprDl(box);
             if (list.length > 1) {
               box.appendChild(el("h2", { "class": "wn-earlier" }, "Earlier versions"));
-              var l = el("div", { "class": "wn-list" }); list.slice(1).forEach(function (r) { l.appendChild(row(r)); }); box.appendChild(l);
+              var l = el("div", { "class": "wn-list" }); list.slice(1).filter(function (r) { return noted(r) || clean(r.body).length; }).forEach(function (r) { l.appendChild(row(r)); }); box.appendChild(l);
             }
           })
           .catch(function () { box.textContent = ""; box.appendChild(el("p", { "class": "status" }, "The version list could not load. Check your connection and reload; the download page always has the newest version.")); });
