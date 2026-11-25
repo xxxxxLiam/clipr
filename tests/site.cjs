@@ -361,7 +361,7 @@ for (const [n, p] of Object.entries(NAMES)) check(`run 3: ${n} page exists`, !!p
     await page.goto(url + "whats-new/");
     await page.waitForSelector(".wn-latest");
     const body = await page.locator("#releases").innerText();
-    check("run 4: What's new puts the newest version first, in its own card, with Latest, and lists older ones after it; drafts are hidden", (await page.locator(".wn-latest h2").innerText()) === "Version 15.0.0" && (await page.locator(".wn-latest .chip.ice").innerText()) === "Latest" && (await page.locator(".wn-row > summary b").allInnerTexts()).join() === "Version 14.0.0,Version 12.0.0" && !/13\.0\.0|hidden draft/.test(body));
+    check("run 4: What's new puts the newest version first, in its own card, with Latest, and lists older ones after it; drafts are hidden", (await page.locator(".wn-latest h2").innerText()) === "Version 15.0" && (await page.locator(".wn-latest .chip.ice").innerText()) === "Latest" && (await page.locator(".wn-row > summary b").allInnerTexts()).join() === "Version 14.0,Version 12.0" && !/13\.0\.0|hidden draft/.test(body));
     check("run 4: the latest card has a one-line intro, three numbered highlight tiles, jump pills that land on them, and 'Smaller updates' underneath", (await page.locator(".wn-intro").count()) === 1 && (await page.locator(".wn-sec").count()) === 3 && (await page.locator(".wn-pill").evaluateAll((a) => a.every((x, i) => x.getAttribute("href") === "#wn-h" + (i + 1) && x.getBoundingClientRect().height >= 44 && !!document.getElementById("wn-h" + (i + 1))))) && (await page.locator(".wn-num").allInnerTexts()).join() === "1,2,3" && (await page.locator(".wn-all > summary").innerText()) === "Smaller updates" && (await page.locator(".wn-all .wn-group").count()) === 3);
     check("run 4: What's new is flat: no grey container behind the latest version, the numbered sections or the earlier-versions list", await page.evaluate(() => [".wn-latest", ".wn-sec", ".wn-list"].every((s) => { const c = getComputedStyle(document.querySelector(s)); return c.backgroundColor === "rgba(0, 0, 0, 0)" && parseFloat(c.borderTopLeftRadius) === 0 && (s === ".wn-latest" ? c.borderTopWidth === "0px" : true); })));
     check("run 4: each version leads with a date chip above its title, as in the reference", (await page.locator(".wn-latest > time.wn-date svg").count()) === 1 && /25 November 2026/.test(await page.locator(".wn-latest > time.wn-date").innerText()));
@@ -374,9 +374,9 @@ for (const [n, p] of Object.entries(NAMES)) check(`run 3: ${n} page exists`, !!p
     check("run 5 G3-1: an earlier version with nothing to say (empty after cleaning) is hidden, not shown as '0 changes'", !/11\.0\.0/.test(body) && !/\b0 changes\b/.test(body));
     check("run 4: each earlier version offers its three installers", (await page.locator(".wn-row").nth(1).locator(".wn-dls a").count()) === 3 && (await page.locator(".wn-row").nth(1).locator(".wn-dls a").first().getAttribute("href")).includes("/releases/download/v12.0.0/Clipr-macOS-AppleSilicon.dmg"));
     await ctx.close();
-    for (const [vt, w] of [["v19.0.0", 1440], ["v19.0.0", 375], ["v19.1.0", 1440], ["v19.1.0", 375]]) {
+    for (const [vt, w] of [["v19.0.0", 1440], ["v19.0.0", 375], ["v19.1.0", 1440], ["v19.1.0", 375], ["v19.2.1", 1440], ["v19.2.1", 375]]) {
       const cv = await browser.newContext({ userAgent: MAC, viewport: { width: w, height: 900 }, reducedMotion: "reduce" });
-      await cv.route("https://api.github.com/**", (r) => r.fulfill({ json: [{ tag_name: vt, published_at: "2026-11-25T11:04:56Z", draft: false, prerelease: false, body: "- x" }] }));
+      await cv.route("https://api.github.com/**", (r) => r.fulfill({ json: (vt === "v19.2.1" ? ["v19.2.1", "v19.2.0"] : [vt]).map((tag) => ({ tag_name: tag, published_at: "2026-11-25T11:04:56Z", draft: false, prerelease: false, body: "- x" })) }));
       const pv = await cv.newPage();
       await pv.goto(url + "whats-new/");
       await pv.waitForSelector(".wn-latest");
@@ -392,8 +392,28 @@ for (const [n, p] of Object.entries(NAMES)) check(`run 3: ${n} page exists`, !!p
       if (w >= 1000) check("run 6 reference: " + vt + " at " + w + "px the split sections put the copy beside the screenshot", info.splits.every((x) => x.sideBySide), JSON.stringify(info.splits));
       else check("run 6 reference: " + vt + " at " + w + "px the split sections stack with the copy above the screenshot", await pv.evaluate(() => [...document.querySelectorAll(".wn-split")].every((x) => x.querySelector(".wn-copy").getBoundingClientRect().bottom <= x.querySelector(".wn-win").getBoundingClientRect().top + 1 || x.classList.contains("flip"))));
       check("run 6 reference: " + vt + " screenshots add no sideways scroll at " + w + "px", (await pv.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)) <= 0);
-      if (vt === "v19.1.0" && w === 1440) { await pv.screenshot({ path: "/tmp/claude-0/wn-v19.png", fullPage: true }); }
+      if (vt === "v19.2.1" && w === 1440) { await pv.screenshot({ path: "/tmp/claude-0/wn-v19.png", fullPage: true }); }
       await cv.close();
+    }
+    {
+      // Liam, 25 Nov: patches fold into their minor. 19.2.0 and 19.2.1 are one "19.2" section; the next minor pushes it into the list.
+      const rel = (tag, d) => ({ tag_name: tag, published_at: d + "T10:00:00Z", draft: false, prerelease: false, body: "- x" });
+      for (const [label, feed] of [["with a patch", [rel("v19.2.1", "2026-11-26"), rel("v19.2.0", "2026-11-25"), rel("v19.1.0", "2026-11-25"), rel("v18.0.0", "2026-11-24")]], ["after the next minor", [rel("v19.3.0", "2026-11-27"), rel("v19.2.1", "2026-11-26"), rel("v19.2.0", "2026-11-25"), rel("v19.1.0", "2026-11-25")]]]) {
+        const fc = await browser.newContext({ userAgent: MAC, viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
+        await fc.route("https://api.github.com/**", (r) => r.fulfill({ json: feed }));
+        const fp = await fc.newPage();
+        await fp.goto(url + "whats-new/");
+        await fp.waitForSelector(".wn-latest");
+        const head = await fp.locator(".wn-latest h2").innerText();
+        const rows = await fp.locator(".wn-row > summary b").allInnerTexts();
+        const dl = await fp.locator(".wn-latest a.dl").getAttribute("href");
+        if (label === "with a patch") {
+          check("run 10 fold: 19.2.0 and 19.2.1 are one section, Version 19.2, saying it includes both, and 19.2.0 is not a row of its own", head === "Version 19.2" && /Includes 19\.2\.0 and 19\.2\.1/.test(await fp.locator(".wn-latest").innerText()) && rows.join() === "Version 19.1,Version 18.0", head + " | " + rows.join());
+        } else {
+          check("run 10 fold: once 19.3 ships it is the main section and 19.2 (with its patch) folds into the list as one row", head === "Version 19.3" && rows.join() === "Version 19.2,Version 19.1" && (await fp.locator(".wn-row").first().locator("summary").click(), /Includes 19\.2\.0 and 19\.2\.1/.test(await fp.locator(".wn-row").first().innerText())), head + " | " + rows.join());
+        }
+        await fc.close();
+      }
     }
     {
       for (const w of [1440, 375]) {
@@ -434,7 +454,7 @@ for (const [n, p] of Object.entries(NAMES)) check(`run 3: ${n} page exists`, !!p
     const jargon = /skip release|refactor|chore|\bIPC\b|\bPR\b|parity|fixture|tsc|hook|lint/i;
     const probs = [];
     for (const [v, n] of Object.entries(notes)) {
-      if (!/^\d+\.\d+\.\d+$/.test(v)) probs.push(v + ": version key");
+      if (!/^\d+\.\d+(\.\d+)?$/.test(v)) probs.push(v + ": version key");
       if (n.highlights.length > 3) probs.push(v + ": more than three highlights");
       if (n.intro && (n.intro.length > 120 || jargon.test(n.intro))) probs.push(v + ": intro");
       for (const x of n.highlights) if (!["New", "Improved", "Fixed"].includes(x.tag) || !x.title || !x.text) probs.push(v + ": bad highlight " + x.title);
@@ -442,6 +462,31 @@ for (const [n, p] of Object.entries(NAMES)) check(`run 3: ${n} page exists`, !!p
       for (const x of [].concat(n.highlights, n.changes)) if (jargon.test(x.title + " " + x.text)) probs.push(v + ": jargon in " + x.title);
     }
     check("run 4: the hand-written notes are plain: groups are New/Improved/Fixed, at most three highlights, no developer words", Object.keys(notes).length >= 2 && probs.length === 0, probs.join("; "));
+    // Liam, 25 Nov: every What's new entry from 19.0.0 matches design/whats-new-reference.png. This is the written spec, checked on the data.
+    const refSpec = (n) => {
+      const bad = [];
+      const hl = n.highlights || [], cd = n.cards || [];
+      if (hl.map((x) => x.layout).join() !== "hero,split,split-flip") bad.push("highlights must be hero, split, split-flip");
+      if (cd.length !== 2) bad.push("two cards");
+      for (const x of hl) {
+        if (!x.eyebrow || !x.caption || !x.alt || x.alt.length < 20) bad.push("eyebrow, caption and alt on " + x.title);
+        if (!x.shot || !fs.existsSync(path.join(ROOT, "docs/whats-new", x.shot || "none"))) bad.push("shot file for " + x.title);
+      }
+      if (hl[0] && hl[0].glow === false) bad.push("hero has glow");
+      if (hl[1] && !hl[2]) bad.push("third highlight");
+      if (hl[2] && hl[2].glow !== true) bad.push("flipped split has glow");
+      for (const x of cd) {
+        if (!x.caption || !x.alt || x.alt.length < 20 || !x.title) bad.push("card parts on " + x.title);
+        if (!x.shot || !fs.existsSync(path.join(ROOT, "docs/whats-new", x.shot || "none"))) bad.push("shot file for card " + x.title);
+      }
+      return bad;
+    };
+    const refProbs = [];
+    for (const [v, n] of Object.entries(notes)) if (parseInt(v, 10) >= 19 && !(v === "19.0.0")) refProbs.push(...refSpec(n).map((m) => v + ": " + m));
+    check("run 9 reference spec: every entry from 19.1.0 has a hero, a split and a flipped split with glow, two cards, eyebrows, captions, alt text and real screenshot files", refProbs.length === 0, refProbs.join("; "));
+    const broken = JSON.parse(JSON.stringify(notes["19.2"]));
+    broken.highlights[1].layout = "split-flip"; broken.cards.pop();
+    check("run 9 negative control: an entry that drops the hero/split/flip order or a card fails the reference spec", refSpec(broken).length >= 2);
   }
   {
     const { page, ctx } = await openPage("download/", MAC, 1440);
