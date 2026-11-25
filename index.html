@@ -75,6 +75,8 @@
       .btn-dark .glyph svg { width: 100%; height: 100%; }
       .cta-row { display: flex; justify-content: center; margin-top: 32px; }
       .also { margin-top: 12px; font-size: 14px; color: var(--fg-dim); }
+      .lockup-link { display: inline-flex; align-items: center; min-height: 44px; }
+      .fine { margin-top: 8px; font-size: 14px; }
       .also a { color: var(--fg); text-decoration: underline; text-underline-offset: 3px; }
       .phone-note { margin: 24px auto 0; max-width: 440px; font-size: 14px; color: var(--fg-dim); }
 
@@ -225,6 +227,8 @@
       .btn-dark:hover { background: var(--panel); }
       .also { font-size: 13px; }
       .tabs { align-items: center; }
+      .tabs { display: none; }
+      .js .tabs { display: flex; }
       .tab { min-height: 44px; border-radius: var(--r-control); padding: 0 16px; font-size: 13px; }
       .tab[aria-selected="true"] { background: var(--hover); color: var(--fg); border-color: var(--fg); font-weight: 500; }
       .tabs:has(+ .ver:not([hidden])) { margin-bottom: 12px; }
@@ -373,11 +377,12 @@
               <h1>Only the seconds you need</h1>
               <p class="sub">Stop downloading two-hour videos for forty seconds. Paste a link, mark the moments, and Clipr downloads just those.</p>
               <div class="cta-row"><a class="btn-dark dl" id="dl-hero" href="https://github.com/xxxxxLiam/clipr/releases/latest"><span class="glyph" aria-hidden="true"></span><span class="dl-what">Download Clipr</span></a></div>
-        <p class="also"><span class="dl-others">Also for <a href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-Windows-x64-Setup.exe">Windows</a> and <a href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-Linux-x64.AppImage">Linux</a></span></p>
               <p class="phone-note" id="desktop-note" hidden><b>Clipr is a desktop app. Open this page on your computer</b> to get it.</p>
+            <p class="phone-note" hidden><b>Clipr is a desktop app. Open this page on your computer</b> to get it.</p>
+        <p class="also"><span class="dl-others">Also for <a href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-Windows-x64-Setup.exe">Windows</a> and <a href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-Linux-x64.AppImage">Linux</a></span></p>
             </div>
             <div class="stage">
-              <div class="win lit"><img src="docs/screenshot.png" width="2880" height="1800" alt="The Clipr workspace: your videos on the left, the video in the middle with a timeline below it showing a 42-second range marked from 1:12:04 to 1:12:46, a Clip button with an editor menu beside it, and the clips waiting to be made on the right." /></div>
+              <div class="win lit"><picture><source type="image/webp" srcset="docs/screenshot.webp" /><img src="docs/screenshot.png" width="2880" height="1800" alt="The Clipr workspace: your videos on the left, the video in the middle with a timeline below it showing a 42-second range marked from 1:12:04 to 1:12:46, a Clip button with an editor menu beside it, and the clips waiting to be made on the right." /></picture></div>
               <div class="pin" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="#5FD8CA" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg><span><b>0:42</b> of 2:14:33 downloads</span></div>
             </div>
           </div>
@@ -386,19 +391,19 @@
         <section class="band" id="how">
           <div class="three">
             <div><span class="ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M0 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2h2a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2H2a2 2 0 0 1-2-2zm5 10v2a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-2v5a2 2 0 0 1-2 2zm6-8V2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h2V6a2 2 0 0 1 2-2z"/></svg></span><h2 class="h3">Several moments, one file</h2><p>A line from minute 3 and an answer from minute 71 come down joined, in order, as one clip.</p></div>
-            <div><span class="ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M3.5 3.5c-.614-.884-.074-1.962.858-2.5L8 7.226 11.642 1c.932.538 1.472 1.616.858 2.5L8.81 8.61l1.556 2.661a2.5 2.5 0 1 1-.794.637L8 9.73l-1.572 2.177a2.5 2.5 0 1 1-.794-.637L7.19 8.61zm2.5 10a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0m7 0a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0"/></svg></span><h2 class="h3">Only the part you mark</h2><p>Set in and out. Clipr fetches that section and nothing else, so a two-hour podcast costs you seconds.</p></div>
+            <div><span class="ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M3.5 3.5c-.614-.884-.074-1.962.858-2.5L8 7.226 11.642 1c.932.538 1.472 1.616.858 2.5L8.81 8.61l1.556 2.661a2.5 2.5 0 1 1-.794.637L8 9.73l-1.572 2.177a2.5 2.5 0 1 1-.794-.637L7.19 8.61zm2.5 10a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0m7 0a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0"/></svg></span><h2 class="h3">Only the part you mark</h2><p>Set in and out. Clipr fetches that section and nothing else, so a two-hour podcast costs you seconds. Clips run up to 10 minutes each.</p></div>
             <div><span class="ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/><path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/></svg></span><h2 class="h3">Straight to your editor</h2><p>Open the clip in <b>Final Cut Pro</b>, <b>Premiere Pro</b>, <b>DaVinci Resolve</b> or <b>CapCut</b> from the Clip menu.</p></div>
           </div>
         </section>
 
         <section class="block">
-          <div class="sec-head"><h2>Why clippers switch</h2><p>Other downloaders take the whole video, but Clipr takes only the moments you mark.</p></div>
+          <div class="sec-head"><h2>Why clippers switch</h2><p>Many downloaders take the whole video, but Clipr takes only the moments you mark.</p></div>
           <div class="split">
             <div class="before">
-              <span class="lbl">The usual way</span>
+              <span class="lbl">Many downloaders</span>
               <h3>Download the whole video</h3>
               <div class="bar" aria-hidden="true"><span style="width:100%"></span></div>
-              <ul><li>2:14:33 of video to get two moments</li><li>Ads before every download</li><li>Find and cut them again in your editor</li></ul>
+              <ul><li>2:14:33 of video to get two moments</li><li>Ads on many free sites</li><li>Find and cut them again in your editor</li></ul>
             </div>
             <div class="after">
               <span class="lbl">With Clipr</span>
@@ -498,9 +503,9 @@
             <span class="appicon" aria-hidden="true"><svg width="40" height="40" viewBox="0 0 64 64"><use href="#mflat"/></svg></span>
             <h2 class="big">Get every campaign's clips done sooner</h2>
             <p>Free, including paid client work. Runs on your computer; nothing is uploaded.</p>
+            <p class="fine">Sign in to YouTube once for 1080p. Without it, clips come down at 360p.</p>
             <div class="cta-row"><a class="btn-dark dl" id="dl-final" href="https://github.com/xxxxxLiam/clipr/releases/latest"><span class="glyph" aria-hidden="true"></span><span class="dl-what">Download Clipr</span></a></div>
         <p class="also"><span class="dl-others">Also for <a href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-Windows-x64-Setup.exe">Windows</a> and <a href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-Linux-x64.AppImage">Linux</a></span></p>
-            <p class="phone-note" hidden><b>Clipr is a desktop app. Open this page on your computer</b> to get it.</p>
             <div class="ticker" aria-hidden="true"><div class="track"><div class="grp"><span><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>No ads</span><span><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>No account</span><span><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>Nothing uploaded</span><span><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>Free for client work</span><span><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>macOS and Windows</span><span><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>No ads</span><span><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>No account</span><span><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>Nothing uploaded</span><span><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>Free for client work</span><span><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>macOS and Windows</span></div><div class="grp"><span><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>No ads</span><span><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>No account</span><span><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>Nothing uploaded</span><span><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>Free for client work</span><span><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>macOS and Windows</span><span><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>No ads</span><span><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>No account</span><span><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>Nothing uploaded</span><span><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>Free for client work</span><span><svg width="16" height="16" viewBox="0 0 16 16" fill="#F2F5F6" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>macOS and Windows</span></div></div></div>
           </div>
         </section>

@@ -55,7 +55,7 @@ check("only Clean Cut colours in the page CSS", [...html.matchAll(/#[0-9a-f]{6}\
 check("editors named as plain text, four of them", ["Final Cut Pro", "Premiere Pro", "DaVinci Resolve", "CapCut"].every((e) => new RegExp(`<b>${e}</b>`).test(html)));
 check("ticker is decoration only (aria-hidden) and stops under reduced motion", /class="ticker" aria-hidden="true"/.test(html) && /prefers-reduced-motion[^}]*\.track \{ animation: none/.test(html));
 
-// ---- static: colours are the Clean Cut tokens (CLAUDE.md on rebuild/canvas)
+// ---- static: colours are the Clean Cut tokens (the app design tokens)
 const tok = { bg: "#0a0d0f", panel: "#121619", raised: "#181d21", hover: "#232a2f", fg: "#f2f5f6", "fg-dim": "#94a0a5", disabled: "#8b979c", ice: "#5fd8ca", frost: "#b8e4ea", error: "#ff6363" };
 check("page colour tokens are the Clean Cut values", Object.entries(tok).every(([k, v]) => new RegExp(`--${k}: ${v};`).test(html)));
 check("no old red accent: error red is not used as a fill or accent", !/--accent/.test(html) && !/--error\)/.test(html.replace(/\.vis \.s\.bad \{[^}]*\}/,"").replace(/<svg[^>]*class="bad"[\s\S]*?<\/svg>/g,"")) && !/FF6363/i.test(readme + read("logo.svg")));
@@ -66,6 +66,10 @@ check("footer credit links to idksolutions.co.za (not .org)", /Proudly developed
 check("message match: title, description and share text carry the hero promise, not the transcript feature", /forty seconds/.test((html.match(/name="description" content="([^"]*)"/)||[])[1]||"") && /forty seconds/.test((html.match(/og:description" content="([^"]*)"/)||[])[1]||"") && /only the seconds you need/i.test((html.match(/<title>([^<]*)/)||[])[1]||"") && !/transcript/.test((html.match(/og:description" content="([^"]*)"/)||[])[1]||""));
 check("install copy is plain language: no 'certificate' or '&&' explainer", !/paid (Windows )?certificate/.test(html) && !/<code>&amp;&amp;<\/code> means/.test(html));
 check("lockup C in header and footer: five outlined paths each (mark Frost + Ice, Clip, r stem, Ice r-cut), no old block-stem r", (html.match(/<svg class="lockup"[^>]*viewBox="0 0 436.92 144.29">(?:<path fill="#(?:B8E4EA|5FD8CA|F2F5F6)" d="[^"]+"\/>){5}<\/svg>/gi) || []).length === 2 && !/class="cutr"/.test(html));
+check("run 2 G2-1: the page states the 10-minute clip cap", /up to 10 minutes/i.test(html));
+check("run 2 G2-3: the page says sign-in gets 1080p and unsigned is 360p", /Sign in to YouTube once for 1080p/.test(html) && /360p/.test(html));
+check("run 2 G2-2: comparison claims are qualified (Many downloaders, ads on many sites)", /Many downloaders take the whole video/.test(html) && /Ads on many free sites/.test(html) && !/Ads before every download/.test(html) && !/Other downloaders take/.test(html));
+check("run 2 G2-7: hero image served as WebP under 300 KB with PNG fallback", /<picture><source type="image\/webp" srcset="docs\/screenshot\.webp"/.test(html) && fs.statSync(path.join(ROOT, "docs/screenshot.webp")).size < 300 * 1024 && fs.existsSync(path.join(ROOT, "docs/screenshot.png")));
 check("install notes are cards, not loose paragraphs", (html.match(/class="(note|tile)[ "]/g) || []).length >= 4 && !/<div class="notes">\s*<p>/.test(html));
 check("version line sits below the tabs, centred", /role="tablist"[\s\S]*?<\/div>\s*<p class="ver" id="ver"/.test(html) && /\.ver \{ text-align: center/.test(html));
 
@@ -132,6 +136,8 @@ check("PowerShell line does not hard-code the filename", !/Unblock-File[^<]*Setu
     const { page, ctx } = await open(PHONE, 375);
     const note = page.locator("#desktop-note");
     check("phone UA shows the desktop note", (await note.isVisible()) && /Clipr is a desktop app\. Open this page on your computer/.test(await note.innerText()));
+    const tg = await page.evaluate(() => ({ lock: document.querySelector(".lockup-link").offsetHeight, tabs: [...document.querySelectorAll(".tab")].map((e) => e.offsetHeight), noteFirst: !!(document.querySelector("#desktop-note").compareDocumentPosition(document.querySelector(".hero-copy .also")) & Node.DOCUMENT_POSITION_FOLLOWING) }));
+    check("run 2 G2-5: phone note comes before the installer links, lockup and tabs are at least 44px", tg.noteFirst && tg.lock >= 44 && tg.tabs.every((h) => h >= 44), JSON.stringify(tg));
     check("phone keeps the download links (all three) and drops the big button", (await page.locator(".also a").count()) >= 6 && !(await page.locator(".cta-row").first().isVisible()));
     await ctx.close();
   }
@@ -145,6 +151,7 @@ check("PowerShell line does not hard-code the filename", !/Unblock-File[^<]*Setu
     const page = await ctx.newPage();
     await page.goto(url);
     const all = await Promise.all(["mac", "win", "linux"].map((k) => page.locator("#panel-" + k).isVisible()));
+    check("run 2 G2-4: JavaScript off hides the dead tab buttons", !(await page.locator(".tabs").isVisible()));
     check("JavaScript off: all three install panels show, download goes to the releases page", all.every(Boolean) && (await page.locator("#dl-hero").getAttribute("href")).endsWith("/releases/latest"));
     await ctx.close();
   }

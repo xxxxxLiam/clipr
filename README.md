@@ -39,7 +39,7 @@ Clipr is shaped around that loop rather than around a single download.
 | | |
 |---|---|
 | **One file, several moments** | Mark 1:00–2:00 and 10:00–11:00 and get **one** download containing both, joined in order. |
-| **Only the part you mark** | Set in and out. Clipr fetches that section and nothing else, so a two-hour podcast costs you seconds. |
+| **Only the part you mark** | Set in and out. Clipr fetches that section and nothing else, so a two-hour podcast costs you seconds. Clips run up to 10 minutes each. |
 | **Transcript-first** | Read the transcript to find the moment and jump straight to it. Long transcripts stay responsive — only what you can see is drawn. |
 | **Campaigns** | Several clients a day, each with its own folders, naming and clip bank. Nothing crosses between them. |
 | **Clip bank** | Import a block of timestamps once per video, categorise them, give them tiers, and work down the list. |
