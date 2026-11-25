@@ -168,10 +168,19 @@ check("PowerShell line does not hard-code the filename", !/Unblock-File[^<]*Setu
     const before = await page.evaluate(() => getComputedStyle(document.querySelector(".final-card")).opacity);
     check("scroll-in motion: closing card waits until scrolled to", before === "0");
     await page.evaluate(() => document.querySelector(".final-card").scrollIntoView());
-    await page.waitForTimeout(1400);
+    await page.waitForTimeout(2800);
     check("scroll-in motion: closing card appears once scrolled to", (await page.evaluate(() => getComputedStyle(document.querySelector(".final-card")).opacity)) === "1");
     const tk = await page.evaluate(() => { const tr = document.querySelector(".final-card .track"), g = tr.querySelectorAll(".grp"), tw = document.querySelector(".final-card .ticker").clientWidth; return { n: g.length, tr: tr.getBoundingClientRect().width, g0: g[0] && g[0].getBoundingClientRect().width, g1: g[1] && g[1].getBoundingClientRect().width, tw }; });
     check("ticker loops seamlessly: two identical groups, each wider than the strip, so -50% lands exactly on the start", tk.n === 2 && Math.abs(tk.g0 - tk.g1) < 0.5 && Math.abs(tk.tr - 2 * tk.g0) < 0.5 && tk.g0 >= tk.tw);
+    await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+    await page.waitForTimeout(300);
+    await page.mouse.move(700, 400);
+    await page.mouse.wheel(0, 500);
+    await page.waitForTimeout(60);
+    const y1 = await page.evaluate(() => scrollY);
+    await page.waitForTimeout(900);
+    const y2 = await page.evaluate(() => scrollY);
+    check("momentum scrolling: after the wheel stops the page keeps gliding, and covers the flick", y1 > 0 && y2 > y1 + 100 && y2 >= 600);
     check("parallax: hero window moves with scroll", (await page.evaluate(() => document.documentElement.style.getPropertyValue("--p"))) !== "0.000");
     await ctx.close();
   }
