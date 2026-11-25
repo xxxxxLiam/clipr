@@ -111,10 +111,30 @@ EXTRA_CSS = """
       .prose a.wn-pill:hover { background: var(--hover); }
       .wn-num { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--hairline-strong); font-size: 12px; color: var(--fg); }
       .wn-sections { margin-top: 32px; border-top: 1px solid var(--hairline); }
-      .wn-sec { display: grid; grid-template-columns: 56px 1fr; gap: 0 16px; padding: 32px 0; border-bottom: 1px solid var(--hairline); scroll-margin-top: 96px; }
-      .wn-sec .wn-num { width: 32px; height: 32px; font-size: 13px; }
-      .wn-sec h3 { margin: 0; font-size: 20px; font-weight: 500; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-      .wn-sec p { margin: 8px 0 0; font-size: 15px; line-height: 1.7; color: var(--fg-dim); max-width: 640px; }
+      .wn-sec { padding: 48px 0; border-bottom: 1px solid var(--hairline); scroll-margin-top: 96px; }
+      .wn-sec-head { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+      .wn-sec .wn-num { width: 32px; height: 32px; font-size: 13px; flex: none; }
+      .wn-sec h3 { margin: 0; font-size: 28px; font-weight: 500; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+      .wn-sec p { margin: 16px 0 0; font-size: 15px; line-height: 1.7; color: var(--fg-dim); max-width: 640px; }
+      .wn-vis { margin: 32px 0 0; padding: 32px; background: var(--panel); border: 1px solid var(--hairline); border-radius: var(--r-panel); overflow: hidden; }
+      .wn-vis figcaption { margin-top: 24px; font-size: 12px; color: var(--fg-dim); }
+      .v-bar { display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 48px; padding: 0 16px; background: var(--raised); border: 1px solid var(--hairline); border-radius: var(--r-control); font-size: 13px; }
+      .v-bar b { font-weight: 500; }
+      .v-pill { display: inline-flex; align-items: center; gap: 12px; color: var(--fg-dim); white-space: nowrap; }
+      .v-pill b { color: var(--fg); }
+      .v-prog { display: block; width: 96px; height: 4px; border-radius: var(--r-chip); background: var(--hover); overflow: hidden; }
+      .v-prog i { display: block; height: 100%; width: 42%; background: var(--frost); }
+      .v-skel { margin-top: 16px; display: grid; gap: 12px; }
+      .v-skel i { display: block; height: 12px; border-radius: var(--r-chip); background: var(--hover); }
+      .v-ruler { position: relative; height: 56px; background: var(--raised); border: 1px solid var(--hairline); border-radius: var(--r-control); overflow: hidden; }
+      .v-range { position: absolute; top: 0; bottom: 0; left: 58%; right: 0; background: var(--hover); border-left: 2px solid var(--frost); }
+      .v-range::after { content: ""; position: absolute; top: 0; bottom: 0; right: 0; width: 2px; background: var(--fg-dim); }
+      .v-cap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 12px; font-size: 13px; color: var(--fg-dim); }
+      .v-cap b { color: var(--fg); font-weight: 500; }
+      .v-rows { border: 1px solid var(--hairline); border-radius: var(--r-control); background: var(--raised); }
+      .v-row { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 16px; font-size: 13px; color: var(--fg-dim); }
+      .v-row + .v-row { border-top: 1px solid var(--hairline); }
+      .v-row b { color: var(--fg); font-weight: 500; }
       .wn-all > summary, .wn-row > summary { cursor: pointer; list-style: none; display: flex; align-items: center; min-height: 44px; color: var(--fg); font-size: 13px; }
       .wn-all > summary::-webkit-details-marker, .wn-row > summary::-webkit-details-marker { display: none; }
       .wn-all { margin-top: 32px; }
@@ -140,7 +160,7 @@ EXTRA_CSS = """
       .wn-row .wn-groups { grid-template-columns: 1fr; }
       .wn-dls { display: flex; gap: 8px 16px; flex-wrap: wrap; margin-top: 8px; font-size: 13px; }
       .wn-dls a { color: var(--fg); text-decoration: underline; text-underline-offset: 3px; display: inline-flex; min-height: 44px; align-items: center; }
-      @media (max-width: 760px) { .wn-sec { grid-template-columns: 40px 1fr; } .wn-sec .wn-num { width: 28px; height: 28px; } .wn-title h2 { font-size: 28px; } .wn-row > summary { padding: 8px 16px; gap: 4px 16px; grid-template-columns: 1fr auto; } .wn-row > summary b { grid-column: 1 / -1; } .wn-row .body { padding: 0 16px 16px; } }
+      @media (max-width: 760px) { .wn-sec { padding: 32px 0; } .wn-sec h3 { font-size: 24px; } .wn-vis { padding: 16px; } .wn-title h2 { font-size: 28px; } .wn-row > summary { padding: 8px 16px; gap: 4px 16px; grid-template-columns: 1fr auto; } .wn-row > summary b { grid-column: 1 / -1; } .wn-row .body { padding: 0 16px 16px; } }
       .status { color: var(--fg-dim); font-size: 15px; padding: 24px 0; }
       .rail-note { color: var(--fg-dim); font-size: 13px; margin-top: 16px; }
       @media (max-width: 1040px) { .p-hero { padding: 64px 24px 80px; } .p-body { padding: 16px 24px 64px; } }
@@ -323,6 +343,11 @@ JS_RELEASES = r"""
 JS_WHATS_NEW = r"""
       (function () {
         var NOTES = __NOTES__;
+        var VIS = {
+          update: '<div class="v-bar"><b>Clipr</b><span class="v-pill">Downloading update <b>42%</b><span class="v-prog"><i></i></span></span></div><div class="v-skel"><i style="width:72%"></i><i style="width:58%"></i><i style="width:64%"></i></div>',
+          outpoint: '<div class="v-ruler"><span class="v-range"></span></div><div class="v-cap"><span>Out point set past the end</span><span><b>Stops at the end of the video</b></span></div>',
+          fresh: '<div class="v-rows"><div class="v-row"><b>Open Clipr for the first time</b><span>No new folders in Downloads</span></div><div class="v-row"><b>Save your first clip</b><span>The folder is made, with the clip inside</span></div></div>'
+        };
         var API = "https://api.github.com/repos/xxxxxLiam/clipr/releases?per_page=30";
         var ASSETS = [["macOS", "Clipr-macOS-AppleSilicon.dmg"], ["Windows", "Clipr-Windows-x64-Setup.exe"], ["Linux", "Clipr-Linux-x64.AppImage"]];
         var DEV = /^(refactor|chore|test|docs|ci|build)\b|^fix\(ci\)/i;
@@ -378,9 +403,11 @@ JS_WHATS_NEW = r"""
             var secs = el("div", { "class": "wn-sections" });
             e.highlights.slice(0, 3).forEach(function (x, i) {
               var d = el("section", { "class": "wn-sec", id: "wn-h" + (i + 1) });
-              d.appendChild(el("span", { "class": "wn-num" }, String(i + 1)));
-              var body = el("div"), h3 = el("h3", {}, x.title); h3.appendChild(el("span", { "class": "chip" }, x.tag));
-              body.appendChild(h3); body.appendChild(el("p", {}, x.text)); d.appendChild(body); secs.appendChild(d);
+              var hd = el("div", { "class": "wn-sec-head" }), h3 = el("h3", {}, x.title);
+              hd.appendChild(el("span", { "class": "wn-num" }, String(i + 1))); hd.appendChild(h3); hd.appendChild(el("span", { "class": "chip" }, x.tag));
+              d.appendChild(hd); d.appendChild(el("p", {}, x.text));
+              if (x.visual && VIS[x.visual]) { var fg = el("figure", { "class": "wn-vis" }); fg.innerHTML = VIS[x.visual]; fg.appendChild(el("figcaption", {}, "Illustration of the feature, not a screenshot.")); d.appendChild(fg); }
+              secs.appendChild(d);
             });
             c.appendChild(secs);
           }
