@@ -240,10 +240,19 @@
       .grain::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; mix-blend-mode: overlay; opacity: .85; background-size: 240px;
         background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 1.6 -.3'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
       .grain-frost { background: radial-gradient(120% 70% at 50% 100%, #b8e4ea 0%, rgba(184,228,234,0) 70%), linear-gradient(180deg, #141f22 0%, #2a4247 40%, #6f959b 80%, #b8e4ea 100%); }
-      .grain-arc { background:
-        radial-gradient(ellipse 62% 30% at 50% 100%, #5fd8ca 0%, rgba(95,216,202,.7) 30%, rgba(95,216,202,.25) 62%, rgba(95,216,202,0) 100%),
-        #0a0d0f; }
-      .final-card.grain-arc::before { background: radial-gradient(ellipse 62% 30% at 50% 100%, rgba(184,228,234,0) 94%, rgba(184,228,234,.75) 97%, rgba(184,228,234,0) 100%); }
+      /* Closing card: smooth Ice gradient with a Frost sunrise (site-only, like the hero). Dark text for contrast. */
+      .grain-ice { background:
+        radial-gradient(ellipse 60% 50% at 50% 100%, #b8e4ea 0%, rgba(184,228,234,.75) 32%, rgba(184,228,234,0) 100%),
+        linear-gradient(180deg, rgba(10,13,15,.3) 0%, rgba(10,13,15,0) 65%),
+        #5fd8ca; }
+      .final-card.grain-ice::before { content: none; }
+      .final { padding: 24px; }
+      .final-card.grain-ice { border-radius: var(--r-panel); color: var(--bg); }
+      .final-card.grain-ice .big, .final-card.grain-ice > p, .final-card.grain-ice .also, .final-card.grain-ice .also a { color: var(--bg); }
+      .final-card.grain-ice .phone-note { background: var(--bg); color: var(--fg); }
+      .final-card.grain-ice .appicon { box-shadow: 0 0 0 1px rgba(10,13,15,.2); }
+      .final-card.grain-ice .ticker { margin: 160px -48px 0; background: transparent; color: var(--bg); border-top: 1px solid rgba(10,13,15,.2); }
+      .final-card.grain-ice .ticker svg path { fill: #0a0d0f; }
       .hero-wrap { padding: 0; }
       .hero-c { border: 0; border-radius: 0; padding: 96px 48px 64px; background-color: var(--panel); }
       .hero-c .hero-copy, .hero-c .stage { z-index: 2; }
@@ -251,8 +260,7 @@
       .hero-c .phone-note { color: var(--fg); }
       .stage { margin-top: 64px; }
       .win { border-radius: var(--r-panel); border-bottom: 1px solid var(--hairline-strong); box-shadow: 0 0 0 1px rgba(255,255,255,.18); }
-      .final { padding: 0; }
-      .final-card { border: 0; border-radius: 0; padding: 96px 48px 0; text-align: center; }
+      .final-card { border: 0; padding: 96px 48px 0; text-align: center; }
       .final-card > * { position: relative; z-index: 2; }
       .final-card .big { font-size: 56px; line-height: 1.2; max-width: 820px; margin: 0 auto; }
       .final-card > p { color: var(--fg); font-size: 20px; margin-top: 16px; }
@@ -402,7 +410,7 @@
         </section>
 
         <section class="final">
-          <div class="final-card grain grain-arc">
+          <div class="final-card grain grain-ice">
             <span class="appicon" aria-hidden="true"><svg width="40" height="40" viewBox="0 0 64 64"><use href="#mflat"/></svg></span>
             <h2 class="big">Get every campaign's clips done sooner</h2>
             <p>Free, including paid client work. Runs on your computer; nothing is uploaded.</p>

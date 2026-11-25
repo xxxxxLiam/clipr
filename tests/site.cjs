@@ -66,6 +66,8 @@ check("footer credit links to idksolutions.co.za (not .org)", /Proudly developed
 check("install notes are cards, not loose paragraphs", (html.match(/class="note"/g) || []).length >= 4 && !/<div class="notes">\s*<p>/.test(html));
 check("version line sits below the tabs, centred", /role="tablist"[\s\S]*?<\/div>\s*<p class="ver" id="ver"/.test(html) && /\.ver \{ text-align: center/.test(html));
 
+check("closing card is an inset Ice gradient with a Frost sunrise and dark text", /grain-ice/.test(html) && /#b8e4ea 0%[^;]*\),\s*linear-gradient[^;]*#5fd8ca/.test(html) && /\.final-card\.grain-ice \.big[^}]*color: var\(--bg\)/.test(html));
+
 // ---- static: download guidance (G-9)
 check("PowerShell line does not hard-code the filename", !/Unblock-File[^<]*Setup\.exe"/.test(html) && /Clipr-Windows-x64-Setup\*\.exe/.test(html));
 
