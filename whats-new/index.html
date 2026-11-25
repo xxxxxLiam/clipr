@@ -632,7 +632,7 @@
       (function () {
         var NOTES = {
   "19.2": {
-    "intro": "Build one clip from several parts of a video, drag sections to move or join them, plus a new look for every icon.",
+    "intro": "Build one clip from several sections, join them by touching, type exact In and Out times, and a new look for every icon.",
     "highlights": [
       {
         "tag": "New",
@@ -642,38 +642,48 @@
         "shot": "v192-app.webp",
         "w": 1360,
         "h": 820,
-        "alt": "The Clipr window with two locked sections on the timeline, the stretch between them folded away, and a + section button next to Clip.",
-        "text": "Press + section to lock the range you picked and start another. Each section shows on the timeline and in the footer with its own length, and Clip joins them into one clip.",
+        "alt": "The Clipr window with two locked sections on the timeline, the stretch between them folded away, new tool icons and a + section button next to Clip.",
+        "text": "Press + section to lock the range you picked and start another. Each section shows on the timeline and in the footer with its own length, and Clip joins them into one clip. The audio lane now shows only the original, with no dub lanes.",
         "caption": "The real app with sample data."
       },
       {
         "tag": "New",
-        "title": "Drag a section, let go to join",
+        "title": "Touch a section and they join",
         "eyebrow": "Timeline",
         "layout": "split",
         "shot": "v192-merge.webp",
         "w": 630,
         "h": 210,
         "alt": "A section dragged over another one, with a light outline around both, grips on the edges and the note Joins when you let go.",
-        "text": "Drag a range with the Pointer and a small pill shows its exact start and end times. Drop it on another section and a light outline shows the result: they join into one. Grips on the edges fine tune each end.",
+        "text": "Drag a range with the Pointer and a small pill shows its exact start and end times. Drop it on another section, or draw or resize a range until it touches one, and a light outline shows the result: they join into one. The edges have grips with hover and press looks.",
         "caption": "Joins when you let go.",
         "glow": true
       },
       {
-        "tag": "Improved",
-        "title": "Campaigns live in Settings",
-        "eyebrow": "Settings",
+        "tag": "New",
+        "title": "Type the start and end times",
+        "eyebrow": "Footer",
         "layout": "split-flip",
-        "shot": "v192-settings.webp",
-        "w": 440,
-        "h": 470,
-        "alt": "The Settings drawer listing the campaigns Acme and Nova, each with clips a day and a gear icon.",
-        "text": "Settings now lists every campaign with its daily clips and a gear for its own settings. The campaign menu in the top bar has the same gear on each row, and the separate settings line is gone.",
-        "caption": "Settings, Campaigns.",
+        "shot": "v192-inout.webp",
+        "w": 640,
+        "h": 300,
+        "alt": "The timeline and footer, with the In and Out times as two fields beside the clip length and the new tool icons above the timeline.",
+        "text": "In and Out in the footer are now fields. Type or paste a time like 1:12:04 and the range moves to it. The tools above the timeline have new icons: the Pointer faces left, Range reads as a range, and Hand stays open.",
+        "caption": "In and Out are fields.",
         "glow": true
       }
     ],
     "cards": [
+      {
+        "tag": "Improved",
+        "title": "Campaigns in Settings",
+        "shot": "v192-settings.webp",
+        "w": 440,
+        "h": 240,
+        "alt": "The Settings drawer listing the campaigns Acme and Nova with clips a day, each row ending in a chevron.",
+        "text": "Settings lists every campaign with its daily clips. Each row ends in a chevron that opens that campaign. The gear stays in the campaign menu in the top bar.",
+        "caption": "Sample data."
+      },
       {
         "tag": "Improved",
         "title": "Languages dropdown",
@@ -681,25 +691,15 @@
         "w": 440,
         "h": 220,
         "alt": "A Languages dropdown open with Original ticked and Spanish unticked.",
-        "text": "Languages is now a dropdown with tick boxes, shown only when the video has dubs. The separate Clips folder row is gone, since each campaign has its own folder.",
-        "caption": "Sample data."
-      },
-      {
-        "tag": "Improved",
-        "title": "New icons and update button",
-        "shot": "v192-update.webp",
-        "w": 560,
-        "h": 190,
-        "alt": "The top bar with a bright Restart app to update button and the new sidebar, help and settings icons.",
-        "text": "Every icon in Clipr has been redrawn with a cleaner, more familiar set. A new version shows as a bright Restart app to update button, and if a clip is being made it waits and says Restarts after the clip. On Mac it links to the download instead.",
+        "text": "Languages is a dropdown with tick boxes, shown only when the video has dubs. The separate Clips folder row is gone, since each campaign has its own folder.",
         "caption": "Sample data."
       }
     ],
     "changes": [
       {
         "group": "New",
-        "title": "Merge on release",
-        "text": "Letting go of a range on top of another joins them into one section."
+        "title": "Merge on touch",
+        "text": "A range you draw, resize or drop on another section joins it into one."
       },
       {
         "group": "New",
@@ -707,44 +707,54 @@
         "text": "While you move a range, a small pill over it shows its start and end times."
       },
       {
+        "group": "New",
+        "title": "One Final Cut project",
+        "text": "Each clip gets one Final Cut project with all its languages inside."
+      },
+      {
+        "group": "Improved",
+        "title": "Preview",
+        "text": "Preview plays only the range you picked, not the whole video."
+      },
+      {
+        "group": "Improved",
+        "title": "Zoom",
+        "text": "Zooming out starts from the left edge of the timeline, never the middle."
+      },
+      {
+        "group": "Improved",
+        "title": "Handles",
+        "text": "Range handles light up when you hover them and change when you press."
+      },
+      {
+        "group": "Improved",
+        "title": "No dub lanes",
+        "text": "The timeline shows one audio lane instead of a lane for every dub."
+      },
+      {
         "group": "Improved",
         "title": "Icons",
-        "text": "All icons are now Bootstrap Icons, at the same sizes and colours as before."
-      },
-      {
-        "group": "Improved",
-        "title": "Selection outline",
-        "text": "The outline sits exactly on the picture strip, with grips on both edges."
-      },
-      {
-        "group": "Improved",
-        "title": "Settings",
-        "text": "Settings lists your campaigns, and Languages is a dropdown. The Clips folder row is gone."
-      },
-      {
-        "group": "Improved",
-        "title": "Top bar",
-        "text": "The link field's panel is no longer hidden behind the video."
+        "text": "All icons are now Bootstrap Icons, with new tool icons above the timeline."
       },
       {
         "group": "Improved",
         "title": "Updates",
-        "text": "Restart to update waits for a clip that is being made, and you can cancel the wait."
+        "text": "Restart to update waits for a clip being made, and you can cancel the wait."
       },
       {
         "group": "Improved",
-        "title": "Mac",
-        "text": "Mac never offers an automatic restart, so Update automatically is hidden there."
+        "title": "Pasted links",
+        "text": "A pasted link opens in the background, and a failed open says why."
+      },
+      {
+        "group": "Fixed",
+        "title": "Slow start",
+        "text": "A slow first run of a tool now says it is still checking, not that it failed."
       },
       {
         "group": "Fixed",
         "title": "Folders",
-        "text": "Clipr checks that your chosen folders can be written to and says so when they cannot."
-      },
-      {
-        "group": "Fixed",
-        "title": "Crash reports",
-        "text": "Crash reports now reach the right place so problems can be fixed faster."
+        "text": "Clipr checks that your chosen folders can be written to and says so if not."
       }
     ]
   },
