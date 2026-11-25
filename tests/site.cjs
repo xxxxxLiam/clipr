@@ -374,6 +374,18 @@ for (const [n, p] of Object.entries(NAMES)) check(`run 3: ${n} page exists`, !!p
     check("run 5 G3-1: an earlier version with nothing to say (empty after cleaning) is hidden, not shown as '0 changes'", !/11\.0\.0/.test(body) && !/\b0 changes\b/.test(body));
     check("run 4: each earlier version offers its three installers", (await page.locator(".wn-row").nth(1).locator(".wn-dls a").count()) === 3 && (await page.locator(".wn-row").nth(1).locator(".wn-dls a").first().getAttribute("href")).includes("/releases/download/v12.0.0/Clipr-macOS-AppleSilicon.dmg"));
     await ctx.close();
+    for (const w of [1440, 375]) {
+      const cv = await browser.newContext({ userAgent: MAC, viewport: { width: w, height: 900 }, reducedMotion: "reduce" });
+      await cv.route("https://api.github.com/**", (r) => r.fulfill({ json: [{ tag_name: "v19.0.0", published_at: "2026-11-25T11:04:56Z", draft: false, prerelease: false, body: "- x" }] }));
+      const pv = await cv.newPage();
+      await pv.goto(url + "whats-new/");
+      await pv.waitForSelector(".wn-latest");
+      const ok = await pv.evaluate(() => { const secs = [...document.querySelectorAll(".wn-sec")]; return secs.length === 3 && secs.every((x) => x.querySelector(".wn-sec-head .wn-num") && x.querySelector("h3") && x.querySelector("p") && x.querySelector("figure.wn-vis figcaption") && x.querySelector(".wn-vis").getBoundingClientRect().width >= Math.min(300, innerWidth - 80)); });
+      check("run 6 reference: at " + w + "px each numbered section of the newest release has its heading, copy and a large visual with an 'Illustration' caption", ok);
+      check("run 6 reference: the visuals add no sideways scroll at " + w + "px", (await pv.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)) <= 0);
+      if (w === 1440) { await pv.screenshot({ path: "/tmp/claude-0/wn-v19.png", fullPage: true }); }
+      await cv.close();
+    }
     const c2 = await browser.newContext({ userAgent: WIN, viewport: { width: 375, height: 900 }, reducedMotion: "reduce" });
     await c2.route("https://api.github.com/**", (r) => r.fulfill({ json: [{ tag_name: "v99.0.0", published_at: "2026-12-01T10:00:00Z", draft: false, prerelease: false, body: "- A new thing [skip release]\n- Another thing" }] }));
     const p2 = await c2.newPage();
