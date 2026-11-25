@@ -5,17 +5,20 @@
       {
         "tag": "New",
         "title": "Update progress",
-        "text": "While an update downloads, a small pill in the top bar shows how far along it is."
+        "text": "While an update downloads, a small pill in the top bar shows how far along it is.",
+        "visual": "update"
       },
       {
         "tag": "Improved",
         "title": "Out point past the end",
-        "text": "If you set an out point beyond the end of the video, it stops at the end with one dim line. An in point past the end is refused."
+        "text": "If you set an out point beyond the end of the video, it stops at the end with one dim line. An in point past the end is refused.",
+        "visual": "outpoint"
       },
       {
         "tag": "Fixed",
         "title": "Start fresh",
-        "text": "No folders are made in Downloads until a clip is saved, and the prompt asks only once per session."
+        "text": "No folders are made in Downloads until a clip is saved, and the prompt asks only once per session.",
+        "visual": "fresh"
       }
     ],
     "changes": [
