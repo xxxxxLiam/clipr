@@ -103,7 +103,6 @@ EXTRA_CSS = """
       .wn-date svg { width: 14px; height: 14px; flex: none; }
       .wn-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
       .wn-title { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-      .wn-patches { color: var(--fg-dim); font-size: 13px; }
       .wn-title h2 { margin: 0; font-size: 32px; font-weight: 500; letter-spacing: -0.01em; }
       .wn-row time { color: var(--fg-dim); font-size: 13px; }
       .wn-intro { margin: 16px 0 0; font-size: 16px; line-height: 1.7; color: var(--fg-dim); max-width: 640px; }
@@ -341,12 +340,11 @@ JS_WHATS_NEW = r"""
         }
         function entry(g) {
           var n = notesFor(g);
-          if (n) return { v: g.minor, intro: n.intro || "", highlights: n.highlights || [], cards: n.cards || [], changes: n.changes || [] };
+          if (n) return { v: String(g.tag_name).replace(/^v/, ""), intro: n.intro || "", highlights: n.highlights || [], cards: n.cards || [], changes: n.changes || [] };
           var seen = {}, rows = [];
           g.rels.forEach(function (x) { clean(x.body).forEach(function (t) { if (!seen[t]) { seen[t] = 1; rows.push({ group: "Changes", text: t }); } }); });
-          return { v: g.minor, highlights: [], changes: rows };
+          return { v: String(g.tag_name).replace(/^v/, ""), highlights: [], changes: rows };
         }
-        function patches(g) { return g.rels.slice().reverse().map(function (x) { return String(x.tag_name).replace(/^v/, ""); }); }
         function when(r) { return r.published_at ? new Date(r.published_at).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : ""; }
         function groups(changes) {
           var wrap = el("div", { "class": "wn-groups" });
@@ -401,7 +399,6 @@ JS_WHATS_NEW = r"""
           c.appendChild(dt);
           var h = el("div", { "class": "wn-head" }), t = el("div", { "class": "wn-title" });
           t.appendChild(el("h2", {}, "Version " + e.v)); t.appendChild(el("span", { "class": "chip ice" }, "Latest"));
-          if (r.rels.length > 1) t.appendChild(el("span", { "class": "wn-patches" }, "Includes " + patches(r).join(" and ")));
           h.appendChild(t);
           var a = el("a", { "class": "dl-mini dl", href: "../download/" }); a.appendChild(el("span", { "class": "glyph", "aria-hidden": "true" })); a.appendChild(el("span", { "class": "dl-what" }, "Download Clipr"));
           h.appendChild(a); c.appendChild(h);
@@ -444,7 +441,7 @@ JS_WHATS_NEW = r"""
           var s = el("summary"); s.appendChild(el("b", {}, "Version " + e.v)); s.appendChild(el("time", { datetime: r.published_at || "" }, when(r)));
           s.appendChild(el("span", { "class": "count" }, plain ? "Improvements and fixes" : e.changes.length + (e.changes.length === 1 ? " change" : " changes")));
           s.appendChild(el("span", { "class": "more" }, "Show changes")); s.appendChild(el("span", { "class": "more less" }, "Hide changes")); d.appendChild(s);
-          var b = el("div", { "class": "body" }); if (r.rels.length > 1) b.appendChild(el("p", { "class": "wn-patches" }, "Includes " + patches(r).join(" and "))); if (e.changes.length) b.appendChild(groups(e.changes)); b.appendChild(installers(r)); d.appendChild(b);
+          var b = el("div", { "class": "body" }); if (e.changes.length) b.appendChild(groups(e.changes)); b.appendChild(installers(r)); d.appendChild(b);
           return d;
         }
         fetch(API, { headers: { Accept: "application/vnd.github+json" } })
