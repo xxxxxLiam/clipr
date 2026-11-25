@@ -37,7 +37,7 @@
         "alt": "The timeline and footer, with the In and Out times as two fields beside the clip length and the new tool icons above the timeline.",
         "text": "In and Out in the footer are now fields. Type or paste a time like 1:12:04 and the range moves to it. The tools above the timeline have new icons: the Pointer faces left, Range reads as a range, and Hand stays open.",
         "caption": "In and Out are fields.",
-        "glow": "violet"
+        "glow": true
       }
     ],
     "cards": [
@@ -178,7 +178,7 @@
         "alt": "The Sign in for 1080p page inside the Settings drawer, with three short steps.",
         "text": "Sign in for 1080p now lives in Settings, behind a gear icon, along with each campaign's export settings.",
         "caption": "Settings, Sign in for 1080p.",
-        "glow": "amber"
+        "glow": true
       }
     ],
     "cards": [
@@ -294,7 +294,7 @@
         "caption": "Your campaigns, bank and history go into a backup first.",
         "w": 600,
         "h": 440,
-        "glow": "frost"
+        "glow": true
       }
     ],
     "changes": [
