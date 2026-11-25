@@ -1,4 +1,159 @@
 {
+  "18.0.0": {
+    "intro": "Clearer clip failures, a space check before each clip, and Final Cut timelines that follow your look.",
+    "highlights": [
+      {
+        "tag": "New",
+        "title": "Checks before it fails",
+        "text": "Clipr checks the folder has room and can be written to before a clip starts, and says plainly if it can't."
+      },
+      {
+        "tag": "New",
+        "title": "Timeline size for Final Cut",
+        "text": "Pick vertical 9:16, same as the video, or from your look, under Your look in Settings."
+      },
+      {
+        "tag": "New",
+        "title": "Copy your clip list",
+        "text": "Copy as text or save a .txt from the Export and History menus."
+      }
+    ],
+    "changes": [
+      {
+        "group": "New",
+        "title": "Clip length per campaign",
+        "text": "An optional row in campaign settings, with a plain verdict in the export bar."
+      },
+      {
+        "group": "New",
+        "title": "Audio lane per language",
+        "text": "Each ticked audio language gets its own lane, and YouTube's control bar is hidden in the preview."
+      },
+      {
+        "group": "New",
+        "title": "Start fresh",
+        "text": "After updating from an older version, a one-time prompt offers a fresh start. Your data is backed up first."
+      },
+      {
+        "group": "Improved",
+        "title": "Failure rows",
+        "text": "Rows now say when a folder can't be written, a drive is missing, or a video is age-restricted or members-only."
+      },
+      {
+        "group": "Improved",
+        "title": "After a crash",
+        "text": "A note says so, with a dismiss button, and clears when the next clip finishes."
+      },
+      {
+        "group": "Improved",
+        "title": "Send report",
+        "text": "Reports go through the live report service, and the page confirms what was sent."
+      },
+      {
+        "group": "Improved",
+        "title": "Waiting for the transcript",
+        "text": "The transcript lane and tab show a quiet waiting state instead of looking empty."
+      },
+      {
+        "group": "Improved",
+        "title": "Timeline",
+        "text": "A rounded timeline card with the tools row on top and the export bar fixed at the bottom."
+      },
+      {
+        "group": "Fixed",
+        "title": "Frame rate",
+        "text": "Changing the timeline kind no longer resets the frame rate to 30."
+      },
+      {
+        "group": "Fixed",
+        "title": "Fit",
+        "text": "Fit keeps the ruler centred."
+      }
+    ]
+  },
+  "17.0.0": {
+    "intro": "Timeline fixes, and no empty folder made at launch.",
+    "highlights": [],
+    "changes": [
+      {
+        "group": "Improved",
+        "title": "Short timelines",
+        "text": "A short timeline scrolls its tracks under a sticky ruler."
+      },
+      {
+        "group": "Improved",
+        "title": "Cleaner launch",
+        "text": "Clipr no longer creates its data folder until it has something to save."
+      },
+      {
+        "group": "Fixed",
+        "title": "Select range key",
+        "text": "Select range is now D, keeping S free for skipping in review."
+      }
+    ]
+  },
+  "16.0.0": {
+    "intro": "A title bar that doubles as the top bar, new timeline tools, and a clear reason for every failure.",
+    "highlights": [
+      {
+        "tag": "New",
+        "title": "Timeline tools",
+        "text": "Select range, zoom and pinch, a pointer that scrubs, and scissors that drag a range."
+      },
+      {
+        "tag": "New",
+        "title": "Top bar is the title bar",
+        "text": "On Mac and Windows the top bar now doubles as the window's title bar."
+      },
+      {
+        "tag": "Improved",
+        "title": "Failures say why",
+        "text": "Removed video, bot check, rate limit, format gone and missing tools each get their own sentence."
+      }
+    ],
+    "changes": [
+      {
+        "group": "New",
+        "title": "Undo for the Clip button",
+        "text": "Undo now restores a moment made with the Clip button, and each clip keeps its own row name."
+      },
+      {
+        "group": "New",
+        "title": "Crash fallback page",
+        "text": "A second crash within a minute shows a simple page with Reopen, Send report and Copy details."
+      },
+      {
+        "group": "Improved",
+        "title": "Retry keeps your range",
+        "text": "A failed cut keeps its range. Retry re-cuts it, and Save for later banks it."
+      },
+      {
+        "group": "Improved",
+        "title": "Final Cut",
+        "text": "A picked look always applies, and an unreadable old look no longer blocks the move."
+      },
+      {
+        "group": "Improved",
+        "title": "Settings safety",
+        "text": "If the settings file is gone or empty, Clipr restores the kept copy and says so."
+      },
+      {
+        "group": "Improved",
+        "title": "Help and tips",
+        "text": "Tips on or off is shared by every video, and Help search covers transcript, speed, quota and zoom."
+      },
+      {
+        "group": "Fixed",
+        "title": "Zoom cap",
+        "text": "View menu Zoom In now obeys the zoom cap."
+      },
+      {
+        "group": "Fixed",
+        "title": "Left panels",
+        "text": "Back returns to the video you were on, and failed links are not saved."
+      }
+    ]
+  },
   "15.0.0": {
     "intro": "Clearer help, Final Cut layouts, and failures that tell you why.",
     "highlights": [
