@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="logo-lockup.svg" alt="" width="64" />
+<img src="logo.svg" alt="" width="64" />
 
 # Clipr
 
