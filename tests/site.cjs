@@ -109,7 +109,7 @@ for (const [n, p] of Object.entries(NAMES)) check(`run 3: ${n} page exists`, !!p
 {
   const need = ["How it works", "What&rsquo;s new", "Install help"];
   check("run 3: every page has the same nav (How it works, What's new, Install help) and the IDK Solutions credit", Object.values(pageHtml).every((t) => need.every((n) => t.includes(n)) && /Proudly developed by <a[^>]+href="https:\/\/idksolutions\.co\.za"/.test(t)));
-  check("run 3: footer links to the site's own Licence, Notices, Privacy and All versions", ["licence/", "notices/", "privacy/", "download/"].every((h) => html.includes(`href="${h}"`)) && /All versions/.test(html));
+  check("run 8: footer links to the site's own Licence, Notices, Privacy and What's new, and there is no separate All versions link (it is the same list as What's new)", ["licence/", "notices/", "privacy/", "whats-new/"].every((h) => html.includes(`href="${h}"`)) && !/All versions/.test(html));
   const ok = Object.entries(pageHtml).filter(([p]) => p).every(([p, t]) => /<link rel="canonical" href="https:\/\/xxxxxliam\.github\.io\/clipr\/[a-z-]+\/"/.test(t) && /<title>[^<]+ · Clipr<\/title>/.test(t) && /name="description"/.test(t) && /<h1>[^<]+<\/h1>/.test(t));
   check("run 3: inner pages have title, description, canonical and one h1", ok);
   const tokens = Object.entries(pageHtml).every(([p, t]) => [...t.matchAll(/--([a-z-]+): (#[0-9a-f]{6});/gi)].every((m) => tok[m[1]] === m[2].toLowerCase()));
@@ -445,22 +445,34 @@ for (const [n, p] of Object.entries(NAMES)) check(`run 3: ${n} page exists`, !!p
   }
   {
     const { page, ctx } = await openPage("download/", MAC, 1440);
-    await page.waitForSelector(".rel");
-    check("run 3: Download page shows the latest version line and lists only older versions below", /Version 15\.0\.0/.test(await page.locator("#ver").innerText()) && (await page.locator(".rel").count()) === 1 && /14\.0\.0/.test(await page.locator(".rel").innerText()));
+    await page.waitForSelector("#ver:not([hidden])");
+    check("run 8: Download page shows the latest version line and no version list of its own; older versions are one link to What's new", /Version 15\.0\.0/.test(await page.locator("#ver").innerText()) && (await page.locator(".rel").count()) === 0 && (await page.locator("#releases").count()) === 0 && (await page.locator('#older + p a[href="../whats-new/"]').count()) === 1);
     check("run 3: Download page tiles point at the three installers", (await page.locator(".facts a.os").evaluateAll((a) => a.map((x) => x.getAttribute("href").split("/").pop()))).join() === "Clipr-macOS-AppleSilicon.dmg,Clipr-Windows-x64-Setup.exe,Clipr-Linux-x64.AppImage");
     await ctx.close();
     const off = await browser.newContext({ userAgent: WIN, javaScriptEnabled: false });
     const pg = await off.newPage();
     await pg.goto(url + "download/");
-    check("run 3: Download page without JavaScript still shows the installers and says how to see older versions", (await pg.locator(".facts a.os").count()) === 3 && /Turn on JavaScript/.test(await pg.locator("noscript").first().innerHTML().catch(() => "")) || /Turn on JavaScript/.test(await pg.content()));
+    check("run 8: Download page without JavaScript still shows the three installers and the link to What's new for older versions", (await pg.locator(".facts a.os").count()) === 3 && (await pg.locator('#older + p a[href="../whats-new/"]').count()) === 1);
     await off.close();
+    {
+      const rc = await browser.newContext({ userAgent: MAC, viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
+      await rc.route("https://api.github.com/**", (r) => r.fulfill({ json: FEED }));
+      const rp = await rc.newPage();
+      await rp.goto(url + "download/#older");
+      await rp.waitForURL(/\/whats-new\/$/, { timeout: 8000 }).catch(() => {});
+      check("run 8: the old All versions address (download/#older) lands on What's new", /\/whats-new\/$/.test(rp.url()), rp.url());
+      await rc.close();
+    }
   }
   {
     const { page, ctx } = await openPage("download/", WIN, 1440);
     await page.route("https://api.github.com/**", (r) => r.abort());
     await page.reload();
+    await page.waitForLoadState("networkidle");
+    check("run 8: when the release feed cannot load, the Download page still shows the three installers", (await page.locator(".facts a.os").count()) === 3);
+    await page.goto(url + "whats-new/");
     await page.waitForSelector(".status:has-text('could not load')");
-    check("run 3: when the version list cannot load, the page says so and the installers still work", (await page.locator(".facts a.os").count()) === 3);
+    check("run 3: when the version list cannot load, What's new says so and points to the download page", /download page always has the newest version/.test(await page.locator(".status").first().innerText()));
     await ctx.close();
   }
   await browser.close();
