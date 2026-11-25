@@ -1,4 +1,121 @@
 {
+  "19.2": {
+    "intro": "Build one clip from several parts of a video, drag sections to move or join them, plus a new look for every icon.",
+    "highlights": [
+      {
+        "tag": "New",
+        "title": "Several sections in one clip",
+        "eyebrow": "Timeline",
+        "layout": "hero",
+        "shot": "v192-app.webp",
+        "w": 1360,
+        "h": 820,
+        "alt": "The Clipr window with two locked sections on the timeline, the stretch between them folded away, and a + section button next to Clip.",
+        "text": "Press + section to lock the range you picked and start another. Each section shows on the timeline and in the footer with its own length, and Clip joins them into one clip.",
+        "caption": "The real app with sample data."
+      },
+      {
+        "tag": "New",
+        "title": "Drag a section, let go to join",
+        "eyebrow": "Timeline",
+        "layout": "split",
+        "shot": "v192-merge.webp",
+        "w": 630,
+        "h": 210,
+        "alt": "A section dragged over another one, with a light outline around both, grips on the edges and the note Joins when you let go.",
+        "text": "Drag a range with the Pointer and a small pill shows its exact start and end times. Drop it on another section and a light outline shows the result: they join into one. Grips on the edges fine tune each end.",
+        "caption": "Joins when you let go.",
+        "glow": true
+      },
+      {
+        "tag": "Improved",
+        "title": "Campaigns live in Settings",
+        "eyebrow": "Settings",
+        "layout": "split-flip",
+        "shot": "v192-settings.webp",
+        "w": 440,
+        "h": 470,
+        "alt": "The Settings drawer listing the campaigns Acme and Nova, each with clips a day and a gear icon.",
+        "text": "Settings now lists every campaign with its daily clips and a gear for its own settings. The campaign menu in the top bar has the same gear on each row, and the separate settings line is gone.",
+        "caption": "Settings, Campaigns.",
+        "glow": true
+      }
+    ],
+    "cards": [
+      {
+        "tag": "Improved",
+        "title": "Languages dropdown",
+        "shot": "v192-languages.webp",
+        "w": 440,
+        "h": 220,
+        "alt": "A Languages dropdown open with Original ticked and Spanish unticked.",
+        "text": "Languages is now a dropdown with tick boxes, shown only when the video has dubs. The separate Clips folder row is gone, since each campaign has its own folder.",
+        "caption": "Sample data."
+      },
+      {
+        "tag": "Improved",
+        "title": "New icons and update button",
+        "shot": "v192-update.webp",
+        "w": 560,
+        "h": 190,
+        "alt": "The top bar with a bright Restart app to update button and the new sidebar, help and settings icons.",
+        "text": "Every icon in Clipr has been redrawn with a cleaner, more familiar set. A new version shows as a bright Restart app to update button, and if a clip is being made it waits and says Restarts after the clip.",
+        "caption": "Sample data."
+      }
+    ],
+    "changes": [
+      {
+        "group": "New",
+        "title": "Merge on release",
+        "text": "Letting go of a range on top of another joins them into one section."
+      },
+      {
+        "group": "New",
+        "title": "Time pill",
+        "text": "While you move a range, a small pill over it shows its start and end times."
+      },
+      {
+        "group": "Improved",
+        "title": "Icons",
+        "text": "All icons are now Bootstrap Icons, at the same sizes and colours as before."
+      },
+      {
+        "group": "Improved",
+        "title": "Selection outline",
+        "text": "The outline sits exactly on the picture strip, with grips on both edges."
+      },
+      {
+        "group": "Improved",
+        "title": "Settings",
+        "text": "Settings lists your campaigns, and Languages is a dropdown. The Clips folder row is gone."
+      },
+      {
+        "group": "Improved",
+        "title": "Top bar",
+        "text": "The link field's panel is no longer hidden behind the video."
+      },
+      {
+        "group": "Improved",
+        "title": "Updates",
+        "text": "Restart to update waits for a clip that is being made, and you can cancel the wait."
+      },
+      {
+        "group": "Improved",
+        "title": "Mac",
+        "text": "Mac never offers an automatic restart, so Update automatically is hidden there."
+      },
+      {
+        "group": "Fixed",
+        "title": "Folders",
+        "text": "Clipr checks that your chosen folders can be written to and says so when they cannot."
+      },
+      {
+        "group": "Fixed",
+        "title": "Crash reports",
+        "text": "Crash reports now reach the right place so problems can be fixed faster."
+      }
+    ]
+  },
   "19.1.0": {
     "intro": "Paste a link right in the top bar, three-dot menus on every row, and a lot of timeline polish.",
     "highlights": [
@@ -23,7 +140,7 @@
         "w": 300,
         "h": 380,
         "alt": "A video row's menu open, showing Mark done, Open on YouTube and Remove video.",
-        "text": "Each video row has a ⋯ button that is always there. It holds Mark done, Open on YouTube and Remove video. Videos search is now only for searching your own list.",
+        "text": "Each video row has a \u22ef button that is always there. It holds Mark done, Open on YouTube and Remove video. Videos search is now only for searching your own list.",
         "caption": "Sample data."
       },
       {
@@ -58,7 +175,7 @@
         "w": 300,
         "h": 182,
         "alt": "Export list rows, each with a three-dot button on the right.",
-        "text": "The same always-there ⋯ menu is on every Export and History row.",
+        "text": "The same always-there \u22ef menu is on every Export and History row.",
         "caption": "Sample data."
       }
     ],
