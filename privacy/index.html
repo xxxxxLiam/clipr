@@ -457,7 +457,7 @@
       .wn-stage.g-violet { --glow: 150, 130, 255; --glow-soft: 190, 176, 255; }
       .wn-stage.g-amber { --glow: 255, 176, 102; --glow-soft: 255, 214, 170; }
       /* closest-side ends the fade exactly at the box edge, so the glow never shows a cut-off edge; the box reaches well past the window. */
-      .wn-stage::before { content: ""; position: absolute; inset: -88px -72px; z-index: 0; pointer-events: none; background: radial-gradient(closest-side, rgba(var(--glow), 0.24), rgba(var(--glow-soft), 0.08) 62%, rgba(var(--glow-soft), 0) 100%); }
+      .wn-stage::before { content: ""; position: absolute; inset: -96px -88px; z-index: 0; pointer-events: none; background: radial-gradient(closest-side, rgba(var(--glow), 0.42), rgba(var(--glow-soft), 0.2) 76%, rgba(var(--glow-soft), 0) 100%); }
       .wn-split { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 48px; align-items: center; }
       .wn-split.flip { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
       .wn-split .wn-win { width: 100%; justify-self: end; }
