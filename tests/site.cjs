@@ -361,7 +361,7 @@ for (const [n, p] of Object.entries(NAMES)) check(`run 3: ${n} page exists`, !!p
     await page.goto(url + "whats-new/");
     await page.waitForSelector(".wn-latest");
     const body = await page.locator("#releases").innerText();
-    check("run 4: What's new puts the newest version first, in its own card, with Latest, and lists older ones after it; drafts are hidden", (await page.locator(".wn-latest h2").innerText()) === "Version 15.0" && (await page.locator(".wn-latest .chip.ice").innerText()) === "Latest" && (await page.locator(".wn-row > summary b").allInnerTexts()).join() === "Version 14.0,Version 12.0" && !/13\.0\.0|hidden draft/.test(body));
+    check("run 4: What's new puts the newest version first, in its own card, with Latest, and lists older ones after it; drafts are hidden", (await page.locator(".wn-latest h2").innerText()) === "Version 15.0.0" && (await page.locator(".wn-latest .chip.ice").innerText()) === "Latest" && (await page.locator(".wn-row > summary b").allInnerTexts()).join() === "Version 14.0.0,Version 12.0.0" && !/13\.0\.0|hidden draft/.test(body));
     check("run 4: the latest card has a one-line intro, three numbered highlight tiles, jump pills that land on them, and 'Smaller updates' underneath", (await page.locator(".wn-intro").count()) === 1 && (await page.locator(".wn-sec").count()) === 3 && (await page.locator(".wn-pill").evaluateAll((a) => a.every((x, i) => x.getAttribute("href") === "#wn-h" + (i + 1) && x.getBoundingClientRect().height >= 44 && !!document.getElementById("wn-h" + (i + 1))))) && (await page.locator(".wn-num").allInnerTexts()).join() === "1,2,3" && (await page.locator(".wn-all > summary").innerText()) === "Smaller updates" && (await page.locator(".wn-all .wn-group").count()) === 3);
     check("run 4: What's new is flat: no grey container behind the latest version, the numbered sections or the earlier-versions list", await page.evaluate(() => [".wn-latest", ".wn-sec", ".wn-list"].every((s) => { const c = getComputedStyle(document.querySelector(s)); return c.backgroundColor === "rgba(0, 0, 0, 0)" && parseFloat(c.borderTopLeftRadius) === 0 && (s === ".wn-latest" ? c.borderTopWidth === "0px" : true); })));
     check("run 4: each version leads with a date chip above its title, as in the reference", (await page.locator(".wn-latest > time.wn-date svg").count()) === 1 && /25 November 2026/.test(await page.locator(".wn-latest > time.wn-date").innerText()));
@@ -392,6 +392,20 @@ for (const [n, p] of Object.entries(NAMES)) check(`run 3: ${n} page exists`, !!p
       if (w >= 1000) check("run 6 reference: " + vt + " at " + w + "px the split sections put the copy beside the screenshot", info.splits.every((x) => x.sideBySide), JSON.stringify(info.splits));
       else check("run 6 reference: " + vt + " at " + w + "px the split sections stack with the copy above the screenshot", await pv.evaluate(() => [...document.querySelectorAll(".wn-split")].every((x) => x.querySelector(".wn-copy").getBoundingClientRect().bottom <= x.querySelector(".wn-win").getBoundingClientRect().top + 1 || x.classList.contains("flip"))));
       check("run 6 reference: " + vt + " screenshots add no sideways scroll at " + w + "px", (await pv.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)) <= 0);
+      // Liam, 25 Nov: glows are never cut off, are not behind every block, and are not all the same colour.
+      const gl = await pv.evaluate(() => {
+        const st = [...document.querySelectorAll(".wn-stage")];
+        const bg = st.map((s) => getComputedStyle(s, "::before").backgroundImage);
+        // The framed page column clips what overflows it, so a glow is not cut as long as its whole box sits inside that frame.
+        const fr = document.querySelector(".frame").getBoundingClientRect();
+        const clipped = st.some((s) => {
+          for (let e = s.parentElement; e && !e.classList.contains("frame") && e !== document.documentElement; e = e.parentElement) { const c = getComputedStyle(e); if (/hidden|clip|auto|scroll/.test(c.overflowX + c.overflowY)) return true; }
+          const r = s.getBoundingClientRect(), b = getComputedStyle(s, "::before"), px = (v) => parseFloat(v) || 0;
+          return r.left + px(b.left) < fr.left || r.right - px(b.right) > fr.right;
+        });
+        return { n: st.length, secs: document.querySelectorAll(".wn-sec").length, fades: bg.every((b) => /radial-gradient\(closest-side/.test(b)), colours: new Set(bg.map((b) => (b.match(/rgba\((\d+, \d+, \d+)/) || [])[1])).size, clipped };
+      });
+      if (vt === "v19.2.1") check("run 11 glow: at " + w + "px every glow fades out inside its box and no parent clips it, glow is behind only some blocks, and the colours differ", gl.fades && !gl.clipped && gl.n >= 2 && gl.n < gl.secs && gl.colours >= 2, JSON.stringify(gl));
       if (vt === "v19.2.1" && w === 1440) { await pv.screenshot({ path: "/tmp/claude-0/wn-v19.png", fullPage: true }); }
       await cv.close();
     }
@@ -408,9 +422,9 @@ for (const [n, p] of Object.entries(NAMES)) check(`run 3: ${n} page exists`, !!p
         const rows = await fp.locator(".wn-row > summary b").allInnerTexts();
         const dl = await fp.locator(".wn-latest a.dl").getAttribute("href");
         if (label === "with a patch") {
-          check("run 10 fold: 19.2.0 and 19.2.1 are one section, Version 19.2, saying it includes both, and 19.2.0 is not a row of its own", head === "Version 19.2" && /Includes 19\.2\.0 and 19\.2\.1/.test(await fp.locator(".wn-latest").innerText()) && rows.join() === "Version 19.1,Version 18.0", head + " | " + rows.join());
+          check("run 10 fold: 19.2.0 and 19.2.1 are one section headed with the newest version, Version 19.2.1, with no patch list (the button downloads the newest release), and 19.2.0 is not a row of its own", head === "Version 19.2.1" && !/Includes|19\.2\.0/.test(await fp.locator(".wn-latest > .wn-head").innerText()) && dl.includes("/releases/latest/download/") && rows.join() === "Version 19.1.0,Version 18.0.0", head + " | " + rows.join());
         } else {
-          check("run 10 fold: once 19.3 ships it is the main section and 19.2 (with its patch) folds into the list as one row", head === "Version 19.3" && rows.join() === "Version 19.2,Version 19.1" && (await fp.locator(".wn-row").first().locator("summary").click(), /Includes 19\.2\.0 and 19\.2\.1/.test(await fp.locator(".wn-row").first().innerText())), head + " | " + rows.join());
+          check("run 10 fold: once 19.3 ships it is the main section and 19.2 (with its patch) folds into the list as one row", head === "Version 19.3.0" && rows.join() === "Version 19.2.1,Version 19.1.0" && (await fp.locator(".wn-row").first().locator("summary").click(), !/Includes/.test(await fp.locator(".wn-row").first().innerText())), head + " | " + rows.join());
         }
         await fc.close();
       }
@@ -474,7 +488,8 @@ for (const [n, p] of Object.entries(NAMES)) check(`run 3: ${n} page exists`, !!p
       }
       if (hl[0] && hl[0].glow === false) bad.push("hero has glow");
       if (hl[1] && !hl[2]) bad.push("third highlight");
-      if (hl[2] && hl[2].glow !== true) bad.push("flipped split has glow");
+      if (hl[2] && !hl[2].glow) bad.push("flipped split has glow");
+      if (hl[1] && hl[1].glow) bad.push("the middle split has no glow (glow is here and there)");
       for (const x of cd) {
         if (!x.caption || !x.alt || x.alt.length < 20 || !x.title) bad.push("card parts on " + x.title);
         if (!x.shot || !fs.existsSync(path.join(ROOT, "docs/whats-new", x.shot || "none"))) bad.push("shot file for card " + x.title);
@@ -483,7 +498,7 @@ for (const [n, p] of Object.entries(NAMES)) check(`run 3: ${n} page exists`, !!p
     };
     const refProbs = [];
     for (const [v, n] of Object.entries(notes)) if (parseInt(v, 10) >= 19 && !(v === "19.0.0")) refProbs.push(...refSpec(n).map((m) => v + ": " + m));
-    check("run 9 reference spec: every entry from 19.1.0 has a hero, a split and a flipped split with glow, two cards, eyebrows, captions, alt text and real screenshot files", refProbs.length === 0, refProbs.join("; "));
+    check("run 9 reference spec: every entry from 19.1.0 has a hero, a plain split and a flipped split with glow, two cards, eyebrows, captions, alt text and real screenshot files", refProbs.length === 0, refProbs.join("; "));
     const broken = JSON.parse(JSON.stringify(notes["19.2"]));
     broken.highlights[1].layout = "split-flip"; broken.cards.pop();
     check("run 9 negative control: an entry that drops the hero/split/flip order or a card fails the reference spec", refSpec(broken).length >= 2);
