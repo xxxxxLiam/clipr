@@ -156,6 +156,11 @@ check("PowerShell line does not hard-code the filename", !/Unblock-File[^<]*Setu
     await ctx.close();
   }
   {
+    const { page, ctx } = await open("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/126 Safari/537.36", 1440);
+    check("Linux UA: AppImage link and Linux tab open", (await page.locator("#dl-hero").getAttribute("href")).endsWith("Clipr-Linux-x64.AppImage") && (await page.locator("#panel-linux").isVisible()));
+    await ctx.close();
+  }
+  {
     const { page, ctx } = await open(WIN, 1440);
     await page.waitForTimeout(2600);
     const heroIn = await page.evaluate(() => [".hero-copy > h1", ".stage", ".stage .pin"].every((s) => getComputedStyle(document.querySelector(s)).opacity === "1"));
