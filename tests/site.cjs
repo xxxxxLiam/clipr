@@ -61,6 +61,8 @@ check("page colour tokens are the Clean Cut values", Object.entries(tok).every((
 check("no old red accent: error red is not used as a fill or accent", !/--accent/.test(html) && !/var\(--error\)/.test(html) && !/FF6363/i.test(readme + read("logo.svg")));
 check("theme-color matches --bg", meta(/name="theme-color" content="([^"]+)"/) === tok.bg);
 
+check("footer credit links to idksolutions.co.za (not .org)", /Proudly developed by <a[^>]+href="https:\/\/idksolutions\.co\.za"/.test(html) && !/idksolutions\.org/i.test(html));
+
 // ---- static: download guidance (G-9)
 check("PowerShell line does not hard-code the filename", !/Unblock-File[^<]*Setup\.exe"/.test(html) && /Clipr-Windows-x64-Setup\*\.exe/.test(html));
 

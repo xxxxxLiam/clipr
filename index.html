@@ -239,7 +239,10 @@
       .grain::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; mix-blend-mode: overlay; opacity: .85; background-size: 240px;
         background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 1.6 -.3'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
       .grain-frost { background: radial-gradient(120% 70% at 50% 100%, #b8e4ea 0%, rgba(184,228,234,0) 70%), linear-gradient(180deg, #141f22 0%, #2a4247 40%, #6f959b 80%, #b8e4ea 100%); }
-      .grain-frost-up { background: radial-gradient(65% 30% at 50% 100%, #b8e4ea 0%, rgba(184,228,234,0) 100%), linear-gradient(180deg, #0a0d0f 0%, #121a1d 45%, #22363a 80%, #3f5b60 100%); }
+      .grain-arc { background:
+        radial-gradient(ellipse 62% 30% at 50% 100%, #5fd8ca 0%, rgba(95,216,202,.7) 30%, rgba(95,216,202,.25) 62%, rgba(95,216,202,0) 100%),
+        #0a0d0f; }
+      .final-card.grain-arc::before { background: radial-gradient(ellipse 62% 30% at 50% 100%, rgba(184,228,234,0) 94%, rgba(184,228,234,.75) 97%, rgba(184,228,234,0) 100%); }
       .hero-wrap { padding: 0; }
       .hero-c { border: 0; border-radius: 0; padding: 96px 48px 64px; background-color: var(--panel); }
       .hero-c .hero-copy, .hero-c .stage { z-index: 2; }
@@ -255,7 +258,7 @@
       .final-card .also { font-size: 13px; margin-top: 12px; }
       .final-card .also, .final-card .also a { color: var(--fg); }
       .appicon { display: inline-flex; width: 72px; height: 72px; align-items: center; justify-content: center; border-radius: var(--r-panel); background: var(--raised); border: 1px solid var(--hairline-strong); margin-bottom: 32px; box-shadow: 0 0 32px rgba(184,228,234,.25); }
-      .final-card .ticker { margin: 112px -48px 0; border: 0; border-top: 1px solid rgba(255,255,255,.14); border-radius: 0; background: rgba(10,13,15,.55); color: var(--fg); height: 56px; position: relative; z-index: 2;
+      .final-card .ticker { margin: 240px -48px 0; border: 0; border-top: 1px solid rgba(255,255,255,.14); border-radius: 0; background: rgba(10,13,15,.55); color: var(--fg); height: 56px; position: relative; z-index: 2;
         -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
       footer.big-foot { display: block; padding: 0; }
       .foot-top { display: grid; grid-template-columns: 1.3fr 2fr; gap: 48px; padding: 64px 48px 48px; }
@@ -264,9 +267,11 @@
       .cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
       .cols a { display: flex; align-items: center; min-height: 44px; color: var(--fg-dim); font-size: 13px; }
       .cols a:hover { color: var(--fg); }
-      .report-row { font-size: 13px; color: var(--fg-dim); margin-top: 8px; }
+      .report-row { display: flex; flex-direction: column; gap: 4px; font-size: 13px; line-height: 1.5; color: var(--fg-dim); padding: 12px 0; }
+      .report-row b { color: var(--fg); font-size: 13px; }
       .foot-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px 24px; min-height: 64px; padding: 8px 48px; border-top: 1px solid var(--hairline); font-size: 13px; color: var(--fg-dim); }
       .foot-bottom b { color: var(--fg); }
+      .foot-bottom .credit { display: inline-flex; align-items: center; min-height: 44px; text-decoration: underline; text-underline-offset: 3px; }
       @media (max-width: 1040px) { .hero-c { padding: 64px 24px 48px; } .foot-top { grid-template-columns: 1fr; padding: 48px 24px 32px; } .foot-bottom { padding: 8px 24px; } .final-card { padding: 64px 24px 0; } .final-card .ticker { margin: 80px -24px 0; } }
       @media (max-width: 560px) { h1 { font-size: 36px; } .final-card .big { font-size: 32px; } .sub, .final-card > p { font-size: 16px; } .cols { grid-template-columns: 1fr 1fr; } .hero-c { padding: 48px 16px 32px; } .final-card { padding: 64px 16px 0; } .final-card .ticker { margin: 64px -16px 0; } .foot-top { padding: 32px 16px; } .foot-bottom { padding: 8px 16px; } .stage { margin-top: 40px; } }
 
@@ -385,7 +390,7 @@
         </section>
 
         <section class="final">
-          <div class="final-card grain grain-frost-up">
+          <div class="final-card grain grain-arc">
             <span class="appicon" aria-hidden="true"><svg width="40" height="40" viewBox="0 0 64 64"><use href="#mflat"/></svg></span>
             <h2 class="big">Get every campaign's clips done sooner</h2>
             <p>Free, including paid client work. Runs on your computer; nothing is uploaded.</p>
@@ -402,12 +407,12 @@
           <div class="foot-brand"><a href="#top" class="lockup-link"><span class="lockup" role="img" aria-label="Clipr"><svg width="32.2" height="32.2" viewBox="0 0 64 64" aria-hidden="true"><use href="#mflat"/></svg><span class="word" style="font-size:28px" aria-hidden="true">Clip<svg class="cutr" viewBox="0 0 66.2 100" aria-hidden="true"><polygon points="0,0 66.2,0 66.2,22 0,50.4" fill="#5FD8CA"/><rect x="0" y="60.7" width="25" height="39.3" fill="#F2F5F6"/></svg></span></span></a><p>Only the seconds you need.</p></div>
           <div class="cols">
             <div><h2 class="h5">Download</h2><a class="f-mac" href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-macOS-AppleSilicon.dmg">macOS</a><a class="f-win" href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-Windows-x64-Setup.exe">Windows</a><a class="f-linux" href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-Linux-x64.AppImage">Linux</a><a href="https://github.com/xxxxxLiam/clipr/releases">All releases</a></div>
-            <div><h2 class="h5">Help</h2><a href="#how">How it works</a><a href="#install">Install help</a><p class="report-row">Report a problem: <b>Help &rarr; Report a problem</b> in Clipr</p></div>
+            <div><h2 class="h5">Help</h2><a href="#how">How it works</a><a href="#install">Install help</a><div class="report-row"><b>Report a problem</b><span>Inside Clipr, open Help &rarr; Report a problem</span></div></div>
             <div><h2 class="h5">Legal</h2><a href="https://github.com/xxxxxLiam/clipr/blob/main/LICENSE">Licence</a><a href="https://github.com/xxxxxLiam/clipr/blob/main/THIRD-PARTY-NOTICES.md">Third-party notices</a><a href="https://github.com/xxxxxLiam/clipr/blob/main/README.md">Privacy: nothing is uploaded</a></div>
           </div>
           <small>Free to use, including for paid client work. Copying, redistributing, forking or reselling the application is not permitted. Clipr ships alongside ffmpeg, which is licensed under the GPL v3 and carries its own terms.</small>
         </div>
-        <div class="foot-bottom"><span>&copy; 2026 Clipr<span id="ver-foot" hidden></span></span><span>Proudly developed by <b>IDK Solutions</b></span></div>
+        <div class="foot-bottom"><span>&copy; 2026 Clipr<span id="ver-foot" hidden></span></span><span>Proudly developed by <a class="credit" href="https://idksolutions.co.za" rel="noopener"><b>IDK Solutions</b></a></span></div>
       </footer>
     </div>
 
