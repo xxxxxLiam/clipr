@@ -63,6 +63,9 @@ check("theme-color matches --bg", meta(/name="theme-color" content="([^"]+)"/) =
 
 check("footer credit links to idksolutions.co.za (not .org)", /Proudly developed by <a[^>]+href="https:\/\/idksolutions\.co\.za"/.test(html) && !/idksolutions\.org/i.test(html));
 
+check("install notes are cards, not loose paragraphs", (html.match(/class="note"/g) || []).length >= 4 && !/<div class="notes">\s*<p>/.test(html));
+check("version line sits below the tabs, centred", /role="tablist"[\s\S]*?<\/div>\s*<p class="ver" id="ver"/.test(html) && /\.ver \{ text-align: center/.test(html));
+
 // ---- static: download guidance (G-9)
 check("PowerShell line does not hard-code the filename", !/Unblock-File[^<]*Setup\.exe"/.test(html) && /Clipr-Windows-x64-Setup\*\.exe/.test(html));
 

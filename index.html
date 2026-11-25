@@ -225,7 +225,8 @@
       .tabs { align-items: center; }
       .tab { min-height: 44px; border-radius: var(--r-control); padding: 0 16px; font-size: 13px; }
       .tab[aria-selected="true"] { background: var(--hover); color: var(--fg); border-color: var(--fg); font-weight: 500; }
-      .ver { margin-left: 16px; font-size: 13px; color: var(--fg-dim); }
+      .tabs:has(+ .ver:not([hidden])) { margin-bottom: 12px; }
+      .ver { text-align: center; margin: 0 0 32px; font-size: 13px; color: var(--fg-dim); }
       .ico { color: var(--fg); }
       .bar.two { position: relative; }
       .bar.two span { position: absolute; top: 0; height: 100%; }
@@ -278,6 +279,17 @@
       .phone-note { margin: 24px auto 0; max-width: 440px; padding: 16px; border: 1px solid var(--hairline-strong); border-radius: var(--r-control); background: rgba(10,13,15,.6); color: var(--fg); font-size: 15px; }
       .phone .cta-row { display: none; }
       @media (max-width: 560px) { .pill { display: none; } }
+
+      .notes { max-width: none; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; }
+      .note { background: var(--panel); border: 1px solid var(--hairline); border-radius: var(--r-panel); padding: 24px; min-width: 0; }
+      .note h4 { font-size: 15px; font-weight: 500; color: var(--fg); margin: 0 0 8px; letter-spacing: -0.01em; }
+      .note p { color: var(--fg-dim); font-size: 15px; line-height: 1.5; margin: 0; }
+      .note code { color: var(--fg); }
+      .note .code { margin: 12px 0; }
+      details.more.note { padding: 0 24px; grid-column: 1 / -1; align-self: start; }
+      details.more.note > summary { min-height: 64px; margin: 0; }
+      details.more.note > div { padding: 0 0 24px; }
+      @media (max-width: 760px) { .notes { grid-template-columns: 1fr; } .note { padding: 20px; } details.more.note { padding: 0 20px; } }
     </style>
   </head>
   <body>
@@ -340,8 +352,8 @@
             <button class="tab" role="tab" type="button" id="tab-mac" aria-controls="panel-mac" aria-selected="true">macOS</button>
             <button class="tab" role="tab" type="button" id="tab-win" aria-controls="panel-win" aria-selected="false" tabindex="-1">Windows</button>
             <button class="tab" role="tab" type="button" id="tab-linux" aria-controls="panel-linux" aria-selected="false" tabindex="-1">Linux</button>
-            <span class="ver" id="ver" hidden></span>
           </div>
+          <p class="ver" id="ver" hidden></p>
 
           <div class="panel" role="tabpanel" id="panel-mac" aria-labelledby="tab-mac">
             <h3 class="panel-title">macOS</h3>
@@ -352,12 +364,12 @@
               <div class="step"><span class="n">3</span><h4>Done</h4><p>Clipr opens. From now on, double-click it like any app.</p></div>
             </div>
             <div class="notes">
-              <p><b>Not sure which Mac you have?</b> Choose the Apple menu &rarr; <b>About This Mac</b>. &ldquo;Chip: Apple M&hellip;&rdquo; works. &ldquo;Processor: Intel&rdquo; does not: this download will not run on an Intel Mac.</p>
-              <p><b>Two commands in one, if you are wondering.</b> The first half removes the &ldquo;downloaded from the internet&rdquo; flag from Clipr and nothing else; <code>&amp;&amp;</code> means the second half only runs if that worked, and it launches the app.</p>
-              <p><b>Right-click &rarr; Open no longer works.</b> On macOS Sequoia (15) and later that shortcut no longer exists. Apple removed it, which is why the line above is the step that works.</p>
-              <details class="more"><summary><svg class="chev" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"></path></svg><b>I would rather not use Terminal</b></summary>
+              <div class="note"><h4>Not sure which Mac you have?</h4><p>Choose the Apple menu &rarr; <b>About This Mac</b>. &ldquo;Chip: Apple M&hellip;&rdquo; works. &ldquo;Processor: Intel&rdquo; does not: this download will not run on an Intel Mac.</p></div>
+              <div class="note"><h4>Two commands in one, if you are wondering</h4><p>The first half removes the &ldquo;downloaded from the internet&rdquo; flag from Clipr and nothing else; <code>&amp;&amp;</code> means the second half only runs if that worked, and it launches the app.</p></div>
+              <div class="note"><h4>Right-click &rarr; Open no longer works</h4><p>On macOS Sequoia (15) and later that shortcut no longer exists. Apple removed it, which is why the line above is the step that works.</p></div>
+              <div class="note"><h4>Updating later</h4><p>On macOS Clipr can't update itself yet, because the app is unsigned: download the new version from this page and install it the same way.</p></div>
+              <details class="more note"><summary><svg class="chev" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"></path></svg><b>I would rather not use Terminal</b></summary>
                 <div><p>Double-click Clipr and let macOS refuse it. Then open <b>System&nbsp;Settings &rarr; Privacy &amp; Security</b>, scroll down to the Security section, and click <b>Open Anyway</b> next to the message about Clipr. Confirm with Touch&nbsp;ID or your password. The button only appears after macOS has blocked the app once, so the refusal is a necessary first step rather than a failure.</p></div></details>
-              <p><b>Updating later.</b> On macOS Clipr can't update itself yet, because the app is unsigned: download the new version from this page and install it the same way.</p>
             </div>
           </div>
 
@@ -371,11 +383,11 @@
               <div class="step"><span class="n">4</span><h4>Done</h4><p>Finish the installer. Clipr updates itself from then on.</p></div>
             </div>
             <div class="notes">
-              <details class="more"><summary><svg class="chev" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"></path></svg><b>There is no Unblock tick box</b></summary>
+              <details class="more note"><summary><svg class="chev" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"></path></svg><b>There is no Unblock tick box</b></summary>
                 <div><p>Some Windows versions hide it. Open <b>PowerShell</b> and run this instead, then carry on from step 3:</p>
                 <div class="code"><code>Get-ChildItem "$env:USERPROFILE\Downloads\Clipr-Windows-x64-Setup*.exe" | Unblock-File</code><button type="button" data-copy>Copy</button></div>
                 <p>The <code>*</code> also catches a copy your browser renamed, like <i>Setup (1).exe</i>. Change <code>Downloads</code> if you saved the file somewhere else.</p></div></details>
-              <p><b>Why all this?</b> Clipr is not signed with a paid Windows certificate yet. Every warning above is Windows saying it cannot verify who published the file, not that it found anything wrong with it.</p>
+              <div class="note"><h4>Why all this?</h4><p>Clipr is not signed with a paid Windows certificate yet. Every warning above is Windows saying it cannot verify who published the file, not that it found anything wrong with it.</p></div>
             </div>
           </div>
 
