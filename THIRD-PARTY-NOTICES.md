@@ -105,3 +105,10 @@ npx license-checker --production --summary
 
 If you believe a component is missing from this file or is attributed
 incorrectly, please open an issue — that is a bug and will be fixed.
+
+## Inter (landing page font) — SIL Open Font License 1.1
+
+The landing page serves the Inter typeface from `fonts/inter-latin-wght.woff2`
+(Copyright The Inter Project Authors, https://github.com/rsms/inter). It is
+licensed under the SIL Open Font License, Version 1.1
+(https://openfontlicense.org). It is not part of the Clipr application.
