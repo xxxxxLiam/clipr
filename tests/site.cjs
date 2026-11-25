@@ -39,14 +39,21 @@ for (const [n, t] of [["index.html", html], ["README.md", readme]]) {
   check(`${n}: names DaVinci Resolve and Premiere Pro`, /DaVinci Resolve/.test(t) && /Premiere Pro/.test(t));
   check(`${n}: no pre-rebuild UI names`, !/Add segment|Cut as one file|Cut clip|Channel data|status chip|Copy diagnostics/i.test(t));
   check(`${n}: no public issue route`, !/issues\/new/.test(t) && !/free GitHub account/i.test(t));
-  check(`${n}: report route is Help > Report a problem`, /Report a problem/.test(t) && /Send report/.test(t));
+  check(`${n}: report route is Help > Report a problem`, /Help(?:\s|&nbsp;)*(?:→|&rarr;)(?:\s)*Report a problem/.test(t) || /\*\*Help\*\*[^.]*\*\*Report a problem\*\*/.test(t));
   check(`${n}: Apple Silicon / M1 named`, /Apple Silicon/.test(t) && /M1/.test(t));
 }
 const alts = [...html.matchAll(/<img[^>]*alt="([^"]*)"/g)].map((m) => m[1]);
-check("page screenshot alts describe the new captures", alts.some((a) => /Clip button/.test(a)) && alts.some((a) => /Hook Question/.test(a)), alts.join(" | "));
+check("page hero alt describes the capture", alts.some((a) => /Clip button/.test(a) && /42-second range/.test(a)), alts.join(" | "));
+check("README says Send report", /Send report/.test(readme));
 check("README screenshot alts describe the new captures", /alt="[^"]*Clip button/.test(readme) && /alt="[^"]*Hook Question/.test(readme));
 check("screenshots are real captures at 1440 wide @2x", png("docs/screenshot.png").w === 2880 && png("docs/screenshot.png").h === 1800 && png("docs/segments.png").w === 2880);
-check("1080p copy points at the footer pill", /Sign in for 1080p/.test(html) && /footer/i.test(html.slice(html.indexOf("Getting 1080p"))));
+check("page has no 1080p section (G-7: the app and Help cover it)", !/Getting 1080p|status chip/.test(html));
+check("README 1080p copy points at the footer pill", /Sign in for 1080p/.test(readme) && /bottom of the window/.test(readme));
+check("no mock-up leftovers (Decided here tag, dashed outline)", !/Decided here|decided|dashed/.test(html));
+check("Inter is self-hosted (no Google Fonts)", !/fonts\.(googleapis|gstatic)/.test(html) && fs.existsSync(path.join(ROOT, "fonts/inter-latin-wght.woff2")));
+check("only Clean Cut colours in the page CSS", [...html.matchAll(/#[0-9a-f]{6}\b/gi)].every((m) => ["0a0d0f","121619","181d21","232a2f","f2f5f6","94a0a5","8b979c","5fd8ca","b8e4ea","ff6363"].includes(m[0].slice(1).toLowerCase())), [...new Set([...html.matchAll(/#[0-9a-f]{6}\b/gi)].map((m) => m[0]))].join(" "));
+check("editors named as plain text, four of them", ["Final Cut Pro", "Premiere Pro", "DaVinci Resolve", "CapCut"].every((e) => new RegExp(`<b>${e}</b>`).test(html)));
+check("ticker is decoration only (aria-hidden) and stops under reduced motion", /class="ticker" aria-hidden="true"/.test(html) && /prefers-reduced-motion[^}]*\.track \{ animation: none/.test(html));
 
 // ---- static: colours are the Clean Cut tokens (CLAUDE.md on rebuild/canvas)
 const tok = { bg: "#0a0d0f", panel: "#121619", raised: "#181d21", hover: "#232a2f", fg: "#f2f5f6", "fg-dim": "#94a0a5", disabled: "#8b979c", ice: "#5fd8ca", frost: "#b8e4ea", error: "#ff6363" };
@@ -97,16 +104,45 @@ check("PowerShell line does not hard-code the filename", !/Unblock-File[^<]*Setu
   }
   {
     const { page, ctx } = await open(MAC, 1440);
-    const body = await page.locator("#card-mac").innerText();
+    const body = await page.locator("#panel-mac").innerText();
     check("Mac card says Apple Silicon, M1 and newer, and how to check", /Apple Silicon/.test(body) && /M1/.test(body) && /Intel/.test(body) && /About This Mac/.test(body), body.slice(0, 200));
     check("phone note hidden on desktop", !(await page.locator("#desktop-note").isVisible()));
+    check("Mac UA: hero and nav buttons serve the dmg, mac tab selected, others hidden",
+      (await page.locator("#dl-hero").getAttribute("href")).endsWith("Clipr-macOS-AppleSilicon.dmg") &&
+      (await page.locator("#dl-nav").getAttribute("href")).endsWith("Clipr-macOS-AppleSilicon.dmg") &&
+      (await page.locator("#tab-mac").getAttribute("aria-selected")) === "true" &&
+      !(await page.locator("#panel-win").isVisible()) && !(await page.locator("#panel-linux").isVisible()));
+    await page.locator("#tab-win").click();
+    check("tabs switch panels", (await page.locator("#panel-win").isVisible()) && !(await page.locator("#panel-mac").isVisible()));
+    await page.locator("#tab-win").press("ArrowRight");
+    check("arrow key moves to the Linux tab", (await page.locator("#tab-linux").getAttribute("aria-selected")) === "true");
     await ctx.close();
   }
   {
     const { page, ctx } = await open(PHONE, 375);
     const note = page.locator("#desktop-note");
     check("phone UA shows the desktop note", (await note.isVisible()) && /Clipr is a desktop app\. Open this page on your computer/.test(await note.innerText()));
-    check("phone keeps the download links", (await page.locator("a.ghost").count()) === 3);
+    check("phone keeps the download links", (await page.locator(".also a").count()) >= 2);
+    await ctx.close();
+  }
+  {
+    const { page, ctx } = await open(WIN, 1440);
+    check("Windows UA: exe link and Windows tab open", (await page.locator("#dl-hero").getAttribute("href")).endsWith("Clipr-Windows-x64-Setup.exe") && (await page.locator("#panel-win").isVisible()));
+    await ctx.close();
+  }
+  {
+    const ctx = await browser.newContext({ userAgent: WIN, javaScriptEnabled: false });
+    const page = await ctx.newPage();
+    await page.goto(url);
+    const all = await Promise.all(["mac", "win", "linux"].map((k) => page.locator("#panel-" + k).isVisible()));
+    check("JavaScript off: all three install panels show, download goes to the releases page", all.every(Boolean) && (await page.locator("#dl-hero").getAttribute("href")).endsWith("/releases/latest"));
+    await ctx.close();
+  }
+  {
+    const ctx = await browser.newContext({ userAgent: WIN, reducedMotion: "reduce" });
+    const page = await ctx.newPage();
+    await page.goto(url);
+    check("reduced motion: ticker animation is off", (await page.locator(".track").evaluate((e) => getComputedStyle(e).animationName)) === "none");
     await ctx.close();
   }
   {

@@ -19,560 +19,325 @@
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="The Clipr workspace with a clip marked on the timeline." />
     <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preload" href="fonts/inter-latin-wght.woff2" as="font" type="font/woff2" crossorigin />
     <style>
-      /* Tokens are the app's own, so the page and the product look like one
-         thing. Do not introduce values outside this block.
-         Type: 48 / 24 / 18 / 16 / 14, weights 400 and 600.
-         Space: 4, 8, 12, 16, 24, 32, 48, 64, 96. */
+      /* Tokens are the app's own (Clean Cut). Do not introduce values outside this block.
+         Type: Inter, weights 400/500/600. Space: 4, 8, 12, 16, 24, 32, 48, 96. Radii 14 / 8 / 5. */
+      @font-face { font-family: "Inter"; src: url("fonts/inter-latin-wght.woff2") format("woff2"); font-weight: 100 900; font-style: normal; font-display: swap; }
       :root {
-        --bg: #0a0d0f;
-        --panel: #121619;
-        --raised: #181d21;
-        --hover: #232a2f;
-        --hairline: rgba(255, 255, 255, 0.08);
-        --hairline-strong: rgba(255, 255, 255, 0.14);
-        --fg: #f2f5f6;
-        --fg-dim: #94a0a5;
-        --disabled: #8b979c;
-        --ice: #5fd8ca;
-        --frost: #b8e4ea;
-        --error: #ff6363;
-        --r-panel: 14px;
-        --r-control: 8px;
-        --r-chip: 5px;
+        --bg: #0a0d0f; --panel: #121619; --raised: #181d21; --hover: #232a2f;
+        --hairline: rgba(255, 255, 255, 0.08); --hairline-strong: rgba(255, 255, 255, 0.14);
+        --fg: #f2f5f6; --fg-dim: #94a0a5; --disabled: #8b979c;
+        --ice: #5fd8ca; --frost: #b8e4ea; --error: #ff6363;
+        --r-panel: 14px; --r-control: 8px; --r-chip: 5px;
       }
-      * { box-sizing: border-box; }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
       *::-webkit-scrollbar { width: 0; height: 0; }
       * { scrollbar-width: none; -ms-overflow-style: none; }
+      html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+      body { background: var(--bg); color: var(--fg); font-family: Inter, system-ui, sans-serif; font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+      a { color: inherit; text-decoration: none; }
+      b { font-weight: 600; color: var(--fg); }
+      code, kbd { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.875em; }
+      kbd { border: 1px solid var(--hairline-strong); border-radius: var(--r-chip); padding: 1px 6px; background: var(--raised); margin-right: 4px; }
+      :focus-visible { outline: 2px solid var(--frost); outline-offset: 2px; }
+      [hidden] { display: none !important; }
 
-      html, body { margin: 0; padding: 0; }
-      body {
-        background: var(--bg);
-        color: var(--fg);
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
-        font-size: 16px;
-        font-weight: 400;
-        line-height: 1.5;
-        -webkit-font-smoothing: antialiased;
-        min-height: 100vh;
+      .frame { max-width: 1200px; margin: 0 auto; border-left: 1px solid var(--hairline); border-right: 1px solid var(--hairline); position: relative; background: var(--bg); overflow: hidden; }
+      main > section, footer { position: relative; }
+      main > section + section, footer { border-top: 1px solid var(--hairline); }
+      main > section + section::before, main > section + section::after, footer::before, footer::after {
+        content: ""; position: absolute; top: -6px; width: 11px; height: 11px; z-index: 2;
+        background: linear-gradient(var(--hairline-strong), var(--hairline-strong)) center / 11px 1px no-repeat, linear-gradient(var(--hairline-strong), var(--hairline-strong)) center / 1px 11px no-repeat;
       }
-      main { max-width: 1180px; margin: 0 auto; padding: 32px 24px 96px; }
+      main > section + section::before, footer::before { left: -6px; }
+      main > section + section::after, footer::after { right: -6px; }
 
-      h1, h2, h3, p, ol, figure { margin: 0; }
-      b { font-weight: 600; }
-      a { color: inherit; }
+      .lockup { display: inline-flex; align-items: center; gap: 10px; }
+      .lockup svg { display: block; }
+      .word { font-weight: 500; letter-spacing: -0.01em; line-height: 1; color: var(--fg); white-space: nowrap; display: inline-flex; align-items: baseline; }
+      .cutr { display: inline-block; vertical-align: baseline; height: 0.546em; width: 0.3615em; margin-left: 0.05em; overflow: visible; }
 
-      /* ---- masthead: the mark stands alone ---------------------------- */
-      .mast { display: flex; align-items: center; height: 44px; margin-bottom: 48px; }
-      .mast svg { display: block; color: var(--ice); }
+      .nav { display: flex; align-items: center; height: 72px; padding: 0 24px; border-bottom: 1px solid var(--hairline); }
+      .nav nav { display: flex; gap: 32px; margin-left: 48px; }
+      .nav nav a, footer nav a { color: var(--fg-dim); font-size: 14px; }
+      .nav nav a:hover, footer nav a:hover { color: var(--fg); }
+      .pill { margin-left: auto; min-height: 36px; padding: 0 16px; display: inline-flex; align-items: center; border-radius: var(--r-control); background: var(--ice); color: var(--bg); font-weight: 600; font-size: 14px; }
 
-      /* ---- type ------------------------------------------------------- */
-      h1 { font-size: 48px; line-height: 1.1; font-weight: 600; letter-spacing: -0.02em; }
-      h2 { font-size: 24px; line-height: 1.25; font-weight: 600; letter-spacing: -0.01em; }
-      h3 { font-size: 18px; line-height: 1.3; font-weight: 600; letter-spacing: -0.01em; }
-      .lede { font-size: 18px; line-height: 1.5; color: var(--fg-dim); max-width: 46ch; }
-      .small { font-size: 14px; }
-      .dim { color: var(--fg-dim); }
+      h1 { font-size: 64px; line-height: 1.05; letter-spacing: -0.03em; font-weight: 600; }
+      h2 { font-size: 36px; line-height: 1.15; letter-spacing: -0.02em; font-weight: 600; }
+      h3 { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
+      .h3 { font-size: 18px; line-height: 1.5; font-weight: 600; letter-spacing: -0.01em; }
+      .sub { font-size: 18px; color: var(--fg-dim); max-width: 560px; margin: 24px auto 0; }
 
-      /* ---- hero: the job of the page, with the product beside it ------ */
-      .hero {
-        display: grid;
-        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-        gap: 64px;
-        align-items: center;
-        margin-bottom: 96px;
-      }
-      .hero-copy { min-width: 0; }
-      .hero h1 { margin-bottom: 16px; }
-      .hero .lede { margin-bottom: 32px; }
-      .free { margin-top: 16px; font-size: 14px; color: var(--fg-dim); }
+      .btn-ice { display: inline-flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 24px; border-radius: var(--r-control); font-weight: 600; font-size: 16px; background: var(--ice); color: var(--bg); }
+      .btn-ice .glyph { display: inline-flex; width: 18px; height: 18px; }
+      .btn-ice .glyph:empty { display: none; }
+      .btn-ice .glyph svg { width: 100%; height: 100%; }
+      .btn-ice:hover, .pill:hover { background: var(--frost); }
+      .cta-row { display: flex; justify-content: center; margin-top: 32px; }
+      .also { margin-top: 12px; font-size: 14px; color: var(--fg-dim); }
+      .also a { color: var(--fg); text-decoration: underline; text-underline-offset: 3px; }
+      .phone-note { margin: 24px auto 0; max-width: 440px; font-size: 14px; color: var(--fg-dim); }
 
-      .shot {
-        min-width: 0;
-        border: 1px solid var(--hairline-strong);
-        border-radius: var(--r-panel);
-        overflow: hidden;
-        background: var(--panel);
-      }
-      .shot img { display: block; width: 100%; height: auto; }
-      .shot figcaption {
-        padding: 12px 16px;
-        border-top: 1px solid var(--hairline);
-        font-size: 14px;
-        color: var(--fg-dim);
-      }
+      /* hero */
+      .hero-wrap { padding: 24px 24px 48px; }
+      .hero-c { position: relative; border-radius: var(--r-panel); overflow: hidden; background: var(--panel); border: 1px solid var(--hairline); padding: 96px 48px 0; }
+      .hero-copy { text-align: center; position: relative; z-index: 2; }
+      .stage { position: relative; width: 100%; max-width: 960px; margin: 64px auto 0; container-type: inline-size; }
+      .rise { position: absolute; left: 50%; top: -80px; transform: translateX(-50%); width: 130%; aspect-ratio: 1240 / 820; border-radius: 50%;
+        background: radial-gradient(closest-side, rgba(95, 216, 202, 0.5), rgba(184, 228, 234, 0.12) 60%, rgba(0, 0, 0, 0) 100%); pointer-events: none; }
+      .win { position: relative; overflow: hidden; border: 1px solid var(--hairline-strong); background: var(--panel); border-radius: var(--r-panel) var(--r-panel) 0 0; border-bottom: 0; box-shadow: 0 0 0 1px rgba(95, 216, 202, 0.25); }
+      .win img { display: block; width: 100%; height: auto; }
+      .pin { position: absolute; left: 80.4%; top: 79.5%; display: flex; gap: 8px; align-items: center; white-space: nowrap; background: var(--bg); border: 1px solid var(--ice); border-radius: var(--r-control); padding: 6px 12px; font-size: clamp(10px, 1.35cqw, 13px); box-shadow: 0 0 24px rgba(95, 216, 202, 0.35); }
+      .pin b { color: var(--ice); }
 
-      /* ---- the one button that matters: flat, the only filled accent -- */
-      .primary {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        width: 100%;
-        max-width: 440px;
-        min-height: 72px;
-        padding: 12px 24px;
-        border: 0;
-        border-radius: var(--r-panel);
-        background: var(--ice);
-        color: var(--bg);
-        text-decoration: none;
-      }
-      .primary:hover { box-shadow: 0 0 0 4px var(--hairline-strong); }
-      .primary:focus-visible { outline: 2px solid var(--fg); outline-offset: 4px; }
-      .primary .glyph { flex: none; width: 28px; height: 28px; }
-      .primary .glyph svg { width: 100%; height: 100%; display: block; }
-      .primary .label { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
-      .primary .what { font-size: 18px; font-weight: 600; line-height: 1.3; }
-      .primary .file { font-size: 14px; line-height: 1.4; }
-      .primary .arrow { flex: none; width: 24px; height: 24px; }
-      .primary .arrow svg { display: block; width: 100%; height: 100%; }
+      /* sections */
+      .three { display: grid; grid-template-columns: repeat(3, 1fr); }
+      .three > div { padding: 48px 32px; border-right: 1px solid var(--hairline); }
+      .three > div:last-child { border-right: 0; }
+      .three p { color: var(--fg-dim); font-size: 15px; margin-top: 8px; }
+      .ico { display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; border: 1px solid var(--hairline-strong); border-radius: var(--r-control); background: var(--raised); margin-bottom: 24px; }
+      .block { padding-bottom: 96px; }
+      .sec-head { text-align: center; padding: 96px 48px 48px; }
+      .sec-head p { color: var(--fg-dim); margin: 12px auto 0; font-size: 16px; max-width: 640px; }
+      .split { display: grid; grid-template-columns: 1fr 1fr; margin: 0 48px; border: 1px solid var(--hairline); border-radius: var(--r-panel); overflow: hidden; }
+      .split > div { padding: 48px; }
+      .before { background: var(--panel); }
+      .after { background: var(--raised); position: relative; }
+      .after::after { content: ""; position: absolute; inset: 0; border-radius: 0 14px 14px 0; box-shadow: inset 0 0 0 1px rgba(95, 216, 202, 0.5); pointer-events: none; }
+      .lbl { font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-dim); }
+      .lbl.ice { color: var(--ice); }
+      .split h3 { font-size: 28px; margin: 12px 0 24px; letter-spacing: -0.02em; }
+      .bar { height: 12px; border-radius: var(--r-chip); background: var(--hover); overflow: hidden; margin-bottom: 24px; }
+      .bar span { display: block; height: 100%; background: var(--disabled); }
+      .bar.on span { background: var(--ice); box-shadow: 0 0 12px rgba(95, 216, 202, 0.6); }
+      .split ul { list-style: none; display: grid; gap: 12px; color: var(--fg-dim); }
+      .after ul { color: var(--fg); }
+      .after li { display: flex; gap: 8px; align-items: center; }
+      .works { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 16px 48px; min-height: 112px; padding: 24px; color: var(--fg-dim); font-size: 14px; }
+      .works b { font-size: 20px; font-weight: 500; letter-spacing: -0.01em; }
 
-      .others { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; }
-      .ghost {
-        display: inline-flex; align-items: center; gap: 8px;
-        min-height: 44px;
-        padding: 0 16px;
-        border: 1px solid var(--hairline-strong);
-        border-radius: var(--r-control);
-        background: var(--raised);
-        color: var(--fg-dim);
-        font-size: 14px; text-decoration: none;
-        transition: color 0.12s, background 0.12s;
-      }
-      .ghost:hover { color: var(--fg); background: var(--hover); }
-      .ghost:focus-visible { outline: 2px solid var(--frost); outline-offset: 2px; }
-      .ghost svg { width: 16px; height: 16px; flex: none; }
-
-      /* ---- sections: a label on the left, the content on the right ---- */
-      .row {
-        display: grid;
-        grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
-        gap: 64px;
-        padding: 48px 0;
-        border-top: 1px solid var(--hairline);
-      }
-      .row-head { min-width: 0; }
-      .row-head h2 { margin-bottom: 12px; }
-      .row-head p { font-size: 16px; color: var(--fg-dim); max-width: 40ch; }
-      .row-body { min-width: 0; }
-      .row-body > p { color: var(--fg-dim); max-width: 64ch; }
-      .row-body > p + p { margin-top: 16px; }
-      .row-body b { color: var(--fg); }
-
-      /* ---- setup: one card open for your computer, the others a tap away */
-      .cards { display: flex; flex-direction: column; gap: 8px; }
-      .card {
-        border: 1px solid var(--hairline);
-        border-radius: var(--r-panel);
-        background: var(--panel);
-      }
-      .card[open] { border-color: var(--hairline-strong); }
-      .card > summary {
-        display: flex; align-items: center; gap: 12px;
-        min-height: 64px;
-        padding: 12px 24px;
-        cursor: pointer;
-        list-style: none;
-        border-radius: var(--r-panel);
-      }
-      .card > summary::-webkit-details-marker { display: none; }
-      .card > summary:hover { background: var(--raised); }
-      .card > summary:focus-visible { outline: 2px solid var(--frost); outline-offset: 2px; }
-      .card > summary .os { flex: none; width: 20px; height: 20px; color: var(--fg); }
-      .card > summary .os svg { display: block; width: 100%; height: 100%; }
-      .card > summary .hint { font-size: 14px; color: var(--fg-dim); flex: 1 1 auto; min-width: 0; }
-      .card > summary .chev { flex: none; width: 16px; height: 16px; color: var(--fg-dim); transition: transform 0.12s; }
-      .card[open] > summary .chev { transform: rotate(90deg); }
-      .card-body { padding: 0 24px 24px; border-top: 1px solid var(--hairline); }
-      .card-body > * { margin-top: 16px; }
-      .card-body p { color: var(--fg-dim); }
-      .card-body b { color: var(--fg); }
-
-      ol.steps { padding: 0 0 0 24px; }
-      ol.steps li { margin-top: 12px; padding-left: 4px; }
-      ol.steps li:first-child { margin-top: 0; }
-      ol.steps li > .copy { margin: 12px 0; }
-      ol.steps li > p, ol.steps li > .after { color: var(--fg-dim); margin-top: 8px; }
-
-      /* ---- copy block ------------------------------------------------- */
-      .copy {
-        display: flex; align-items: stretch;
-        border: 1px solid var(--hairline-strong);
-        border-radius: var(--r-control);
-        background: var(--bg);
-        overflow: hidden;
-      }
-      .copy code {
-        flex: 1 1 auto; min-width: 0;
-        padding: 12px 16px;
-        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-        font-size: 14px; line-height: 1.5; color: var(--fg);
-        white-space: pre-wrap; overflow-wrap: anywhere;
-        align-self: center;
-      }
-      .copy button {
-        flex: none;
-        min-width: 80px; min-height: 44px;
-        padding: 0 16px;
-        border: 0; border-left: 1px solid var(--hairline-strong);
-        background: var(--raised);
-        color: var(--fg);
-        font: inherit; font-size: 14px; font-weight: 600;
-        cursor: pointer;
-        transition: background 0.12s;
-      }
-      .copy button:hover { background: var(--hover); }
-      .copy button:focus-visible { outline: 2px solid var(--frost); outline-offset: -2px; }
-      .copy button[data-done="1"] { color: var(--ice); }
-
-      /* ---- nested disclosure ------------------------------------------ */
-      details.more > summary {
-        display: flex; align-items: center; gap: 8px;
-        min-height: 44px;
-        cursor: pointer; list-style: none;
-        color: var(--fg-dim);
-        border-radius: var(--r-control);
-      }
+      /* install */
+      .tabs { display: flex; gap: 8px; justify-content: center; margin-bottom: 32px; flex-wrap: wrap; }
+      .tab { font: inherit; min-height: 44px; padding: 0 20px; border-radius: 999px; border: 1px solid var(--hairline-strong); background: transparent; display: inline-flex; align-items: center; font-size: 14px; color: var(--fg-dim); cursor: pointer; }
+      .tab[aria-selected="true"] { background: var(--ice); color: var(--bg); border-color: var(--ice); font-weight: 600; }
+      .panel { padding: 0 48px; }
+      .panel + .panel { margin-top: 48px; }
+      .js .panel + .panel { margin-top: 0; }
+      .panel-title { display: none; margin-bottom: 16px; }
+      html:not(.js) .panel-title { display: block; }
+      .lead { color: var(--fg-dim); margin-bottom: 24px; max-width: 760px; }
+      .steps { display: grid; grid-template-columns: 1fr 1.6fr 1fr; border: 1px solid var(--hairline); border-radius: var(--r-panel); }
+      .steps.four { grid-template-columns: repeat(4, 1fr); }
+      .steps.two { grid-template-columns: 1.4fr 1fr; }
+      .step { padding: 32px; border-right: 1px solid var(--hairline); min-width: 0; }
+      .step:last-child { border-right: 0; }
+      .step h4 { font-size: 16px; font-weight: 600; margin: 16px 0 8px; }
+      .step p { color: var(--fg-dim); font-size: 15px; margin-bottom: 12px; }
+      .n { display: inline-flex; width: 28px; height: 28px; border-radius: var(--r-chip); background: var(--raised); border: 1px solid var(--hairline-strong); align-items: center; justify-content: center; font-size: 13px; font-weight: 600; }
+      .code { display: flex; border: 1px solid var(--hairline-strong); border-radius: var(--r-control); overflow: hidden; background: var(--bg); }
+      .code code { flex: 1; min-width: 0; padding: 10px 12px; font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; color: var(--fg); }
+      .code button { font: inherit; font-size: 13px; font-weight: 600; min-width: 64px; min-height: 44px; padding: 0 16px; border: 0; border-left: 1px solid var(--hairline-strong); background: var(--raised); color: var(--fg); cursor: pointer; }
+      .code button[data-done="1"] { color: var(--ice); }
+      .notes { margin-top: 16px; display: grid; gap: 12px; max-width: 760px; }
+      .notes p { color: var(--fg-dim); font-size: 15px; }
+      .notes code { color: var(--fg); }
+      details.more > summary { list-style: none; display: flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; border-radius: var(--r-control); }
       details.more > summary::-webkit-details-marker { display: none; }
-      details.more > summary:hover { color: var(--fg); }
-      details.more > summary:focus-visible { outline: 2px solid var(--frost); outline-offset: 2px; }
-      details.more > summary b { color: var(--fg); }
-      details.more > summary .chev { width: 16px; height: 16px; flex: none; transition: transform 0.12s; }
+      details.more > summary .chev { width: 14px; height: 14px; color: var(--fg-dim); transition: transform 0.15s; }
       details.more[open] > summary .chev { transform: rotate(90deg); }
-      details.more > div { margin-top: 4px; padding: 16px; border-radius: var(--r-control); background: var(--raised); }
-      details.more > div > * + * { margin-top: 12px; }
+      details.more > div { padding: 0 0 8px 22px; display: grid; gap: 12px; color: var(--fg-dim); font-size: 15px; }
 
-      .note {
-        padding: 12px 16px;
-        border: 1px solid var(--hairline);
-        border-radius: var(--r-control);
-        background: var(--raised);
-        font-size: 14px; color: var(--fg-dim);
-      }
-      .note b { color: var(--fg); }
+      /* closing card */
+      .final { padding: 24px; }
+      .final-card { position: relative; overflow: hidden; border-radius: var(--r-panel) var(--r-panel) 0 0; background: var(--panel); border: 1px solid var(--hairline); text-align: center; padding: 96px 48px 120px; }
+      .final-card > p { color: var(--fg-dim); margin-top: 16px; }
+      .final-card > *:not(.sunrise) { position: relative; z-index: 2; }
+      .sunrise { position: absolute; left: 50%; bottom: -230px; transform: translateX(-50%); width: 760px; max-width: 120%; height: 340px; border-radius: 50%; z-index: 1;
+        background: radial-gradient(closest-side, rgba(184, 228, 234, 0.55), rgba(95, 216, 202, 0.28) 45%, rgba(95, 216, 202, 0) 100%); }
+      .ticker { overflow: hidden; height: 48px; margin-top: -1px; border: 1px solid var(--hairline); border-top: 0; border-radius: 0 0 var(--r-panel) var(--r-panel); font-size: 13px; color: var(--fg-dim); display: flex; align-items: center; }
+      .track { display: flex; gap: 48px; white-space: nowrap; padding-left: 24px; width: max-content; animation: tick 40s linear infinite; }
+      .track span { display: inline-flex; gap: 8px; align-items: center; }
+      @keyframes tick { to { transform: translateX(-50%); } }
+      @media (prefers-reduced-motion: reduce) { .track { animation: none; } html { scroll-behavior: auto; } * { transition: none !important; } }
 
-      kbd {
-        display: inline-block;
-        min-width: 24px; padding: 0 8px; margin: 0 2px;
-        border: 1px solid var(--hairline-strong);
-        border-bottom-width: 2px;
-        border-radius: var(--r-chip);
-        background: var(--raised);
-        color: var(--fg);
-        font: 600 14px/24px ui-monospace, SFMono-Regular, Menlo, monospace;
-        text-align: center;
-      }
-
-      /* ---- links used as actions ------------------------------------- */
-      .btn {
-        display: inline-flex; align-items: center;
-        min-height: 44px; padding: 0 16px;
-        border: 1px solid var(--hairline-strong);
-        border-radius: var(--r-control);
-        background: var(--raised);
-        color: var(--fg);
-        font-weight: 600; text-decoration: none;
-      }
-      .btn:hover { background: var(--hover); }
-      .btn:focus-visible { outline: 2px solid var(--frost); outline-offset: 2px; }
-      .row-body .btn { margin-bottom: 16px; }
-      .row-body .btn + p { margin-top: 0; }
-
-      footer {
-        padding-top: 32px;
-        border-top: 1px solid var(--hairline);
-        font-size: 14px; color: var(--fg-dim);
-      }
-      footer p { max-width: 80ch; }
-      footer p + p { margin-top: 8px; }
-      footer .links { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 8px; }
-      footer a { display: inline-flex; align-items: center; min-height: 44px; color: var(--fg); text-decoration: underline; text-underline-offset: 3px; }
-      footer a:hover { color: var(--fg-dim); }
-      footer a:focus-visible { outline: 2px solid var(--frost); outline-offset: 2px; border-radius: var(--r-chip); }
+      footer { display: flex; align-items: center; gap: 24px 48px; padding: 32px 24px; flex-wrap: wrap; }
+      footer nav { display: flex; gap: 24px; flex-wrap: wrap; }
+      footer .report { font-size: 14px; color: var(--fg-dim); }
+      footer small { width: 100%; color: var(--fg-dim); font-size: 13px; }
 
       @media (max-width: 1040px) {
-        .hero { grid-template-columns: minmax(0, 1fr); gap: 48px; margin-bottom: 64px; }
-        .row { grid-template-columns: minmax(0, 1fr); gap: 24px; }
-        .row-head p { max-width: 64ch; }
+        .hero-wrap { padding: 16px 24px 32px; }
+        .hero-c { padding: 64px 24px 0; }
+        h1 { font-size: 52px; }
+        .steps, .steps.four, .steps.two { grid-template-columns: 1fr 1fr; }
+        .step:nth-child(2n) { border-right: 0; }
+        .step { border-bottom: 1px solid var(--hairline); }
+      }
+      @media (max-width: 760px) {
+        .three, .split { grid-template-columns: 1fr; }
+        .three > div { border-right: 0; border-bottom: 1px solid var(--hairline); }
+        .three > div:last-child { border-bottom: 0; }
+        .split { margin: 0 24px; }
+        .after::after { border-radius: 0 0 14px 14px; }
+        .panel { padding: 0 24px; }
+        .steps, .steps.four, .steps.two { grid-template-columns: 1fr; }
+        .step { border-right: 0; }
+        .step:last-child { border-bottom: 0; }
       }
       @media (max-width: 560px) {
-        main { padding: 16px 16px 64px; }
-        .mast { margin-bottom: 32px; }
-        h1 { font-size: 32px; }
-        h2 { font-size: 24px; }
-        .hero { gap: 32px; margin-bottom: 48px; }
-        .hero .lede { margin-bottom: 24px; }
-        .primary { padding: 12px 16px; gap: 12px; }
-        .row { padding: 32px 0; }
-        .card > summary { padding: 12px 16px; }
-        .card > summary .hint { display: none; }
-        .card > summary .name { flex: 1 1 auto; }
-        .card-body { padding: 0 16px 16px; }
+        .nav { padding: 0 16px; }
+        .nav nav { display: none; }
+        .hero-wrap { padding: 12px 16px 24px; }
+        .hero-c { padding: 48px 16px 0; }
+        h1 { font-size: 40px; }
+        h2 { font-size: 28px; }
+        .sub { font-size: 16px; }
+        .stage { margin-top: 40px; }
+        .pin { left: auto; right: 4px; top: 79.5%; }
+        .sec-head { padding: 64px 24px 32px; }
+        .split > div { padding: 32px 24px; }
+        .final { padding: 16px; }
+        .final-card { padding: 64px 16px 96px; }
+        .step { padding: 24px; }
+        footer { padding: 24px 16px; }
       }
-      @media (prefers-reduced-motion: reduce) {
-        * { transition: none !important; animation: none !important; }
-      }
+
     </style>
   </head>
   <body>
-    <main>
-      <div class="mast" role="img" aria-label="Clipr">
-        <svg viewBox="0 0 542 660" width="22" height="27" fill="currentColor" aria-hidden="true">
-          <g transform="translate(0,660) scale(0.1,-0.1)"><path d="M4287 6502 c-9 -21 -17 -44 -17 -50 0 -6 -13 -33 -30 -59 -16 -26 -30 -54 -31 -62 0 -9 -9 -29 -20 -46 -10 -16 -22 -37 -25 -45 -4 -8 -40 -84 -80 -168 -41 -84 -74 -155 -74 -157 0 -2 -19 -43 -41 -92 -23 -48 -54 -115 -69 -148 -15 -33 -67 -143 -115 -245 -85 -181 -114 -244 -160 -345 -13 -27 -41 -88 -63 -135 -22 -47 -67 -143 -100 -215 -33 -71 -117 -254 -187 -405 -70 -151 -161 -349 -201 -438 -41 -90 -110 -239 -153 -330 -104 -220 -141 -301 -141 -306 0 -5 -43 -97 -146 -315 -35 -73 -64 -136 -64 -138 0 -3 -25 -57 -55 -120 -30 -63 -55 -117 -55 -119 0 -4 -32 -72 -131 -282 -23 -48 -52 -109 -64 -137 -53 -115 -271 -586 -301 -653 -19 -39 -34 -78 -34 -85 0 -6 -7 -21 -15 -31 -19 -25 -19 -46 -2 -46 14 0 208 102 276 144 20 13 56 34 81 48 25 14 77 43 115 65 39 22 149 83 245 136 96 52 225 123 285 157 172 98 531 299 625 350 107 58 413 231 460 259 19 11 60 34 90 49 30 16 134 73 230 127 96 53 238 132 315 175 490 271 575 325 636 402 49 63 103 174 125 258 32 125 4 299 -69 423 -59 100 -158 178 -372 294 -60 33 -127 69 -147 81 -21 12 -68 38 -105 58 -37 20 -97 54 -133 74 -36 20 -101 56 -145 80 -119 65 -145 79 -320 175 -88 48 -179 98 -201 110 -88 47 -89 49 -77 102 12 51 47 167 82 268 24 71 54 164 135 423 49 158 75 240 116 367 23 72 45 148 50 170 17 79 29 118 39 128 6 6 11 28 11 48 0 21 5 41 10 44 6 3 10 25 10 49 0 23 3 46 7 50 10 10 31 96 23 96 -3 0 -14 -17 -23 -38z M610 6482 c-84 -6 -161 -26 -240 -64 -161 -77 -300 -254 -341 -433 -20 -88 -21 -4474 -1 -4550 61 -223 175 -373 357 -464 158 -79 306 -99 458 -62 48 12 102 31 120 41 36 22 62 25 73 9 3 -6 -8 -59 -25 -117 -57 -199 -123 -456 -156 -612 -19 -85 -37 -166 -41 -180 l-7 -25 22 22 c11 12 21 31 21 42 0 11 4 23 10 26 5 3 10 15 10 26 0 10 5 19 10 19 6 0 18 17 27 37 37 86 76 170 94 205 11 20 25 53 33 75 8 21 43 99 79 173 35 74 103 218 150 320 47 102 101 219 120 260 19 41 47 104 62 140 35 84 54 126 133 290 35 74 70 153 78 174 8 22 18 44 22 50 5 6 21 43 37 81 15 39 56 129 90 200 34 72 79 168 100 215 58 132 79 178 125 275 80 169 170 365 170 369 0 4 50 112 137 296 41 87 112 244 150 330 9 19 30 67 48 105 53 111 95 202 313 675 361 783 346 747 320 768 -7 5 -78 46 -158 89 -80 44 -161 89 -180 100 -19 11 -71 39 -115 63 -44 23 -98 53 -120 65 -208 113 -282 154 -355 195 -47 26 -110 61 -140 77 -30 16 -80 44 -110 61 -30 17 -86 48 -125 69 -181 99 -226 124 -368 202 -84 46 -183 100 -222 121 -38 21 -92 50 -120 65 -199 108 -278 145 -330 158 -62 16 -153 24 -215 19z"/></g>
-        </svg>
-      </div>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="mflat" viewBox="0 0 64 64"><path fill-rule="evenodd" style="fill:var(--l,#B8E4EA);stroke:var(--l,#B8E4EA);stroke-width:0.12;stroke-linejoin:round" d="M7.83 30.71 L7.80 30.74 L7.77 30.77 L7.75 30.81 L7.72 30.84 L7.69 30.88 L7.67 30.92 L7.65 30.95 L7.63 30.99 L7.61 31.03 L7.59 31.07 L7.57 31.11 L7.55 31.15 L7.54 31.19 L7.53 31.24 L7.51 31.28 L7.50 31.32 L7.49 31.36 L7.49 31.41 L7.48 31.45 L7.47 31.50 L7.47 31.54 L7.47 31.58 L7.47 31.63 L7.47 31.67 L7.47 31.72 L7.47 31.76 L7.48 31.80 L7.48 31.85 L7.49 31.89 L7.50 31.93 L7.51 31.98 L7.52 32.02 L7.54 32.06 L7.55 32.10 L7.57 32.14 L7.59 32.18 L7.60 32.22 L7.62 32.26 L7.65 32.30 L7.67 32.34 L7.69 32.38 L7.72 32.41 L7.74 32.45 L7.77 32.48 L7.80 32.52 L7.83 32.55 L7.86 32.58 L7.89 32.61 L7.92 32.64 L7.96 32.67 L7.99 32.70 L8.02 32.72 L8.06 32.75 L8.10 32.77 L8.14 32.80 L8.17 32.82 L8.21 32.84 L22.28 39.87 L22.32 39.89 L22.36 39.91 L22.40 39.92 L22.44 39.94 L22.48 39.95 L22.53 39.96 L22.57 39.98 L22.61 39.98 L22.66 39.99 L22.70 40.00 L22.74 40.00 L22.79 40.01 L22.83 40.01 L22.88 40.01 L22.92 40.01 L22.96 40.01 L23.01 40.01 L23.05 40.00 L23.10 39.99 L23.14 39.99 L23.18 39.98 L23.23 39.97 L23.27 39.95 L23.31 39.94 L23.35 39.93 L23.40 39.91 L23.44 39.89 L23.48 39.87 L23.52 39.85 L23.55 39.83 L23.59 39.81 L23.63 39.79 L23.67 39.76 L23.70 39.73 L23.74 39.71 L23.77 39.68 L23.80 39.65 L23.84 39.62 L56.14 7.31 L56.17 7.28 L56.20 7.25 L56.23 7.22 L56.25 7.18 L56.28 7.15 L56.31 7.11 L56.33 7.07 L56.35 7.03 L56.37 7.00 L56.39 6.96 L56.41 6.92 L56.43 6.88 L56.45 6.84 L56.46 6.79 L56.47 6.75 L56.49 6.71 L56.50 6.67 L56.51 6.62 L56.51 6.58 L56.52 6.54 L56.53 6.49 L56.53 6.45 L56.53 6.40 L56.53 6.36 L56.53 6.32 L56.53 6.27 L56.53 6.23 L56.52 6.18 L56.51 6.14 L56.51 6.10 L56.50 6.05 L56.49 6.01 L56.47 5.97 L56.46 5.93 L56.45 5.88 L56.43 5.84 L56.41 5.80 L56.39 5.76 L56.37 5.72 L56.35 5.69 L56.33 5.65 L56.31 5.61 L56.28 5.57 L56.25 5.54 L56.23 5.50 L56.20 5.47 L56.17 5.44 L56.14 5.41 L56.11 5.37 L56.07 5.35 L56.04 5.32 L56.01 5.29 L55.97 5.26 L55.93 5.24 L55.90 5.21 L55.86 5.19 L55.82 5.17 L55.78 5.15 L55.74 5.13 L55.70 5.11 L55.66 5.10 L55.62 5.08 L55.58 5.07 L55.53 5.06 L55.49 5.05 L55.45 5.04 L55.40 5.03 L55.36 5.02 L55.32 5.02 L55.27 5.01 L55.23 5.01 L55.18 5.01 L34.09 5.01 L34.04 5.01 L34.00 5.01 L33.95 5.02 L33.91 5.02 L33.87 5.03 L33.82 5.04 L33.78 5.05 L33.74 5.06 L33.70 5.07 L33.65 5.08 L33.61 5.10 L33.57 5.11 L33.53 5.13 L33.49 5.15 L33.45 5.17 L33.41 5.19 L33.37 5.21 L33.34 5.24 L33.30 5.26 L33.27 5.29 L33.23 5.32 L33.20 5.35 L33.16 5.37 L33.13 5.41 L7.86 30.68Z M24.49 32.23 L24.45 32.47 L24.39 32.69 L24.32 32.91 L24.21 33.13 L24.09 33.33 L23.95 33.51 L23.80 33.69 L23.62 33.85 L23.44 33.99 L23.23 34.11 L23.02 34.21 L22.80 34.28 L22.58 34.34 L22.34 34.38 L22.11 34.39 L21.88 34.38 L21.64 34.34 L21.42 34.28 L21.20 34.21 L20.98 34.11 L20.78 33.99 L20.59 33.85 L20.42 33.69 L20.26 33.51 L20.12 33.33 L20.00 33.13 L19.90 32.91 L19.82 32.69 L19.77 32.47 L19.73 32.23 L19.72 32.00 L19.73 31.77 L19.77 31.53 L19.82 31.31 L19.90 31.09 L20.00 30.87 L20.12 30.67 L20.26 30.49 L20.42 30.31 L20.59 30.15 L20.78 30.01 L20.98 29.89 L21.20 29.79 L21.42 29.72 L21.64 29.66 L21.88 29.62 L22.11 29.61 L22.34 29.62 L22.58 29.66 L22.80 29.72 L23.02 29.79 L23.23 29.89 L23.44 30.01 L23.62 30.15 L23.80 30.31 L23.95 30.49 L24.09 30.67 L24.21 30.87 L24.32 31.09 L24.39 31.31 L24.45 31.53 L24.49 31.77 L24.50 32.00Z"/><path fill-rule="evenodd" style="fill:var(--m,#5FD8CA);stroke:var(--m,#5FD8CA);stroke-width:0.12;stroke-linejoin:round" d="M33.16 58.63 L33.20 58.65 L33.23 58.68 L33.27 58.71 L33.30 58.74 L33.34 58.76 L33.37 58.79 L33.41 58.81 L33.45 58.83 L33.49 58.85 L33.53 58.87 L33.57 58.89 L33.61 58.90 L33.65 58.92 L33.70 58.93 L33.74 58.94 L33.78 58.95 L33.82 58.96 L33.87 58.97 L33.91 58.98 L33.95 58.98 L34.00 58.99 L34.04 58.99 L34.09 58.99 L55.18 58.99 L55.23 58.99 L55.27 58.99 L55.32 58.98 L55.36 58.98 L55.40 58.97 L55.45 58.96 L55.49 58.95 L55.53 58.94 L55.58 58.93 L55.62 58.92 L55.66 58.90 L55.70 58.89 L55.74 58.87 L55.78 58.85 L55.82 58.83 L55.86 58.81 L55.90 58.79 L55.93 58.76 L55.97 58.74 L56.01 58.71 L56.04 58.68 L56.07 58.65 L56.11 58.63 L56.14 58.59 L56.17 58.56 L56.20 58.53 L56.23 58.50 L56.25 58.46 L56.28 58.43 L56.31 58.39 L56.33 58.35 L56.35 58.31 L56.37 58.28 L56.39 58.24 L56.41 58.20 L56.43 58.16 L56.45 58.12 L56.46 58.07 L56.47 58.03 L56.49 57.99 L56.50 57.95 L56.51 57.90 L56.51 57.86 L56.52 57.82 L56.53 57.77 L56.53 57.73 L56.53 57.68 L56.53 57.64 L56.53 57.60 L56.53 57.55 L56.53 57.51 L56.52 57.46 L56.51 57.42 L56.51 57.38 L56.50 57.33 L56.49 57.29 L56.47 57.25 L56.46 57.21 L56.45 57.16 L56.43 57.12 L56.41 57.08 L56.39 57.04 L56.37 57.00 L56.35 56.97 L56.33 56.93 L56.31 56.89 L56.28 56.85 L56.25 56.82 L56.23 56.78 L56.20 56.75 L56.17 56.72 L56.14 56.69 L32.26 32.81 L24.64 40.42 L24.63 40.44 L24.60 40.47 L24.57 40.49 L24.54 40.52 L24.51 40.55 L24.47 40.58 L24.45 40.60 L24.41 40.63 L24.38 40.65 L24.35 40.68 L24.32 40.70 L24.28 40.72 L24.25 40.75 L24.21 40.77 L24.18 40.79 L24.14 40.81 L24.11 40.83 L24.07 40.85 L24.04 40.87 L24.00 40.89 L23.96 40.91 L23.92 40.93 L23.89 40.94 L23.85 40.96 L23.81 40.97 L23.77 40.99 L23.74 41.00 L23.69 41.02 L23.66 41.03 L23.62 41.04 L23.58 41.05 L23.54 41.07 L23.50 41.08 L23.46 41.09 L23.42 41.09 L23.38 41.10 L23.34 41.11 L23.30 41.12 L23.26 41.12 L23.22 41.13 L23.18 41.14 L23.14 41.14 L23.10 41.14 L23.05 41.15 L23.02 41.15 L22.97 41.15 L22.94 41.15 L22.89 41.15 L22.85 41.15 L22.81 41.15 L22.77 41.15 L22.73 41.15 L22.69 41.15 L22.65 41.14 L22.61 41.14 L22.56 41.13 L22.53 41.13 L22.48 41.12 L22.45 41.12 L22.40 41.11 L22.37 41.10 L22.32 41.09 L22.29 41.08 L22.24 41.07 L22.21 41.06 L22.16 41.05 L22.13 41.04 L22.09 41.02 L22.05 41.01 L22.01 41.00 L21.97 40.98 L21.93 40.97 L21.90 40.95 L21.86 40.93 L21.82 40.92 L21.78 40.90 L21.77 40.89 L9.09 34.55 L33.13 58.59Z"/></symbol></defs></svg>
+    <div class="frame">
+      <header class="nav">
+        <a href="#top" class="lockup-link"><span class="lockup" role="img" aria-label="Clipr"><svg width="25.3" height="25.3" viewBox="0 0 64 64" aria-hidden="true"><use href="#mflat"/></svg><span class="word" style="font-size:22px" aria-hidden="true">Clip<svg class="cutr" viewBox="0 0 66.2 100" aria-hidden="true"><polygon points="0,0 66.2,0 66.2,22 0,50.4" fill="#5FD8CA"/><rect x="0" y="60.7" width="25" height="39.3" fill="#F2F5F6"/></svg></span></span></a>
+        <nav aria-label="Page"><a href="#how">How it works</a><a href="#install">Install help</a></nav>
+        <a class="pill dl" id="dl-nav" href="https://github.com/xxxxxLiam/clipr/releases/latest"><span class="dl-short">Download</span></a>
+      </header>
 
-      <section class="hero">
-        <div class="hero-copy">
-          <h1>Download just the part of a video you need.</h1>
-          <p class="lede">
-            Paste a YouTube link, find the moment in the transcript, mark in and
-            out, and download only that. Then open it in Final Cut Pro, Premiere Pro,
-            DaVinci Resolve or CapCut, from the Clip menu.
-          </p>
-
-          <a class="primary" id="primary" href="https://github.com/xxxxxLiam/clipr/releases/latest">
-            <span class="glyph" id="primary-glyph"></span>
-            <span class="label">
-              <span class="what" id="primary-what">Choose your platform</span>
-              <span class="file" id="primary-file">Pick the file for your computer below</span>
-            </span>
-            <span class="arrow" aria-hidden="true">
-              <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1"></path></svg>
-            </span>
-          </a>
-          <div class="others" id="others"></div>
-          <p class="free" id="desktop-note" hidden><b>Clipr is a desktop app. Open this page on your computer</b> to install it. The links above are 230 to 300 MB installers, so save them for the computer.</p>
-          <p class="free">Free, including for paid client work. Runs on your computer; nothing is uploaded.</p>
-        </div>
-
-        <figure class="shot">
-          <img src="docs/screenshot.png" width="1440" height="900"
-               alt="The Clipr workspace: your videos on the left, the video in the middle with a timeline below it showing a 42-second range marked from 1:12:04 to 1:12:46, a Clip button with an editor menu beside it, and the clips waiting to be made on the right." />
-          <figcaption>Mark the range on the timeline, press Clip. Only that section downloads.</figcaption>
-        </figure>
-      </section>
-
-      <section class="row">
-        <div class="row-head">
-          <h2>Several moments, one file.</h2>
-          <p>Mark a moment near the start and another from an hour later. They come down joined, in order, as one download.</p>
-        </div>
-        <div class="row-body">
-          <figure class="shot">
-            <img src="docs/segments.png" width="1440" height="200"
-                 alt="The timeline with two marked moments, 1 (18 seconds) and 2 (16 seconds), roughly nine minutes apart. The gap is folded away, and one clip called Hook Question shows 0:34 in total, ready for the Clip button." />
-          </figure>
-        </div>
-      </section>
-
-      <section class="row" id="open">
-        <div class="row-head">
-          <h2>Opening it the first time.</h2>
-          <p>Clipr is not signed with a paid certificate yet, so your computer warns you once. That means &ldquo;we cannot verify who published this&rdquo;, not &ldquo;this is dangerous&rdquo;.</p>
-        </div>
-        <div class="row-body">
-          <div class="cards">
-            <details class="card" id="card-mac" open>
-              <summary>
-                <span class="os" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M11.182.008C11.148-.03 9.923.023 8.857 1.18c-1.066 1.156-.902 2.482-.878 2.516s1.52.087 2.475-1.258.762-2.391.728-2.43m3.314 11.733c-.048-.096-2.325-1.234-2.113-3.422s1.675-2.789 1.698-2.854-.597-.79-1.254-1.157a3.7 3.7 0 0 0-1.563-.434c-.108-.003-.483-.095-1.254.116-.508.139-1.653.589-1.968.607-.316.018-1.256-.522-2.267-.665-.647-.125-1.333.131-1.824.328-.49.196-1.422.754-2.074 2.237-.652 1.482-.311 3.83-.067 4.56s.625 1.924 1.273 2.796c.576.984 1.34 1.667 1.659 1.899s1.219.386 1.843.067c.502-.308 1.408-.485 1.766-.472.357.013 1.061.154 1.782.539.571.197 1.111.115 1.652-.105.541-.221 1.324-1.059 2.238-2.758q.52-1.185.473-1.282"></path><path d="M11.182.008C11.148-.03 9.923.023 8.857 1.18c-1.066 1.156-.902 2.482-.878 2.516s1.52.087 2.475-1.258.762-2.391.728-2.43m3.314 11.733c-.048-.096-2.325-1.234-2.113-3.422s1.675-2.789 1.698-2.854-.597-.79-1.254-1.157a3.7 3.7 0 0 0-1.563-.434c-.108-.003-.483-.095-1.254.116-.508.139-1.653.589-1.968.607-.316.018-1.256-.522-2.267-.665-.647-.125-1.333.131-1.824.328-.49.196-1.422.754-2.074 2.237-.652 1.482-.311 3.83-.067 4.56s.625 1.924 1.273 2.796c.576.984 1.34 1.667 1.659 1.899s1.219.386 1.843.067c.502-.308 1.408-.485 1.766-.472.357.013 1.061.154 1.782.539.571.197 1.111.115 1.652-.105.541-.221 1.324-1.059 2.238-2.758q.52-1.185.473-1.282"></path></svg></span>
-                <h3 class="name">macOS</h3>
-                <span class="hint">Apple Silicon (M1 and newer)</span>
-                <svg class="chev" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"></path></svg>
-              </summary>
-              <div class="card-body">
-                <p>
-                  <b>This download is for Apple Silicon Macs (M1 and newer).</b> It
-                  will not run on an Intel Mac. To check, choose the Apple menu &rarr;
-                  <b>About This Mac</b>: it says &ldquo;Chip: Apple M&hellip;&rdquo; on a
-                  Mac that works, or &ldquo;Processor: Intel&rdquo; on one that does not.
-                </p>
-                <ol class="steps">
-                  <li>Open the <b>.dmg</b> and drag <b>Clipr</b> into Applications.</li>
-                  <li>
-                    Open <b>Terminal</b>: press <kbd>&#8984;</kbd><kbd>Space</kbd>, type
-                    <i>terminal</i>, press <kbd>Return</kbd>. Then paste this and press <kbd>Return</kbd>.
-                    <div class="copy">
-                      <code>xattr -dr com.apple.quarantine /Applications/Clipr.app &amp;&amp; open /Applications/Clipr.app</code>
-                      <button type="button" data-copy>Copy</button>
-                    </div>
-                    <div class="after">It clears the flag and opens Clipr for you &mdash; no need to go back to Applications.</div>
-                  </li>
-                </ol>
-                <div class="note">
-                  <b>Two commands in one, if you are wondering.</b> The first half
-                  removes the &ldquo;downloaded from the internet&rdquo; flag from
-                  Clipr and nothing else; <code>&amp;&amp;</code> means the second half
-                  only runs if that worked, and it launches the app. From then on you
-                  double-click Clipr like anything else.
-                </div>
-                <div class="note">
-                  <b>Right-click &rarr; Open no longer works.</b> You may have been told
-                  to try it. On macOS Sequoia (15) and later that shortcut no longer
-                  exists &mdash; Apple removed it &mdash; which is why the line above is
-                  the step that actually works.
-                </div>
-                <details class="more">
-                  <summary>
-                    <svg class="chev" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"></path></svg>
-                    <b>I would rather not use Terminal</b>
-                  </summary>
-                  <div>
-                    <p>
-                      Double-click Clipr and let macOS refuse it. Then open
-                      <b>System&nbsp;Settings &rarr; Privacy &amp; Security</b>, scroll
-                      down to the Security section, and click <b>Open Anyway</b> next to
-                      the message about Clipr. Confirm with Touch&nbsp;ID or your
-                      password. The button only appears after macOS has blocked the app
-                      once, so the refusal is a necessary first step rather than a
-                      failure.
-                    </p>
-                  </div>
-                </details>
-              </div>
-            </details>
-
-            <details class="card" id="card-win" open>
-              <summary>
-                <span class="os" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M6.555 1.375 0 2.237v5.45h6.555zM0 13.795l6.555.933V8.313H0zm7.278-5.4.026 6.378L16 16V8.395zM16 0 7.33 1.244v6.414H16z"></path></svg></span>
-                <h3 class="name">Windows</h3>
-                <span class="hint">Keep, Unblock, Run anyway</span>
-                <svg class="chev" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"></path></svg>
-              </summary>
-              <div class="card-body">
-                <p>
-                  Windows gets in the way twice: once in the browser, once when you run
-                  the file. These are the steps that work, in order.
-                </p>
-                <ol class="steps">
-                  <li>
-                    <b>If your browser blocks the download</b> &mdash; press <kbd>Ctrl</kbd><kbd>J</kbd>
-                    to open Downloads, click the <b>&ctdot;</b> next to the file and
-                    choose <b>Keep</b>. If it asks again, choose <b>Keep anyway</b>.
-                  </li>
-                  <li>
-                    <b>Before you open it</b> &mdash; right-click the downloaded file &rarr;
-                    <b>Properties</b> &rarr; tick <b>Unblock</b> at the bottom &rarr;
-                    <b>OK</b>. Do this even if nothing looks wrong; it is what stops the
-                    next warning appearing without a way past it.
-                  </li>
-                  <li>
-                    <b>Double-click the file.</b> If a blue screen says &ldquo;Windows
-                    protected your PC&rdquo;, click the small <b>More info</b> link, then
-                    <b>Run anyway</b>.
-                  </li>
-                  <li>Finish the installer. Done.</li>
-                </ol>
-                <details class="more">
-                  <summary>
-                    <svg class="chev" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"></path></svg>
-                    <b>There is no Unblock tick box</b>
-                  </summary>
-                  <div>
-                    <p>
-                      Some Windows versions hide it. Open <b>PowerShell</b> and run this
-                      instead, then carry on from step 3:
-                    </p>
-                    <div class="copy">
-                      <code>Get-ChildItem "$env:USERPROFILE\Downloads\Clipr-Windows-x64-Setup*.exe" | Unblock-File</code>
-                      <button type="button" data-copy>Copy</button>
-                    </div>
-                    <p>The <code>*</code> also catches a copy your browser renamed, like <i>Setup (1).exe</i>. Change <code>Downloads</code> if you saved the file somewhere else.</p>
-                  </div>
-                </details>
-                <div class="note">
-                  <b>Why all this?</b> Clipr is not signed with a paid Windows
-                  certificate yet. Every warning above is Windows saying it cannot
-                  verify who published the file &mdash; not that it found anything wrong
-                  with it.
-                </div>
-              </div>
-            </details>
-
-            <details class="card" id="card-linux" open>
-              <summary>
-                <span class="os" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8.996 4.497c.104-.076.1-.168.186-.158s.022.102-.098.207c-.12.104-.308.243-.46.323-.291.152-.631.336-.993.336s-.647-.167-.853-.33c-.102-.082-.186-.162-.248-.221-.11-.086-.096-.207-.052-.204.075.01.087.109.134.153.064.06.144.137.241.214.195.154.454.304.778.304s.702-.19.932-.32c.13-.073.297-.204.433-.304M7.34 3.781c.055-.02.123-.031.174-.003.011.006.024.021.02.034-.012.038-.074.032-.11.05-.032.017-.057.052-.093.054-.034 0-.086-.012-.09-.046-.007-.044.058-.072.1-.089m.581-.003c.05-.028.119-.018.173.003.041.017.106.045.1.09-.004.033-.057.046-.09.045-.036-.002-.062-.037-.093-.053-.036-.019-.098-.013-.11-.051-.004-.013.008-.028.02-.034"></path><path fill-rule="evenodd" d="M8.446.019c2.521.003 2.38 2.66 2.364 4.093-.01.939.509 1.574 1.04 2.244.474.56 1.095 1.38 1.45 2.32.29.765.402 1.613.115 2.465a.8.8 0 0 1 .254.152l.001.002c.207.175.271.447.329.698.058.252.112.488.224.615.344.382.494.667.48.922-.015.254-.203.43-.435.57-.465.28-1.164.491-1.586 1.002-.443.527-.99.83-1.505.871a1.25 1.25 0 0 1-1.256-.716v-.001a1 1 0 0 1-.078-.21c-.67.038-1.252-.165-1.718-.128-.687.038-1.116.204-1.506.206-.151.331-.445.547-.808.63-.5.114-1.126 0-1.743-.324-.577-.306-1.31-.278-1.85-.39-.27-.057-.51-.157-.626-.384-.116-.226-.095-.538.07-.988.051-.16.012-.398-.026-.648a2.5 2.5 0 0 1-.037-.369c0-.133.022-.265.087-.386v-.002c.14-.266.368-.377.577-.451s.397-.125.53-.258c.143-.15.27-.374.443-.56q.036-.037.073-.07c-.081-.538.007-1.105.192-1.662.393-1.18 1.223-2.314 1.811-3.014.502-.713.65-1.287.701-2.016.042-.997-.705-3.974 2.112-4.2q.168-.015.321-.013m2.596 10.866-.03.016c-.223.121-.348.337-.427.656-.08.32-.107.733-.13 1.206v.001c-.023.37-.192.824-.31 1.267s-.176.862-.036 1.128v.002c.226.452.608.636 1.051.601s.947-.304 1.36-.795c.474-.576 1.218-.796 1.638-1.05.21-.126.324-.242.333-.4.009-.157-.097-.403-.425-.767-.17-.192-.217-.462-.274-.71-.056-.247-.122-.468-.26-.585l-.001-.001c-.18-.157-.356-.17-.565-.164q-.069.001-.14.005c-.239.275-.805.612-1.197.508-.359-.09-.562-.508-.587-.918m-7.204.03H3.83c-.189.002-.314.09-.44.225-.149.158-.276.382-.445.56v.002h-.002c-.183.184-.414.239-.61.31-.195.069-.353.143-.46.35v.002c-.085.155-.066.378-.029.624.038.245.096.507.018.746v.002l-.001.002c-.157.427-.155.678-.082.822.074.143.235.22.48.272.493.103 1.26.069 1.906.41.583.305 1.168.404 1.598.305.431-.098.712-.369.75-.867v-.002c.029-.292-.195-.673-.485-1.052-.29-.38-.633-.752-.795-1.09v-.002l-.61-1.11c-.21-.286-.43-.462-.68-.5a1 1 0 0 0-.106-.008M9.584 4.85c-.14.2-.386.37-.695.467-.147.048-.302.17-.495.28a1.3 1.3 0 0 1-.74.19.97.97 0 0 1-.582-.227c-.14-.113-.25-.237-.394-.322a3 3 0 0 1-.192-.126c-.063 1.179-.85 2.658-1.226 3.511a5.4 5.4 0 0 0-.43 1.917c-.68-.906-.184-2.066.081-2.568.297-.55.343-.701.27-.649-.266.436-.685 1.13-.848 1.844-.085.372-.1.749.01 1.097.11.349.345.67.766.931.573.351.963.703 1.193 1.015s.302.584.23.777a.4.4 0 0 1-.212.22.7.7 0 0 1-.307.056l.184.235c.094.124.186.249.266.375 1.179.805 2.567.496 3.568-.218.1-.342.197-.664.212-.903.024-.474.05-.896.136-1.245s.244-.634.53-.791a1 1 0 0 1 .138-.061q.005-.045.013-.087c.082-.546.569-.572 1.18-.303.588.266.81.499.71.814h.13c.122-.398-.133-.69-.822-1.025l-.137-.06a2.35 2.35 0 0 0-.012-1.113c-.188-.79-.704-1.49-1.098-1.838-.072-.003-.065.06.081.203.363.333 1.156 1.532.727 2.644a1.2 1.2 0 0 0-.342-.043c-.164-.907-.543-1.66-.735-2.014-.359-.668-.918-2.036-1.158-2.983M7.72 3.503a1 1 0 0 0-.312.053c-.268.093-.447.286-.559.391-.022.021-.05.04-.119.091s-.172.126-.321.238q-.198.151-.13.38c.046.15.192.325.459.476.166.098.28.23.41.334a1 1 0 0 0 .215.133.9.9 0 0 0 .298.066c.282.017.49-.068.673-.173s.34-.233.518-.29c.365-.115.627-.345.709-.564a.37.37 0 0 0-.01-.309c-.048-.096-.148-.187-.318-.257h-.001c-.354-.151-.507-.162-.705-.29-.321-.207-.587-.28-.807-.279m-.89-1.122h-.025a.4.4 0 0 0-.278.135.76.76 0 0 0-.191.334 1.2 1.2 0 0 0-.051.445v.001c.01.162.041.299.102.436.05.116.109.204.183.274l.089-.065.117-.09-.023-.018a.4.4 0 0 1-.11-.161.7.7 0 0 1-.054-.22v-.01a.7.7 0 0 1 .014-.234.4.4 0 0 1 .08-.179q.056-.069.126-.073h.013a.18.18 0 0 1 .123.05c.045.04.08.09.11.162a.7.7 0 0 1 .054.22v.01a.7.7 0 0 1-.002.17 1.1 1.1 0 0 1 .317-.143 1.3 1.3 0 0 0 .002-.194V3.23a1.2 1.2 0 0 0-.102-.437.8.8 0 0 0-.227-.31.4.4 0 0 0-.268-.102m1.95-.155a.63.63 0 0 0-.394.14.9.9 0 0 0-.287.376 1.2 1.2 0 0 0-.1.51v.015q0 .079.01.152c.114.027.278.074.406.138a1 1 0 0 1-.011-.172.8.8 0 0 1 .058-.278.5.5 0 0 1 .139-.2.26.26 0 0 1 .182-.069.26.26 0 0 1 .178.081c.055.054.094.12.124.21.029.086.042.17.04.27l-.002.012a.8.8 0 0 1-.057.277c-.024.059-.089.106-.122.145.046.016.09.03.146.052a5 5 0 0 1 .248.102 1.2 1.2 0 0 0 .244-.763 1.2 1.2 0 0 0-.11-.495.9.9 0 0 0-.294-.37.64.64 0 0 0-.39-.133z"></path></svg></span>
-                <h3 class="name">Linux</h3>
-                <span class="hint">Make it executable, run it</span>
-                <svg class="chev" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"></path></svg>
-              </summary>
-              <div class="card-body">
-                <p>Make the <b>.AppImage</b> executable, then run it. In a terminal, in the folder you downloaded it to:</p>
-                <div class="copy">
-                  <code>chmod +x Clipr-Linux-x64.AppImage &amp;&amp; ./Clipr-Linux-x64.AppImage</code>
-                  <button type="button" data-copy>Copy</button>
-                </div>
-                <p>
-                  Or right-click the file, choose <b>Properties</b>, and allow it to run
-                  as a program.
-                </p>
-              </div>
-            </details>
+      <main id="top">
+        <section class="hero-wrap">
+          <div class="hero-c">
+            <div class="hero-copy">
+              <h1>Only the seconds you need</h1>
+              <p class="sub">Paste a YouTube link, mark the moments, and Clipr downloads just those sections, ready for your editor. No ads, no account.</p>
+              <div class="cta-row"><a class="btn-ice dl" id="dl-hero" href="https://github.com/xxxxxLiam/clipr/releases/latest"><span class="glyph" aria-hidden="true"></span><span class="dl-what">Download Clipr</span></a></div>
+        <p class="also">Free &middot; <span class="dl-spec">macOS, Windows and Linux</span><span class="dl-others"> &middot; also for <a href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-Windows-x64-Setup.exe">Windows</a> and <a href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-Linux-x64.AppImage">Linux</a></span></p>
+              <p class="phone-note" id="desktop-note" hidden><b>Clipr is a desktop app. Open this page on your computer</b> to install it. The links above are 230 to 300 MB installers, so save them for the computer.</p>
+            </div>
+            <div class="stage">
+              <div class="rise" aria-hidden="true"></div>
+              <div class="win lit"><img src="docs/screenshot.png" width="2880" height="1800" alt="The Clipr workspace: your videos on the left, the video in the middle with a timeline below it showing a 42-second range marked from 1:12:04 to 1:12:46, a Clip button with an editor menu beside it, and the clips waiting to be made on the right." /></div>
+              <div class="pin" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="#5FD8CA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>0:42</b> of 2:14:33 downloads</span></div>
+            </div>
           </div>
-          <p class="small dim" style="margin-top: 24px;">
-            <b>Updating later.</b> On Windows and Linux, Clipr updates itself. On
-            macOS it can&rsquo;t yet, because the app is unsigned: download the new
-            version from this page and install it the same way.
-          </p>
-        </div>
-      </section>
+        </section>
 
-      <section class="row">
-        <div class="row-head">
-          <h2>Getting 1080p.</h2>
-        </div>
-        <div class="row-body">
-          <p>
-            YouTube hands 360p to anyone who is not signed in. Clipr will ask you,
-            once, for a <b>cookies.txt</b> exported from your own browser, and
-            walks you through it. The file stays on your computer and is never
-            uploaded.
-          </p>
-          <p>
-            You can skip it and work at 360p. The bar at the bottom of the window says
-            &ldquo;at 360p&rdquo; while you are, and its <b>Sign in for 1080p</b> button
-            opens the steps whenever you are ready. There is no quality setting to
-            pick: clips come down at 1080p, or the highest the video has.
-          </p>
-        </div>
-      </section>
+        <section class="band" id="how">
+          <div class="three">
+            <div><span class="ico"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#F2F5F6" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="5" cy="15" r="2.5"/><circle cx="15" cy="15" r="2.5"/><path d="M6.8 13.2L15 3M13.2 13.2L5 3"/></svg></span><h2 class="h3">Only the part you mark</h2><p>Set in and out. Clipr fetches that section and nothing else, so a two-hour podcast costs you seconds.</p></div>
+            <div><span class="ico"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#F2F5F6" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><rect x="2" y="7" width="5" height="6" rx="1.5"/><rect x="13" y="7" width="5" height="6" rx="1.5"/><path d="M7 10h6"/></svg></span><h2 class="h3">Several moments, one file</h2><p>A line from minute 3 and an answer from minute 71 come down joined, in order, as one clip.</p></div>
+            <div><span class="ico"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#F2F5F6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="11" height="11" rx="2"/><path d="M11 9l6-6M12.5 3H17v4.5"/></svg></span><h2 class="h3">Straight to your editor</h2><p>Open the clip in Final Cut Pro, Premiere Pro, DaVinci Resolve or CapCut from the Clip menu.</p></div>
+          </div>
+        </section>
 
-      <section class="row">
-        <div class="row-head">
-          <h2>Something went wrong?</h2>
-        </div>
-        <div class="row-body">
-          <p>
-            In Clipr, open <b>Help</b> (the <b>?</b> at the top right) and choose
-            <b>Report a problem</b>. Write what you were doing in plain words:
-            <i>&ldquo;it got to 90% and said export failed&rdquo;</i> is a genuinely
-            useful report. Then press <b>Send report</b>. You do not need an account
-            of any kind.
-          </p>
-          <p>
-            Clipr adds the error, the version numbers and a cleaned-up log. Nothing
-            is sent unless you press <b>Send report</b>. If a crash screen appears,
-            it has the same <b>Send report</b> button, and <b>Copy details</b> if you
-            would rather pass the details on yourself.
-          </p>
-        </div>
-      </section>
+        <section class="block">
+          <div class="sec-head"><h2>Why clippers switch</h2><p>The usual downloader makes you take the whole video. Clipr does not.</p></div>
+          <div class="split">
+            <div class="before">
+              <span class="lbl">The usual way</span>
+              <h3>Download the whole video</h3>
+              <div class="bar" aria-hidden="true"><span style="width:100%"></span></div>
+              <ul><li>2:14:33 of video to get one moment</li><li>Ads before every download</li><li>Scrub the file again in your editor</li></ul>
+            </div>
+            <div class="after">
+              <span class="lbl ice">With Clipr</span>
+              <h3>Download the moment</h3>
+              <div class="bar on" aria-hidden="true"><span style="width:6%;margin-left:52%"></span></div>
+              <ul><li><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="#5FD8CA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>0:42, ready to edit</li><li><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="#5FD8CA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>No ads, no account</li><li><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="#5FD8CA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Lands in that campaign's folder</li></ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="works" aria-label="Works with"><span>Hands off to</span><b>Final Cut Pro</b><b>Premiere Pro</b><b>DaVinci Resolve</b><b>CapCut</b></section>
+
+        <section class="block" id="install">
+          <div class="sec-head"><h2>Opening it the first time</h2><p>Clipr isn't signed with a paid certificate yet, so your computer asks once. It means &ldquo;unknown publisher&rdquo;, not &ldquo;unsafe&rdquo;.</p></div>
+          <div class="tabs" role="tablist" aria-label="Your computer">
+            <button class="tab" role="tab" type="button" id="tab-mac" aria-controls="panel-mac" aria-selected="true">macOS</button>
+            <button class="tab" role="tab" type="button" id="tab-win" aria-controls="panel-win" aria-selected="false" tabindex="-1">Windows</button>
+            <button class="tab" role="tab" type="button" id="tab-linux" aria-controls="panel-linux" aria-selected="false" tabindex="-1">Linux</button>
+          </div>
+
+          <div class="panel" role="tabpanel" id="panel-mac" aria-labelledby="tab-mac">
+            <h3 class="panel-title">macOS</h3>
+            <p class="lead"><b>This download is for Apple Silicon Macs (M1 and newer).</b> It will not run on an Intel Mac. To check, choose the Apple menu &rarr; <b>About This Mac</b>: it says &ldquo;Chip: Apple M&hellip;&rdquo; on a Mac that works, or &ldquo;Processor: Intel&rdquo; on one that does not.</p>
+            <div class="steps">
+              <div class="step"><span class="n">1</span><h4>Drag to Applications</h4><p>Open the <b>.dmg</b> and drag <b>Clipr</b> into Applications.</p></div>
+              <div class="step"><span class="n">2</span><h4>Paste one line in Terminal</h4><p>Press <kbd>&#8984;</kbd><kbd>Space</kbd>, type <i>terminal</i>, press <kbd>Return</kbd>, then paste this and press <kbd>Return</kbd>.</p>
+                <div class="code"><code>xattr -dr com.apple.quarantine /Applications/Clipr.app &amp;&amp; open /Applications/Clipr.app</code><button type="button" data-copy>Copy</button></div></div>
+              <div class="step"><span class="n">3</span><h4>Done</h4><p>Clipr opens. From now on, double-click it like any app.</p></div>
+            </div>
+            <div class="notes">
+              <p><b>Two commands in one, if you are wondering.</b> The first half removes the &ldquo;downloaded from the internet&rdquo; flag from Clipr and nothing else; <code>&amp;&amp;</code> means the second half only runs if that worked, and it launches the app.</p>
+              <p><b>Right-click &rarr; Open no longer works.</b> On macOS Sequoia (15) and later that shortcut no longer exists. Apple removed it, which is why the line above is the step that works.</p>
+              <details class="more"><summary><svg class="chev" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"></path></svg><b>I would rather not use Terminal</b></summary>
+                <div><p>Double-click Clipr and let macOS refuse it. Then open <b>System&nbsp;Settings &rarr; Privacy &amp; Security</b>, scroll down to the Security section, and click <b>Open Anyway</b> next to the message about Clipr. Confirm with Touch&nbsp;ID or your password. The button only appears after macOS has blocked the app once, so the refusal is a necessary first step rather than a failure.</p></div></details>
+              <p><b>Updating later.</b> On macOS Clipr can't update itself yet, because the app is unsigned: download the new version from this page and install it the same way.</p>
+            </div>
+          </div>
+
+          <div class="panel" role="tabpanel" id="panel-win" aria-labelledby="tab-win">
+            <h3 class="panel-title">Windows</h3>
+            <p class="lead">Windows gets in the way twice: once in the browser, once when you run the file. These are the steps that work, in order.</p>
+            <div class="steps four">
+              <div class="step"><span class="n">1</span><h4>If your browser blocks it</h4><p>Press <kbd>Ctrl</kbd><kbd>J</kbd> to open Downloads, click the <b>&ctdot;</b> next to the file and choose <b>Keep</b>. If it asks again, choose <b>Keep anyway</b>.</p></div>
+              <div class="step"><span class="n">2</span><h4>Unblock the file</h4><p>Right-click the downloaded file &rarr; <b>Properties</b> &rarr; tick <b>Unblock</b> at the bottom &rarr; <b>OK</b>. Do this even if nothing looks wrong.</p></div>
+              <div class="step"><span class="n">3</span><h4>Run it</h4><p>Double-click the file. If a blue screen says &ldquo;Windows protected your PC&rdquo;, click the small <b>More info</b> link, then <b>Run anyway</b>.</p></div>
+              <div class="step"><span class="n">4</span><h4>Done</h4><p>Finish the installer. Clipr updates itself from then on.</p></div>
+            </div>
+            <div class="notes">
+              <details class="more"><summary><svg class="chev" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"></path></svg><b>There is no Unblock tick box</b></summary>
+                <div><p>Some Windows versions hide it. Open <b>PowerShell</b> and run this instead, then carry on from step 3:</p>
+                <div class="code"><code>Get-ChildItem "$env:USERPROFILE\Downloads\Clipr-Windows-x64-Setup*.exe" | Unblock-File</code><button type="button" data-copy>Copy</button></div>
+                <p>The <code>*</code> also catches a copy your browser renamed, like <i>Setup (1).exe</i>. Change <code>Downloads</code> if you saved the file somewhere else.</p></div></details>
+              <p><b>Why all this?</b> Clipr is not signed with a paid Windows certificate yet. Every warning above is Windows saying it cannot verify who published the file, not that it found anything wrong with it.</p>
+            </div>
+          </div>
+
+          <div class="panel" role="tabpanel" id="panel-linux" aria-labelledby="tab-linux">
+            <h3 class="panel-title">Linux</h3>
+            <div class="steps two">
+              <div class="step"><span class="n">1</span><h4>Make it executable and run it</h4><p>In a terminal, in the folder you downloaded it to:</p>
+                <div class="code"><code>chmod +x Clipr-Linux-x64*.AppImage &amp;&amp; ./Clipr-Linux-x64*.AppImage</code><button type="button" data-copy>Copy</button></div></div>
+              <div class="step"><span class="n">2</span><h4>Or use the file manager</h4><p>Right-click the <b>.AppImage</b>, choose <b>Properties</b>, and allow it to run as a program. Clipr updates itself from then on.</p></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="final">
+          <div class="final-card">
+            <h2>Get every campaign's clips done sooner</h2>
+            <p>Free, including for paid client work. Runs on your computer; nothing is uploaded.</p>
+            <div class="cta-row"><a class="btn-ice dl" id="dl-final" href="https://github.com/xxxxxLiam/clipr/releases/latest"><span class="glyph" aria-hidden="true"></span><span class="dl-what">Download Clipr</span></a></div>
+        <p class="also">Free &middot; <span class="dl-spec">macOS, Windows and Linux</span><span class="dl-others"> &middot; also for <a href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-Windows-x64-Setup.exe">Windows</a> and <a href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-Linux-x64.AppImage">Linux</a></span></p>
+            <div class="sunrise small" aria-hidden="true"></div>
+          </div>
+          <div class="ticker" aria-hidden="true"><div class="track"><span><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="#5FD8CA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>No ads</span><span><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="#5FD8CA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>No account</span><span><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="#5FD8CA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Nothing uploaded</span><span><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="#5FD8CA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Free for client work</span><span><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="#5FD8CA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>macOS and Windows</span><span><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="#5FD8CA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>No ads</span><span><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="#5FD8CA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>No account</span><span><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="#5FD8CA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Nothing uploaded</span><span><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="#5FD8CA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Free for client work</span><span><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="#5FD8CA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>macOS and Windows</span></div></div>
+        </section>
+      </main>
 
       <footer>
-        <p>
-          Free to download and use, including for paid client work. Copying,
-          redistributing, forking or reselling the application is not permitted.
-        </p>
-        <p>
-          Clipr ships alongside ffmpeg, which is licensed under the GPL v3 and
-          carries its own terms.
-        </p>
-        <nav class="links" aria-label="Legal">
+        <a href="#top" class="lockup-link"><span class="lockup" role="img" aria-label="Clipr"><svg width="20.7" height="20.7" viewBox="0 0 64 64" aria-hidden="true"><use href="#mflat"/></svg><span class="word" style="font-size:18px" aria-hidden="true">Clip<svg class="cutr" viewBox="0 0 66.2 100" aria-hidden="true"><polygon points="0,0 66.2,0 66.2,22 0,50.4" fill="#5FD8CA"/><rect x="0" y="60.7" width="25" height="39.3" fill="#F2F5F6"/></svg></span></span></a>
+        <nav aria-label="Links">
+          <a href="https://github.com/xxxxxLiam/clipr/releases">Releases</a>
           <a href="https://github.com/xxxxxLiam/clipr/blob/main/LICENSE">Licence</a>
           <a href="https://github.com/xxxxxLiam/clipr/blob/main/THIRD-PARTY-NOTICES.md">Third-party notices</a>
         </nav>
+        <p class="report">Report a problem: <b>Help &rarr; Report a problem</b> in Clipr</p>
+        <small>Free to use, including for paid client work. Copying, redistributing, forking or reselling the application is not permitted. Clipr ships alongside ffmpeg, which is licensed under the GPL v3 and carries its own terms.</small>
       </footer>
-    </main>
+    </div>
 
     <script>
       (function () {
@@ -583,57 +348,66 @@
           linux: '<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8.996 4.497c.104-.076.1-.168.186-.158s.022.102-.098.207c-.12.104-.308.243-.46.323-.291.152-.631.336-.993.336s-.647-.167-.853-.33c-.102-.082-.186-.162-.248-.221-.11-.086-.096-.207-.052-.204.075.01.087.109.134.153.064.06.144.137.241.214.195.154.454.304.778.304s.702-.19.932-.32c.13-.073.297-.204.433-.304M7.34 3.781c.055-.02.123-.031.174-.003.011.006.024.021.02.034-.012.038-.074.032-.11.05-.032.017-.057.052-.093.054-.034 0-.086-.012-.09-.046-.007-.044.058-.072.1-.089m.581-.003c.05-.028.119-.018.173.003.041.017.106.045.1.09-.004.033-.057.046-.09.045-.036-.002-.062-.037-.093-.053-.036-.019-.098-.013-.11-.051-.004-.013.008-.028.02-.034"></path><path fill-rule="evenodd" d="M8.446.019c2.521.003 2.38 2.66 2.364 4.093-.01.939.509 1.574 1.04 2.244.474.56 1.095 1.38 1.45 2.32.29.765.402 1.613.115 2.465a.8.8 0 0 1 .254.152l.001.002c.207.175.271.447.329.698.058.252.112.488.224.615.344.382.494.667.48.922-.015.254-.203.43-.435.57-.465.28-1.164.491-1.586 1.002-.443.527-.99.83-1.505.871a1.25 1.25 0 0 1-1.256-.716v-.001a1 1 0 0 1-.078-.21c-.67.038-1.252-.165-1.718-.128-.687.038-1.116.204-1.506.206-.151.331-.445.547-.808.63-.5.114-1.126 0-1.743-.324-.577-.306-1.31-.278-1.85-.39-.27-.057-.51-.157-.626-.384-.116-.226-.095-.538.07-.988.051-.16.012-.398-.026-.648a2.5 2.5 0 0 1-.037-.369c0-.133.022-.265.087-.386v-.002c.14-.266.368-.377.577-.451s.397-.125.53-.258c.143-.15.27-.374.443-.56q.036-.037.073-.07c-.081-.538.007-1.105.192-1.662.393-1.18 1.223-2.314 1.811-3.014.502-.713.65-1.287.701-2.016.042-.997-.705-3.974 2.112-4.2q.168-.015.321-.013m2.596 10.866-.03.016c-.223.121-.348.337-.427.656-.08.32-.107.733-.13 1.206v.001c-.023.37-.192.824-.31 1.267s-.176.862-.036 1.128v.002c.226.452.608.636 1.051.601s.947-.304 1.36-.795c.474-.576 1.218-.796 1.638-1.05.21-.126.324-.242.333-.4.009-.157-.097-.403-.425-.767-.17-.192-.217-.462-.274-.71-.056-.247-.122-.468-.26-.585l-.001-.001c-.18-.157-.356-.17-.565-.164q-.069.001-.14.005c-.239.275-.805.612-1.197.508-.359-.09-.562-.508-.587-.918m-7.204.03H3.83c-.189.002-.314.09-.44.225-.149.158-.276.382-.445.56v.002h-.002c-.183.184-.414.239-.61.31-.195.069-.353.143-.46.35v.002c-.085.155-.066.378-.029.624.038.245.096.507.018.746v.002l-.001.002c-.157.427-.155.678-.082.822.074.143.235.22.48.272.493.103 1.26.069 1.906.41.583.305 1.168.404 1.598.305.431-.098.712-.369.75-.867v-.002c.029-.292-.195-.673-.485-1.052-.29-.38-.633-.752-.795-1.09v-.002l-.61-1.11c-.21-.286-.43-.462-.68-.5a1 1 0 0 0-.106-.008M9.584 4.85c-.14.2-.386.37-.695.467-.147.048-.302.17-.495.28a1.3 1.3 0 0 1-.74.19.97.97 0 0 1-.582-.227c-.14-.113-.25-.237-.394-.322a3 3 0 0 1-.192-.126c-.063 1.179-.85 2.658-1.226 3.511a5.4 5.4 0 0 0-.43 1.917c-.68-.906-.184-2.066.081-2.568.297-.55.343-.701.27-.649-.266.436-.685 1.13-.848 1.844-.085.372-.1.749.01 1.097.11.349.345.67.766.931.573.351.963.703 1.193 1.015s.302.584.23.777a.4.4 0 0 1-.212.22.7.7 0 0 1-.307.056l.184.235c.094.124.186.249.266.375 1.179.805 2.567.496 3.568-.218.1-.342.197-.664.212-.903.024-.474.05-.896.136-1.245s.244-.634.53-.791a1 1 0 0 1 .138-.061q.005-.045.013-.087c.082-.546.569-.572 1.18-.303.588.266.81.499.71.814h.13c.122-.398-.133-.69-.822-1.025l-.137-.06a2.35 2.35 0 0 0-.012-1.113c-.188-.79-.704-1.49-1.098-1.838-.072-.003-.065.06.081.203.363.333 1.156 1.532.727 2.644a1.2 1.2 0 0 0-.342-.043c-.164-.907-.543-1.66-.735-2.014-.359-.668-.918-2.036-1.158-2.983M7.72 3.503a1 1 0 0 0-.312.053c-.268.093-.447.286-.559.391-.022.021-.05.04-.119.091s-.172.126-.321.238q-.198.151-.13.38c.046.15.192.325.459.476.166.098.28.23.41.334a1 1 0 0 0 .215.133.9.9 0 0 0 .298.066c.282.017.49-.068.673-.173s.34-.233.518-.29c.365-.115.627-.345.709-.564a.37.37 0 0 0-.01-.309c-.048-.096-.148-.187-.318-.257h-.001c-.354-.151-.507-.162-.705-.29-.321-.207-.587-.28-.807-.279m-.89-1.122h-.025a.4.4 0 0 0-.278.135.76.76 0 0 0-.191.334 1.2 1.2 0 0 0-.051.445v.001c.01.162.041.299.102.436.05.116.109.204.183.274l.089-.065.117-.09-.023-.018a.4.4 0 0 1-.11-.161.7.7 0 0 1-.054-.22v-.01a.7.7 0 0 1 .014-.234.4.4 0 0 1 .08-.179q.056-.069.126-.073h.013a.18.18 0 0 1 .123.05c.045.04.08.09.11.162a.7.7 0 0 1 .054.22v.01a.7.7 0 0 1-.002.17 1.1 1.1 0 0 1 .317-.143 1.3 1.3 0 0 0 .002-.194V3.23a1.2 1.2 0 0 0-.102-.437.8.8 0 0 0-.227-.31.4.4 0 0 0-.268-.102m1.95-.155a.63.63 0 0 0-.394.14.9.9 0 0 0-.287.376 1.2 1.2 0 0 0-.1.51v.015q0 .079.01.152c.114.027.278.074.406.138a1 1 0 0 1-.011-.172.8.8 0 0 1 .058-.278.5.5 0 0 1 .139-.2.26.26 0 0 1 .182-.069.26.26 0 0 1 .178.081c.055.054.094.12.124.21.029.086.042.17.04.27l-.002.012a.8.8 0 0 1-.057.277c-.024.059-.089.106-.122.145.046.016.09.03.146.052a5 5 0 0 1 .248.102 1.2 1.2 0 0 0 .244-.763 1.2 1.2 0 0 0-.11-.495.9.9 0 0 0-.294-.37.64.64 0 0 0-.39-.133z"></path></svg>'
         };
         var OS = {
-          mac:   { what: "Download for macOS",  file: "Apple Silicon · .dmg",  asset: "Clipr-macOS-AppleSilicon.dmg",  short: "macOS" },
-          win:   { what: "Download for Windows", file: "64-bit · .exe installer", asset: "Clipr-Windows-x64-Setup.exe",   short: "Windows" },
-          linux: { what: "Download for Linux",   file: "x64 · .AppImage",        asset: "Clipr-Linux-x64.AppImage",      short: "Linux" }
+          mac:   { what: "Download for macOS",   spec: "Apple Silicon (M1 and newer)", asset: "Clipr-macOS-AppleSilicon.dmg", short: "macOS" },
+          win:   { what: "Download for Windows", spec: "64-bit Windows",              asset: "Clipr-Windows-x64-Setup.exe",  short: "Windows" },
+          linux: { what: "Download for Linux",   spec: "64-bit Linux",                asset: "Clipr-Linux-x64.AppImage",     short: "Linux" }
         };
+        var order = ["mac", "win", "linux"];
+        var ua = (navigator.userAgent || "") + " " + ((navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || "");
+        var s = ua.toLowerCase();
+        var phone = /android|iphone|ipad|ipod/.test(s);
 
         function detect() {
-          var p = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || "";
-          var ua = navigator.userAgent || "";
-          var s = (p + " " + ua).toLowerCase();
-          // Phones and tablets cannot run these files; show every option instead of guessing.
-          if (/android|iphone|ipad|ipod/.test(s)) return null;
+          if (phone) return null;
           if (s.indexOf("mac") > -1) return "mac";
           if (s.indexOf("win") > -1) return "win";
           if (s.indexOf("linux") > -1 || s.indexOf("x11") > -1) return "linux";
           return null;
         }
-
         var found = detect();
-        if (/android|iphone|ipad|ipod/i.test((navigator.userAgent || "") + " " + (navigator.platform || ""))) {
-          document.getElementById("desktop-note").hidden = false;
-        }
-        var order = ["mac", "win", "linux"];
-        var primary = document.getElementById("primary");
+        document.documentElement.className += " js";
+        if (phone) document.getElementById("desktop-note").hidden = false;
 
-        if (found) {
+        document.querySelectorAll(".dl").forEach(function (a) {
+          if (!found) return;
           var o = OS[found];
-          primary.href = BASE + o.asset;
-          primary.setAttribute("download", "");
-          document.getElementById("primary-glyph").innerHTML = GLYPH[found];
-          document.getElementById("primary-what").textContent = o.what;
-          document.getElementById("primary-file").textContent = o.file;
-          // Lead with the card that matches their machine, and open only that one.
-          var card = document.getElementById("card-" + found);
-          if (card && card.parentNode) card.parentNode.insertBefore(card, card.parentNode.querySelector(".card"));
-          order.forEach(function (key) {
-            var c = document.getElementById("card-" + key);
-            if (c) c.open = (key === found);
+          a.href = BASE + o.asset;
+          var g = a.querySelector(".glyph");
+          if (g) g.innerHTML = GLYPH[found];
+          var w = a.querySelector(".dl-what");
+          if (w) w.textContent = o.what;
+        });
+        document.querySelectorAll(".also").forEach(function (p) {
+          if (!found) return;
+          p.querySelector(".dl-spec").textContent = OS[found].spec;
+          var others = p.querySelector(".dl-others");
+          others.innerHTML = " &middot; also for " + order.filter(function (k) { return k !== found; }).map(function (k) {
+            return '<a href="' + BASE + OS[k].asset + '">' + OS[k].short + "</a>";
+          }).join(" and ");
+        });
+
+        // Install tabs: open on the detected computer; arrow keys move between tabs.
+        function select(key, focus) {
+          order.forEach(function (k) {
+            var t = document.getElementById("tab-" + k), p = document.getElementById("panel-" + k);
+            var on = k === key;
+            t.setAttribute("aria-selected", on ? "true" : "false");
+            t.tabIndex = on ? 0 : -1;
+            p.hidden = !on;
+            if (on && focus) t.focus();
           });
         }
-
-        var others = document.getElementById("others");
-        order.forEach(function (key) {
-          if (key === found) return;
-          var o = OS[key];
-          var a = document.createElement("a");
-          a.className = "ghost";
-          a.href = BASE + o.asset;
-          a.setAttribute("download", "");
-          a.innerHTML = GLYPH[key] + "<span>" + (found ? "Also for " : "") + o.short + "</span>";
-          others.appendChild(a);
+        order.forEach(function (k, i) {
+          var t = document.getElementById("tab-" + k);
+          t.addEventListener("click", function () { select(k, false); });
+          t.addEventListener("keydown", function (e) {
+            var d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+            if (e.key === "Home") { e.preventDefault(); select(order[0], true); }
+            else if (e.key === "End") { e.preventDefault(); select(order[2], true); }
+            else if (d) { e.preventDefault(); select(order[(i + d + 3) % 3], true); }
+          });
         });
+        select(found || "mac", false);
 
         // Copy blocks: nobody should have to select text by hand.
         document.querySelectorAll("[data-copy]").forEach(function (btn) {
@@ -644,29 +418,18 @@
               var was = btn.textContent;
               btn.textContent = "Copied";
               btn.setAttribute("data-done", "1");
-              setTimeout(function () {
-                btn.textContent = was;
-                btn.removeAttribute("data-done");
-              }, 1600);
+              setTimeout(function () { btn.textContent = was; btn.removeAttribute("data-done"); }, 1600);
             };
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-              navigator.clipboard.writeText(text).then(done, fallback);
-            } else {
-              fallback();
-            }
             function fallback() {
-              // Clipboard API needs a secure context; this page may be opened
-              // from disk, so keep a route that always works.
               var ta = document.createElement("textarea");
-              ta.value = text;
-              ta.setAttribute("readonly", "");
-              ta.style.position = "fixed";
-              ta.style.opacity = "0";
-              document.body.appendChild(ta);
-              ta.select();
+              ta.value = text; ta.setAttribute("readonly", "");
+              ta.style.position = "fixed"; ta.style.opacity = "0";
+              document.body.appendChild(ta); ta.select();
               try { document.execCommand("copy"); done(); } catch (e) { /* leave the text selectable */ }
               document.body.removeChild(ta);
             }
+            if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback);
+            else fallback();
           });
         });
       })();
