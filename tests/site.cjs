@@ -165,6 +165,8 @@ check("PowerShell line does not hard-code the filename", !/Unblock-File[^<]*Setu
     await page.evaluate(() => document.querySelector(".final-card").scrollIntoView());
     await page.waitForTimeout(1400);
     check("scroll-in motion: closing card appears once scrolled to", (await page.evaluate(() => getComputedStyle(document.querySelector(".final-card")).opacity)) === "1");
+    const tk = await page.evaluate(() => { const tr = document.querySelector(".final-card .track"), g = tr.querySelectorAll(".grp"), tw = document.querySelector(".final-card .ticker").clientWidth; return { n: g.length, tr: tr.getBoundingClientRect().width, g0: g[0] && g[0].getBoundingClientRect().width, g1: g[1] && g[1].getBoundingClientRect().width, tw }; });
+    check("ticker loops seamlessly: two identical groups, each wider than the strip, so -50% lands exactly on the start", tk.n === 2 && Math.abs(tk.g0 - tk.g1) < 0.5 && Math.abs(tk.tr - 2 * tk.g0) < 0.5 && tk.g0 >= tk.tw);
     check("parallax: hero window moves with scroll", (await page.evaluate(() => document.documentElement.style.getPropertyValue("--p"))) !== "0.000");
     await ctx.close();
   }
