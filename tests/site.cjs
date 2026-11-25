@@ -380,9 +380,18 @@ for (const [n, p] of Object.entries(NAMES)) check(`run 3: ${n} page exists`, !!p
       const pv = await cv.newPage();
       await pv.goto(url + "whats-new/");
       await pv.waitForSelector(".wn-latest");
-      const ok = await pv.evaluate(() => { const secs = [...document.querySelectorAll(".wn-sec")]; return secs.length === 3 && secs.every((x) => x.querySelector(".wn-sec-head .wn-num") && x.querySelector("h3") && x.querySelector("p") && x.querySelector("figure.wn-vis figcaption") && x.querySelector(".wn-vis").getBoundingClientRect().width >= Math.min(300, innerWidth - 80)); });
-      check("run 6 reference: at " + w + "px each numbered section of the newest release has its heading, copy and a large visual with an 'Illustration' caption", ok);
-      check("run 6 reference: the visuals add no sideways scroll at " + w + "px", (await pv.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)) <= 0);
+      await pv.evaluate(() => document.querySelectorAll("img[loading=lazy]").forEach((i) => { i.loading = "eager"; }));
+      await pv.waitForFunction(() => [...document.images].every((i) => i.complete && i.naturalWidth > 0), null, { timeout: 8000 }).catch(() => {});
+      const info = await pv.evaluate(() => {
+        const secs = [...document.querySelectorAll(".wn-sec")], cards = [...document.querySelectorAll(".wn-card")];
+        const imgsOk = [...document.querySelectorAll(".wn-sec img, .wn-card img")].every((i) => i.naturalWidth > 0 && i.alt.length > 10);
+        const split = [...document.querySelectorAll(".wn-split")].map((x) => { const c = x.querySelector(".wn-copy").getBoundingClientRect(), v = x.querySelector(".wn-win").getBoundingClientRect(); return { sideBySide: Math.abs(c.top + c.height / 2 - (v.top + v.height / 2)) < 120 && c.right <= v.left + 1 || v.right <= c.left + 1, flip: x.classList.contains("flip") }; });
+        return { n: secs.length, nums: secs.every((x) => x.querySelector(".wn-num") && x.querySelector("h3") && x.querySelector(".wn-copy p")), hero: !!document.querySelector(".wn-sec:not(.wn-split) .wn-stage .wn-win img"), splits: split, cards: cards.length, cardsOk: cards.every((c) => c.querySelector("img") && c.querySelector("h4") && c.querySelector(".chip")), imgsOk, eyebrows: document.querySelectorAll(".wn-eyebrow").length };
+      });
+      check("run 6 reference: at " + w + "px the newest release has a hero with a framed app screenshot and glow stage, two split sections (one flipped), a two-card grid, eyebrow labels, and every image loads with alt text", info.n === 3 && info.nums && info.hero && info.splits.length === 2 && info.splits.filter((x) => x.flip).length === 1 && info.cards === 2 && info.cardsOk && info.imgsOk && info.eyebrows >= 4, JSON.stringify(info));
+      if (w >= 1000) check("run 6 reference: at " + w + "px the split sections put the copy beside the screenshot", info.splits.every((x) => x.sideBySide), JSON.stringify(info.splits));
+      else check("run 6 reference: at " + w + "px the split sections stack with the copy above the screenshot", await pv.evaluate(() => [...document.querySelectorAll(".wn-split")].every((x) => x.querySelector(".wn-copy").getBoundingClientRect().bottom <= x.querySelector(".wn-win").getBoundingClientRect().top + 1 || x.classList.contains("flip"))));
+      check("run 6 reference: the screenshots add no sideways scroll at " + w + "px", (await pv.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)) <= 0);
       if (w === 1440) { await pv.screenshot({ path: "/tmp/claude-0/wn-v19.png", fullPage: true }); }
       await cv.close();
     }
