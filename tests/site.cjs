@@ -152,6 +152,27 @@ check("PowerShell line does not hard-code the filename", !/Unblock-File[^<]*Setu
     const page = await ctx.newPage();
     await page.goto(url);
     check("reduced motion: ticker animation is off", (await page.locator(".track").evaluate((e) => getComputedStyle(e).animationName)) === "none");
+    check("reduced motion: no scroll-in motion, everything visible without scrolling", (await page.evaluate(() => !document.documentElement.classList.contains("anim") && [...document.querySelectorAll(".tile, .final-card, .sec-head")].every((e) => getComputedStyle(e).opacity === "1"))));
+    await ctx.close();
+  }
+  {
+    const { page, ctx } = await open("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/126 Safari/537.36", 1440);
+    check("Linux UA: AppImage link and Linux tab open", (await page.locator("#dl-hero").getAttribute("href")).endsWith("Clipr-Linux-x64.AppImage") && (await page.locator("#panel-linux").isVisible()));
+    await ctx.close();
+  }
+  {
+    const { page, ctx } = await open(WIN, 1440);
+    await page.waitForTimeout(2600);
+    const heroIn = await page.evaluate(() => [".hero-copy > h1", ".stage", ".stage .pin"].every((s) => getComputedStyle(document.querySelector(s)).opacity === "1"));
+    check("scroll-in motion: hero copy, window and pin animate in on load", heroIn);
+    const before = await page.evaluate(() => getComputedStyle(document.querySelector(".final-card")).opacity);
+    check("scroll-in motion: closing card waits until scrolled to", before === "0");
+    await page.evaluate(() => document.querySelector(".final-card").scrollIntoView());
+    await page.waitForTimeout(1400);
+    check("scroll-in motion: closing card appears once scrolled to", (await page.evaluate(() => getComputedStyle(document.querySelector(".final-card")).opacity)) === "1");
+    const tk = await page.evaluate(() => { const tr = document.querySelector(".final-card .track"), g = tr.querySelectorAll(".grp"), tw = document.querySelector(".final-card .ticker").clientWidth; return { n: g.length, tr: tr.getBoundingClientRect().width, g0: g[0] && g[0].getBoundingClientRect().width, g1: g[1] && g[1].getBoundingClientRect().width, tw }; });
+    check("ticker loops seamlessly: two identical groups, each wider than the strip, so -50% lands exactly on the start", tk.n === 2 && Math.abs(tk.g0 - tk.g1) < 0.5 && Math.abs(tk.tr - 2 * tk.g0) < 0.5 && tk.g0 >= tk.tw);
+    check("parallax: hero window moves with scroll", (await page.evaluate(() => document.documentElement.style.getPropertyValue("--p"))) !== "0.000");
     await ctx.close();
   }
   {
