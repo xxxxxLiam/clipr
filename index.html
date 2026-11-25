@@ -278,6 +278,11 @@
       .cols a:hover { color: var(--fg); }
       .report-row { display: flex; flex-direction: column; gap: 4px; font-size: 13px; line-height: 1.5; color: var(--fg-dim); padding: 12px 0; }
       .report-row b { color: var(--fg); font-size: 13px; }
+      .legal { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; padding: 32px 48px; border-top: 1px solid var(--hairline); }
+      .legal h3 { margin: 0 0 4px; font-size: 13px; font-weight: 500; color: var(--fg); line-height: 1.2; }
+      .legal p { margin: 0; font-size: 13px; line-height: 1.5; color: var(--fg-dim); }
+      @media (max-width: 1040px) { .legal { padding: 32px 24px; } }
+      @media (max-width: 560px) { .legal { grid-template-columns: 1fr; gap: 16px; padding: 24px 16px; } }
       .foot-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px 24px; min-height: 64px; padding: 8px 48px; border-top: 1px solid var(--hairline); font-size: 13px; color: var(--fg-dim); }
       .foot-bottom b { color: var(--fg); }
       .foot-bottom .credit { display: inline-flex; align-items: center; min-height: 44px; text-decoration: underline; text-underline-offset: 3px; }
@@ -298,6 +303,31 @@
       details.more.note > summary { min-height: 64px; margin: 0; }
       details.more.note > div { padding: 0 0 24px; }
       @media (max-width: 760px) { .notes { grid-template-columns: 1fr; } .note { padding: 20px; } details.more.note { padding: 0 20px; } }
+
+      /* Bento tiles (the Cloudflare grid rhythm): hairline tiles, a visual on top, title and text at the bottom, one solid Ice tile, corner handles. */
+      .notes:has(.bento) { display: block; }
+      .notes:has(.bento) > details { margin-top: 16px; }
+      .bento { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .tile { position: relative; display: flex; flex-direction: column; justify-content: flex-end; min-height: 280px; padding: 24px; background: var(--panel); border: 1px solid var(--hairline); border-radius: 0; overflow: hidden; }
+      .tile.wide { grid-column: span 2; }
+      .tile h4 { font-size: 15px; font-weight: 500; color: var(--fg); margin: 0 0 8px; }
+      .tile p { color: var(--fg-dim); font-size: 15px; margin: 0; max-width: 520px; }
+      .tile code { color: inherit; }
+      .tile .spacer { flex: 1; }
+      .tico { display: inline-flex; width: 16px; height: 16px; margin-bottom: 12px; color: var(--fg); }
+      .tile.hot { background-color: var(--ice); border-color: var(--ice); justify-content: flex-start; }
+      .tile.hot h4, .tile.hot p, .tile.hot .tico { color: var(--bg); }
+      .tile.hot .tico { margin-bottom: 12px; }
+      .tile .vis { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 8px; margin-bottom: 24px; max-width: 560px; }
+      .vis .row { display: grid; grid-template-columns: 96px 1fr auto; align-items: center; gap: 16px; min-height: 44px; padding: 0 16px; background: var(--raised); border: 1px solid var(--hairline); border-radius: var(--r-control); font-size: 13px; }
+      .vis.list .row { grid-template-columns: 1fr auto; }
+      .vis .k { color: var(--fg-dim); }
+      .vis .v { color: var(--fg); }
+      .vis .s { display: inline-flex; align-items: center; gap: 8px; color: var(--fg-dim); }
+      .vis .s.bad { color: var(--error); }
+      .hdl { position: absolute; width: 9px; height: 9px; background: var(--bg); border: 1px solid var(--hairline-strong); z-index: 2; }
+      .hdl.tl { top: -5px; left: -5px; } .hdl.tr { top: -5px; right: -5px; } .hdl.bl { bottom: -5px; left: -5px; } .hdl.br { bottom: -5px; right: -5px; }
+      @media (max-width: 760px) { .bento { grid-template-columns: 1fr; } .tile.wide { grid-column: auto; } .tile { min-height: 0; padding: 20px; } .vis .row { grid-template-columns: 80px 1fr auto; gap: 8px; padding: 0 12px; } .vis.list .row { grid-template-columns: 1fr auto; } .tile.hot { min-height: 0; } }
     </style>
   </head>
   <body>
@@ -372,11 +402,38 @@
               <div class="step"><span class="n">3</span><h4>Done</h4><p>Clipr opens. From now on, double-click it like any app.</p></div>
             </div>
             <div class="notes">
-              <div class="note"><h4>Not sure which Mac you have?</h4><p>Choose the Apple menu &rarr; <b>About This Mac</b>. &ldquo;Chip: Apple M&hellip;&rdquo; works. &ldquo;Processor: Intel&rdquo; does not: this download will not run on an Intel Mac.</p></div>
-              <div class="note"><h4>Two commands in one, if you are wondering</h4><p>The first half removes the &ldquo;downloaded from the internet&rdquo; flag from Clipr and nothing else; <code>&amp;&amp;</code> means the second half only runs if that worked, and it launches the app.</p></div>
-              <div class="note"><h4>Right-click &rarr; Open no longer works</h4><p>On macOS Sequoia (15) and later that shortcut no longer exists. Apple removed it, which is why the line above is the step that works.</p></div>
-              <div class="note"><h4>Updating later</h4><p>On macOS Clipr can't update itself yet, because the app is unsigned: download the new version from this page and install it the same way.</p></div>
-              <details class="more note"><summary><svg class="chev" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"></path></svg><b>I would rather not use Terminal</b></summary>
+            <div class="bento">
+              <span class="hdl tl" aria-hidden="true"></span><span class="hdl tr" aria-hidden="true"></span><span class="hdl bl" aria-hidden="true"></span><span class="hdl br" aria-hidden="true"></span>
+              <div class="tile wide">
+                <div class="vis" aria-hidden="true">
+                  <div class="row"><span class="k">Chip</span><span class="v">Apple M&hellip;</span><span class="s"><svg width="16" height="16" viewBox="0 0 16 16" fill="#5FD8CA" aria-hidden="true"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/></svg>Works</span></div>
+                  <div class="row"><span class="k">Processor</span><span class="v">Intel</span><span class="s bad"><svg width="16" height="16" viewBox="0 0 16 16" fill="#FF6363" aria-hidden="true"><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/></svg>Won't run</span></div>
+                </div>
+                <h4>Not sure which Mac you have?</h4>
+                <p>Choose the Apple menu &rarr; <b>About This Mac</b>. &ldquo;Chip: Apple M&hellip;&rdquo; works. &ldquo;Processor: Intel&rdquo; does not: this download will not run on an Intel Mac.</p>
+              </div>
+              <div class="tile hot grain">
+                <span class="tico"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M6 9a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3A.5.5 0 0 1 6 9M3.854 4.146a.5.5 0 1 0-.708.708L4.793 6.5 3.146 8.146a.5.5 0 1 0 .708.708l2-2a.5.5 0 0 0 0-.708z"/><path d="M2 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zm12 1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/></svg></span>
+                <h4>Two commands in one</h4>
+                <p>The first half removes the &ldquo;downloaded from the internet&rdquo; flag from Clipr and nothing else. <code>&amp;&amp;</code> means the second half only runs if that worked, and it launches the app.</p>
+              </div>
+              <div class="tile">
+                <div class="spacer"></div>
+                <span class="tico"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M15 8a6.97 6.97 0 0 0-1.71-4.584l-9.874 9.875A7 7 0 0 0 15 8M2.71 12.584l9.874-9.875a7 7 0 0 0-9.874 9.874ZM16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0"/></svg></span>
+                <h4>Right-click &rarr; Open no longer works</h4>
+                <p>On macOS Sequoia (15) and later that shortcut no longer exists. Apple removed it, which is why the line above is the step that works.</p>
+              </div>
+              <div class="tile wide">
+                <div class="vis list" aria-hidden="true">
+                  <div class="row"><span class="v">Clipr checks for a new version</span><span class="s">On launch</span></div>
+                  <div class="row"><span class="v">New version found</span><span class="s">Link to download</span></div>
+                  <div class="row"><span class="v">Install it</span><span class="s">The same steps as above</span></div>
+                </div>
+                <h4>Updating later</h4>
+                <p>On macOS Clipr can't update itself yet, because the app is unsigned: download the new version from this page and install it the same way.</p>
+              </div>
+            </div>
+            <details class="more note"><summary><svg class="chev" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"></path></svg><b>I would rather not use Terminal</b></summary>
                 <div><p>Double-click Clipr and let macOS refuse it. Then open <b>System&nbsp;Settings &rarr; Privacy &amp; Security</b>, scroll down to the Security section, and click <b>Open Anyway</b> next to the message about Clipr. Confirm with Touch&nbsp;ID or your password. The button only appears after macOS has blocked the app once, so the refusal is a necessary first step rather than a failure.</p></div></details>
             </div>
           </div>
@@ -430,7 +487,11 @@
             <div><h2 class="h5">Help</h2><a href="#how">How it works</a><a href="#install">Install help</a><div class="report-row"><b>Report a problem</b><span>Inside Clipr, open Help &rarr; Report a problem</span></div></div>
             <div><h2 class="h5">Legal</h2><a href="https://github.com/xxxxxLiam/clipr/blob/main/LICENSE">Licence</a><a href="https://github.com/xxxxxLiam/clipr/blob/main/THIRD-PARTY-NOTICES.md">Third-party notices</a><a href="https://github.com/xxxxxLiam/clipr/blob/main/README.md">Privacy: nothing is uploaded</a></div>
           </div>
-          <small>Free to use, including for paid client work. Copying, redistributing, forking or reselling the application is not permitted. Clipr ships alongside ffmpeg, which is licensed under the GPL v3 and carries its own terms.</small>
+        </div>
+        <div class="legal">
+          <div><h3>Free to use</h3><p>Including for paid client work.</p></div>
+          <div><h3>Not for redistribution</h3><p>Copying, forking, reselling or sharing the application is not permitted.</p></div>
+          <div><h3>Built with ffmpeg</h3><p>Ships alongside ffmpeg, licensed under the GPL v3, which carries its own terms.</p></div>
         </div>
         <div class="foot-bottom"><span>&copy; 2026 Clipr<span id="ver-foot" hidden></span></span><span>Proudly developed by <a class="credit" href="https://idksolutions.co.za" rel="noopener"><b>IDK Solutions</b></a></span></div>
       </footer>

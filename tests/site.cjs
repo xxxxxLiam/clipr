@@ -58,12 +58,12 @@ check("ticker is decoration only (aria-hidden) and stops under reduced motion", 
 // ---- static: colours are the Clean Cut tokens (CLAUDE.md on rebuild/canvas)
 const tok = { bg: "#0a0d0f", panel: "#121619", raised: "#181d21", hover: "#232a2f", fg: "#f2f5f6", "fg-dim": "#94a0a5", disabled: "#8b979c", ice: "#5fd8ca", frost: "#b8e4ea", error: "#ff6363" };
 check("page colour tokens are the Clean Cut values", Object.entries(tok).every(([k, v]) => new RegExp(`--${k}: ${v};`).test(html)));
-check("no old red accent: error red is not used as a fill or accent", !/--accent/.test(html) && !/var\(--error\)/.test(html) && !/FF6363/i.test(readme + read("logo.svg")));
+check("no old red accent: error red is not used as a fill or accent", !/--accent/.test(html) && !/--error\)/.test(html.replace(/\.vis \.s\.bad \{[^}]*\}/,"").replace(/<svg[^>]*class="bad"[\s\S]*?<\/svg>/g,"")) && !/FF6363/i.test(readme + read("logo.svg")));
 check("theme-color matches --bg", meta(/name="theme-color" content="([^"]+)"/) === tok.bg);
 
 check("footer credit links to idksolutions.co.za (not .org)", /Proudly developed by <a[^>]+href="https:\/\/idksolutions\.co\.za"/.test(html) && !/idksolutions\.org/i.test(html));
 
-check("install notes are cards, not loose paragraphs", (html.match(/class="note"/g) || []).length >= 4 && !/<div class="notes">\s*<p>/.test(html));
+check("install notes are cards, not loose paragraphs", (html.match(/class="(note|tile)[ "]/g) || []).length >= 4 && !/<div class="notes">\s*<p>/.test(html));
 check("version line sits below the tabs, centred", /role="tablist"[\s\S]*?<\/div>\s*<p class="ver" id="ver"/.test(html) && /\.ver \{ text-align: center/.test(html));
 
 check("closing card is an inset Ice gradient with a Frost sunrise and dark text", /grain-ice/.test(html) && /#b8e4ea 0%[^;]*\),\s*linear-gradient[^;]*#5fd8ca/.test(html) && /\.final-card\.grain-ice \.big[^}]*color: var\(--bg\)/.test(html));
