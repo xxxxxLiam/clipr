@@ -23,6 +23,11 @@ motion_script = [s for s in scripts if "IntersectionObserver(function" in s][0]
 
 # the download/OS script without the install tabs and copy buttons (those only exist on the landing page)
 dl_script = dl_script[: dl_script.index("// Install tabs")] + "})();\n"
+_a = 'document.querySelectorAll(".dl").forEach(function (a) {'
+_b = '        });\n        document.querySelectorAll(".also")'
+assert _a in dl_script and _b in dl_script
+dl_script = dl_script.replace(_a, 'window.cliprDl = function (root) { (root || document).querySelectorAll(".dl").forEach(function (a) {')
+dl_script = dl_script.replace(_b, '        }); }; window.cliprDl();\n        document.querySelectorAll(".also")')
 dl_script = dl_script.replace('var ver = document.getElementById("ver");', 'var ver = document.getElementById("ver"); if (!ver) return;')
 dl_script = dl_script.replace('var f = document.getElementById("ver-foot");', 'var f = document.getElementById("ver-foot"); if (!f) return;')
 
@@ -40,18 +45,20 @@ page_style = style.replace('url("fonts/', FONT)
 
 EXTRA_CSS = """
       /* inner pages (run 3): same tokens, no new values */
-      .p-hero { padding: 72px 48px 64px; text-align: center; background-color: var(--panel); }
+      .p-hero { padding: 72px 48px 96px; text-align: center; background-color: var(--panel); }
+      /* Readability: the bright Frost band sits below the text, never behind it (WCAG AA is checked in tests/site.cjs). */
+      .p-hero.grain-frost { background: linear-gradient(180deg, #121a1d 0, #22363a 200px, #3f5b60 320px, #b8e4ea 100%); }
       .p-hero > * { position: relative; z-index: 2; }
       .p-hero .crumb { font-size: 13px; color: var(--fg); margin-bottom: 16px; }
       .p-hero .crumb a { text-decoration: underline; text-underline-offset: 3px; }
       .p-hero h1 { font-size: 48px; line-height: 1.15; font-weight: 500; letter-spacing: -0.02em; text-wrap: balance; }
       .p-hero .lead { font-size: 18px; color: var(--fg); max-width: 620px; margin: 16px auto 0; text-wrap: balance; }
       .p-hero .facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 40px auto 0; max-width: 1000px; text-align: left; }
-      .p-hero .facts > * { background: rgba(10,13,15,.62); border: 1px solid var(--hairline-strong); border-radius: var(--r-panel); padding: 20px; color: var(--fg); display: block; }
+      .p-hero .facts > * { background: var(--panel); border: 1px solid var(--hairline-strong); border-radius: var(--r-panel); padding: 20px; color: var(--fg); display: block; }
       .p-hero .facts h2 { font-size: 15px; font-weight: 500; }
       .p-hero .facts p { font-size: 13px; color: var(--fg-dim); margin-top: 4px; }
       .p-hero .facts a.os { min-height: 44px; }
-      .p-hero .facts a.os:hover { background: rgba(35,42,47,.8); }
+      .p-hero .facts a.os:hover { background: var(--hover); }
       .p-hero .facts a.os h2 { display: flex; align-items: center; gap: 8px; }
       .p-hero .facts a.os svg { width: 16px; height: 16px; flex: none; }
       .p-body { max-width: 792px; margin: 0 auto; padding: 16px 48px 96px; }
@@ -84,11 +91,62 @@ EXTRA_CSS = """
       .rel summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; color: var(--fg); font-size: 13px; }
       .rel .dls { display: flex; gap: 8px 16px; flex-wrap: wrap; margin-top: 16px; font-size: 13px; }
       .rel .dls a { color: var(--fg); text-decoration: underline; text-underline-offset: 3px; display: inline-flex; min-height: 44px; align-items: center; }
+      .p-body.wide { max-width: 1104px; padding-top: 48px; }
+      .chip { display: inline-flex; align-items: center; height: 24px; padding: 0 8px; border-radius: var(--r-chip); font-size: 12px; border: 1px solid var(--hairline-strong); color: var(--fg); }
+      .chip.ice { border-color: var(--ice); color: var(--ice); }
+      .prose a.dl-mini { color: var(--bg); text-decoration: none; }
+      .dl-mini { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border-radius: var(--r-control); background: var(--ice); color: var(--bg); font-size: 15px; font-weight: 500; }
+      .dl-mini .glyph { display: inline-flex; align-items: center; }
+      .dl-mini .glyph svg { width: 16px; height: 16px; }
+      .wn-latest { background: var(--panel); border: 1px solid var(--hairline-strong); border-radius: var(--r-panel); padding: 32px; }
+      .wn-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+      .wn-title { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+      .wn-title h2 { margin: 0; font-size: 24px; }
+      .wn-title time, .wn-row time { color: var(--fg-dim); font-size: 13px; }
+      .wn-intro { margin: 16px 0 0; font-size: 15px; line-height: 1.7; color: var(--fg-dim); max-width: 640px; }
+      .wn-jump { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+      .prose a.wn-pill { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border: 1px solid var(--hairline-strong); border-radius: var(--r-control); font-size: 13px; color: var(--fg); text-decoration: none; }
+      .prose a.wn-pill:hover { background: var(--hover); }
+      .wn-num { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--hairline-strong); font-size: 12px; color: var(--fg); }
+      .wn-tilehead { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+      .wn-tilehead .chip { margin: 0; }
+      .wn-tile { scroll-margin-top: 96px; }
+      .wn-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 24px; }
+      .wn-tile { background: var(--raised); border: 1px solid var(--hairline); border-radius: var(--r-panel); padding: 20px; }
+      .wn-tile h3 { margin: 0 0 4px; font-size: 15px; font-weight: 500; }
+      .wn-tile p { margin: 0; font-size: 13px; line-height: 1.6; color: var(--fg-dim); }
+      .wn-all > summary, .wn-row > summary { cursor: pointer; list-style: none; display: flex; align-items: center; min-height: 44px; color: var(--fg); font-size: 13px; }
+      .wn-all > summary::-webkit-details-marker, .wn-row > summary::-webkit-details-marker { display: none; }
+      .wn-all { margin-top: 24px; border-top: 1px solid var(--hairline); padding-top: 8px; }
+      .wn-all > summary { font-size: 15px; font-weight: 500; }
+      .wn-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 8px 32px; margin-top: 8px; }
+      .wn-group { min-width: 0; }
+      .wn-group h4 { margin: 8px 0; font-size: 12px; font-weight: 400; color: var(--fg-dim); }
+      .wn-group ul { list-style: none; margin: 0; padding: 0; }
+      .wn-group li { padding: 8px 0; border-top: 1px solid var(--hairline); font-size: 15px; line-height: 1.6; color: var(--fg-dim); }
+      .wn-group li:first-child { border-top: 0; }
+      .wn-group li b { color: var(--fg); font-weight: 500; }
+      .wn-earlier { font-size: 20px; font-weight: 500; margin: 48px 0 16px; }
+      .wn-list { background: var(--panel); border: 1px solid var(--hairline); border-radius: var(--r-panel); overflow: hidden; }
+      .wn-row { border-top: 1px solid var(--hairline); }
+      .wn-row:first-child { border-top: 0; }
+      .wn-row > summary { min-height: 64px; padding: 8px 24px; gap: 16px; display: grid; grid-template-columns: 160px 200px 1fr auto; font-size: 15px; }
+      .wn-row > summary b { font-weight: 500; }
+      .wn-row > summary .count { color: var(--fg-dim); font-size: 13px; }
+      .wn-row > summary:hover { background: var(--hover); }
+      .wn-row > summary .more { font-size: 13px; }
+      .wn-row .less, .wn-row[open] .more { display: none; }
+      .wn-row[open] .less { display: inline; }
+      .wn-row .body { padding: 0 24px 24px; }
+      .wn-row .wn-groups { grid-template-columns: 1fr; }
+      .wn-dls { display: flex; gap: 8px 16px; flex-wrap: wrap; margin-top: 8px; font-size: 13px; }
+      .wn-dls a { color: var(--fg); text-decoration: underline; text-underline-offset: 3px; display: inline-flex; min-height: 44px; align-items: center; }
+      @media (max-width: 760px) { .wn-tiles { grid-template-columns: 1fr; } .wn-latest { padding: 24px 16px; } .wn-row > summary { padding: 8px 16px; gap: 4px 16px; grid-template-columns: 1fr auto; } .wn-row > summary b { grid-column: 1 / -1; } .wn-row .body { padding: 0 16px 16px; } }
       .status { color: var(--fg-dim); font-size: 15px; padding: 24px 0; }
       .rail-note { color: var(--fg-dim); font-size: 13px; margin-top: 16px; }
-      @media (max-width: 1040px) { .p-hero { padding: 64px 24px 48px; } .p-body { padding: 16px 24px 64px; } }
+      @media (max-width: 1040px) { .p-hero { padding: 64px 24px 80px; } .p-body { padding: 16px 24px 64px; } }
       @media (max-width: 760px) { .p-hero .facts { grid-template-columns: 1fr; } .p-hero h1 { font-size: 36px; } .p-hero .lead { font-size: 16px; } }
-      @media (max-width: 560px) { .p-hero { padding: 48px 16px 32px; } .p-body { padding: 8px 16px 48px; } .rel { padding: 16px; } }
+      @media (max-width: 560px) { .p-hero { padding: 48px 16px 64px; } .p-body { padding: 8px 16px 48px; } .rel { padding: 16px; } }
 """
 
 
@@ -263,7 +321,100 @@ JS_RELEASES = r"""
 """
 
 
-def page(slug, title, desc, crumb, h1, lead, facts_html, body_html, extra_script="", noscript=""):
+JS_WHATS_NEW = r"""
+      (function () {
+        var NOTES = __NOTES__;
+        var API = "https://api.github.com/repos/xxxxxLiam/clipr/releases?per_page=30";
+        var ASSETS = [["macOS", "Clipr-macOS-AppleSilicon.dmg"], ["Windows", "Clipr-Windows-x64-Setup.exe"], ["Linux", "Clipr-Linux-x64.AppImage"]];
+        var DEV = /^(refactor|chore|test|docs|ci|build)\b|^fix\(ci\)/i;
+        var GROUPS = ["New", "Improved", "Fixed"];
+        var box = document.getElementById("releases");
+        function el(tag, attrs, text) { var e = document.createElement(tag); Object.keys(attrs || {}).forEach(function (k) { e.setAttribute(k, attrs[k]); }); if (text) e.textContent = text; return e; }
+        function clean(body) {
+          return String(body || "").split("\n").map(function (l) { return l.replace(/^\s*[-*]\s*/, "").replace(/\s*\[skip release\]\s*/gi, "").trim(); })
+            .filter(function (l) { return l && !/^Release v?\d/i.test(l) && !DEV.test(l); });
+        }
+        function entry(r) {
+          var v = String(r.tag_name).replace(/^v/, "");
+          var n = NOTES[v];
+          if (n) return { v: v, intro: n.intro || "", highlights: n.highlights || [], changes: n.changes || [] };
+          return { v: v, highlights: [], changes: clean(r.body).map(function (t) { return { group: "Changes", text: t }; }) };
+        }
+        function when(r) { return r.published_at ? new Date(r.published_at).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : ""; }
+        function groups(changes) {
+          var wrap = el("div", { "class": "wn-groups" });
+          var names = GROUPS.concat(["Changes"]);
+          names.forEach(function (g) {
+            var items = changes.filter(function (c) { return c.group === g; });
+            if (!items.length) return;
+            var d = el("div", { "class": "wn-group" });
+            d.appendChild(el("h4", {}, g));
+            var ul = el("ul");
+            items.forEach(function (c) { var li = el("li"); if (c.title) { li.appendChild(el("b", {}, c.title + ". ")); } li.appendChild(document.createTextNode(c.text)); ul.appendChild(li); });
+            d.appendChild(ul); wrap.appendChild(d);
+          });
+          return wrap;
+        }
+        function installers(r) {
+          var d = el("div", { "class": "wn-dls" });
+          ASSETS.forEach(function (a) { d.appendChild(el("a", { href: "https://github.com/xxxxxLiam/clipr/releases/download/" + r.tag_name + "/" + a[1] }, a[0])); });
+          return d;
+        }
+        function latest(r) {
+          var e = entry(r), c = el("article", { "class": "wn-latest" });
+          var h = el("div", { "class": "wn-head" }), t = el("div", { "class": "wn-title" });
+          t.appendChild(el("h2", {}, "Version " + e.v)); t.appendChild(el("span", { "class": "chip ice" }, "Latest"));
+          t.appendChild(el("time", { datetime: r.published_at || "" }, when(r)));
+          h.appendChild(t);
+          var a = el("a", { "class": "dl-mini dl", href: "../download/" }); a.appendChild(el("span", { "class": "glyph", "aria-hidden": "true" })); a.appendChild(el("span", { "class": "dl-what" }, "Download Clipr"));
+          h.appendChild(a); c.appendChild(h);
+          if (e.intro) c.appendChild(el("p", { "class": "wn-intro" }, e.intro));
+          if (e.highlights.length) {
+            var jump = el("nav", { "class": "wn-jump", "aria-label": "In this version" });
+            e.highlights.slice(0, 3).forEach(function (x, i) { jump.appendChild(el("a", { "class": "wn-pill", href: "#wn-h" + (i + 1) }, x.title)); });
+            c.appendChild(jump);
+            var tiles = el("div", { "class": "wn-tiles" });
+            e.highlights.slice(0, 3).forEach(function (x, i) {
+              var d = el("div", { "class": "wn-tile", id: "wn-h" + (i + 1) });
+              var th = el("div", { "class": "wn-tilehead" }); th.appendChild(el("span", { "class": "wn-num" }, String(i + 1))); th.appendChild(el("span", { "class": "chip" }, x.tag)); d.appendChild(th);
+              d.appendChild(el("h3", {}, x.title)); d.appendChild(el("p", {}, x.text)); tiles.appendChild(d);
+            });
+            c.appendChild(tiles);
+          }
+          if (e.changes.length) {
+            var all = el("details", { "class": "wn-all", open: "" });
+            all.appendChild(el("summary", {}, e.highlights.length ? "Smaller updates" : "What changed"));
+            all.appendChild(groups(e.changes)); c.appendChild(all);
+          }
+          return c;
+        }
+        function row(r) {
+          var e = entry(r), d = el("details", { "class": "wn-row" });
+          var s = el("summary"); s.appendChild(el("b", {}, "Version " + e.v)); s.appendChild(el("time", { datetime: r.published_at || "" }, when(r)));
+          s.appendChild(el("span", { "class": "count" }, e.changes.length + (e.changes.length === 1 ? " change" : " changes")));
+          s.appendChild(el("span", { "class": "more" }, "Show changes")); s.appendChild(el("span", { "class": "more less" }, "Hide changes")); d.appendChild(s);
+          var b = el("div", { "class": "body" }); if (e.changes.length) b.appendChild(groups(e.changes)); b.appendChild(installers(r)); d.appendChild(b);
+          return d;
+        }
+        fetch(API, { headers: { Accept: "application/vnd.github+json" } })
+          .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+          .then(function (list) {
+            list = list.filter(function (r) { return !r.draft && !r.prerelease && r.published_at; });
+            box.textContent = "";
+            if (!list.length) { box.appendChild(el("p", { "class": "status" }, "No versions to list yet.")); return; }
+            box.appendChild(latest(list[0]));
+            if (window.cliprDl) window.cliprDl(box);
+            if (list.length > 1) {
+              box.appendChild(el("h2", { "class": "wn-earlier" }, "Earlier versions"));
+              var l = el("div", { "class": "wn-list" }); list.slice(1).forEach(function (r) { l.appendChild(row(r)); }); box.appendChild(l);
+            }
+          })
+          .catch(function () { box.textContent = ""; box.appendChild(el("p", { "class": "status" }, "The version list could not load. Check your connection and reload; the download page always has the newest version.")); });
+      })();
+""".replace("__NOTES__", open(os.path.join(SRC, "whats-new.json"), encoding="utf-8").read())
+
+
+def page(slug, title, desc, crumb, h1, lead, facts_html, body_html, extra_script="", noscript="", wide=False):
     canon = "https://xxxxxliam.github.io/clipr/%s/" % slug
     facts = '<div class="facts">%s</div>' % facts_html if facts_html else ""
     n = up(nav).replace("</header>", "</header>")
@@ -300,7 +451,7 @@ def page(slug, title, desc, crumb, h1, lead, facts_html, body_html, extra_script
           <p class="lead">{lead}</p>
           {facts}
         </section>
-        <div class="p-body prose">
+        <div class="p-body prose{" wide" if wide else ""}">
 {body_html}
 {noscript}
         </div>
@@ -336,8 +487,8 @@ pages = {
     "whats-new": page(
         "whats-new", "What's new", "What changed in each version of Clipr, newest first.",
         "What's new", "What&rsquo;s new", "Every version of Clipr, newest first.", "",
-        '<div id="releases" data-mode="notes"><p class="status">Loading the list of versions&hellip;</p></div>',
-        JS_RELEASES, '<noscript><p class="status">Turn on JavaScript to see what changed in each version.</p></noscript>'),
+        '<div id="releases"><p class="status">Loading the list of versions&hellip;</p></div>',
+        JS_WHATS_NEW, '<noscript><p class="status">Turn on JavaScript to see what changed in each version.</p></noscript>', wide=True),
     "licence": page(
         "licence", "Licence", "Clipr is free to use, including for paid client work. It is not open source: copying, forking, reselling or sharing it is not permitted.",
         "Legal", "Licence", "Free for client work. Not for sharing. Here is the short version, then the full text.",
