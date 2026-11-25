@@ -309,119 +309,9 @@ PRIVACY = """
 <p>To get a video, Clipr talks to the video service you pasted a link from, from your own computer, like a browser would. That service's own terms and privacy policy apply to that part.</p>
 """
 
-JS_RELEASES = r"""
-      (function () {
-        var API = "https://api.github.com/repos/xxxxxLiam/clipr/releases?per_page=30";
-        var ASSETS = [["macOS", "Clipr-macOS-AppleSilicon.dmg"], ["Windows", "Clipr-Windows-x64-Setup.exe"], ["Linux", "Clipr-Linux-x64.AppImage"]];
-        var DEV = /^(refactor|chore|test|docs|ci|build)\b|^fix\(ci\)/i;
-        function clean(body) {
-          return String(body || "").split("\n").map(function (l) { return l.replace(/^\s*[-*]\s*/, "").replace(/\s*\[skip release\]\s*/gi, "").replace(/\s*\((?:#\d+|[A-Z]\d?-\d+(?:, [A-Z]\d?-\d+)*)\)/g, "").replace(/^Renderer:\s*/i, "").trim(); })
-            .filter(function (l) { return l && !/^Release v?\d/i.test(l) && !DEV.test(l); });
-        }
-        function el(tag, attrs, text) {
-          var e = document.createElement(tag);
-          Object.keys(attrs || {}).forEach(function (k) { e.setAttribute(k, attrs[k]); });
-          if (text) e.textContent = text;
-          return e;
-        }
-        function card(r, mode) {
-          var v = String(r.tag_name).replace(/^v/, "");
-          var d = r.published_at ? new Date(r.published_at).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "";
-          var c = el("article", { "class": "rel" });
-          var h = el("header");
-          h.appendChild(el("h2", {}, "Version " + v));
-          var t = el("time", { datetime: r.published_at || "" }, d);
-          h.appendChild(t); c.appendChild(h);
-          if (mode === "notes") {
-            var items = clean(r.body);
-            if (!items.length) items = ["Improvements and fixes."];
-            var ul = el("ul"), more = el("details");
-            var mu = el("ul");
-            items.forEach(function (x, i) { (i < 6 ? ul : mu).appendChild(el("li", {}, x)); });
-            c.appendChild(ul);
-            if (items.length > 6) { more.appendChild(el("summary", {}, "Show " + (items.length - 6) + " more changes")); more.appendChild(mu); c.appendChild(more); }
-          }
-          var dls = el("div", { "class": "dls" });
-          ASSETS.forEach(function (a) { dls.appendChild(el("a", { href: "https://github.com/xxxxxLiam/clipr/releases/download/" + r.tag_name + "/" + a[1] }, a[0])); });
-          c.appendChild(dls);
-          return c;
-        }
-        var mode = document.getElementById("releases").getAttribute("data-mode");
-        var box = document.getElementById("releases");
-        fetch(API, { headers: { Accept: "application/vnd.github+json" } })
-          .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-          .then(function (list) {
-            list = list.filter(function (r) { return !r.draft && !r.prerelease && r.published_at; });
-            box.textContent = "";
-            if (!list.length) { box.appendChild(el("p", { "class": "status" }, "No versions to list yet.")); return; }
-            list.forEach(function (r, i) { if (mode === "older" && i === 0) return; box.appendChild(card(r, mode)); });
-          })
-          .catch(function () { box.textContent = ""; box.appendChild(el("p", { "class": "status" }, "The version list could not load. Check your connection and reload; the download buttons above still work.")); });
-      })();
-"""
-
-
 JS_WHATS_NEW = r"""
       (function () {
         var NOTES = __NOTES__;
-        var API = "https://api.github.com/repos/xxxxxLiam/clipr/releases?per_page=30";
-        var ASSETS = [["macOS", "Clipr-macOS-AppleSilicon.dmg"], ["Windows", "Clipr-Windows-x64-Setup.exe"], ["Linux", "Clipr-Linux-x64.AppImage"]];
-        var DEV = /^(refactor|chore|test|docs|ci|build)\b|^fix\(ci\)/i;
-        function clean(body) {
-          return String(body || "").split("\n").map(function (l) { return l.replace(/^\s*[-*]\s*/, "").replace(/\s*\[skip release\]\s*/gi, "").replace(/\s*\((?:#\d+|[A-Z]\d?-\d+(?:, [A-Z]\d?-\d+)*)\)/g, "").replace(/^Renderer:\s*/i, "").trim(); })
-            .filter(function (l) { return l && !/^Release v?\d/i.test(l) && !DEV.test(l); });
-        }
-        function el(tag, attrs, text) {
-          var e = document.createElement(tag);
-          Object.keys(attrs || {}).forEach(function (k) { e.setAttribute(k, attrs[k]); });
-          if (text) e.textContent = text;
-          return e;
-        }
-        function card(r, mode) {
-          var v = String(r.tag_name).replace(/^v/, "");
-          var d = r.published_at ? new Date(r.published_at).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "";
-          var c = el("article", { "class": "rel" });
-          var h = el("header");
-          h.appendChild(el("h2", {}, "Version " + v));
-          var t = el("time", { datetime: r.published_at || "" }, d);
-          h.appendChild(t); c.appendChild(h);
-          if (mode === "notes") {
-            var items = clean(r.body);
-            if (!items.length) items = ["Improvements and fixes."];
-            var ul = el("ul"), more = el("details");
-            var mu = el("ul");
-            items.forEach(function (x, i) { (i < 6 ? ul : mu).appendChild(el("li", {}, x)); });
-            c.appendChild(ul);
-            if (items.length > 6) { more.appendChild(el("summary", {}, "Show " + (items.length - 6) + " more changes")); more.appendChild(mu); c.appendChild(more); }
-          }
-          var dls = el("div", { "class": "dls" });
-          ASSETS.forEach(function (a) { dls.appendChild(el("a", { href: "https://github.com/xxxxxLiam/clipr/releases/download/" + r.tag_name + "/" + a[1] }, a[0])); });
-          c.appendChild(dls);
-          return c;
-        }
-        var mode = document.getElementById("releases").getAttribute("data-mode");
-        var box = document.getElementById("releases");
-        fetch(API, { headers: { Accept: "application/vnd.github+json" } })
-          .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-          .then(function (list) {
-            list = list.filter(function (r) { return !r.draft && !r.prerelease && r.published_at; });
-            box.textContent = "";
-            if (!list.length) { box.appendChild(el("p", { "class": "status" }, "No versions to list yet.")); return; }
-            list.forEach(function (r, i) { if (mode === "older" && i === 0) return; box.appendChild(card(r, mode)); });
-          })
-          .catch(function () { box.textContent = ""; box.appendChild(el("p", { "class": "status" }, "The version list could not load. Check your connection and reload; the download buttons above still work.")); });
-      })();
-"""
-
-
-JS_WHATS_NEW = r"""
-      (function () {
-        var NOTES = __NOTES__;
-        var VIS = {
-          update: '<div class="v-bar"><b>Clipr</b><span class="v-pill">Downloading update <b>42%</b><span class="v-prog"><i></i></span></span></div><div class="v-skel"><i style="width:72%"></i><i style="width:58%"></i><i style="width:64%"></i></div>',
-          outpoint: '<div class="v-ruler"><span class="v-range"></span></div><div class="v-cap"><span>Out point set past the end</span><span><b>Stops at the end of the video</b></span></div>',
-          fresh: '<div class="v-rows"><div class="v-row"><b>Open Clipr for the first time</b><span>No new folders in Downloads</span></div><div class="v-row"><b>Save your first clip</b><span>The folder is made, with the clip inside</span></div></div>'
-        };
         var API = "https://api.github.com/repos/xxxxxLiam/clipr/releases?per_page=30";
         var ASSETS = [["macOS", "Clipr-macOS-AppleSilicon.dmg"], ["Windows", "Clipr-Windows-x64-Setup.exe"], ["Linux", "Clipr-Linux-x64.AppImage"]];
         var DEV = /^(refactor|chore|test|docs|ci|build)\b|^fix\(ci\)/i;
@@ -530,6 +420,7 @@ JS_WHATS_NEW = r"""
         function row(r) {
           var e = entry(r), plain = !noted(r), d = el("details", { "class": "wn-row" });
           if (plain) e.changes = [{ group: "Improved", text: "Smaller improvements and fixes. See the installers below to get this version." }];
+          else e.changes = e.highlights.map(function (h) { return { group: h.tag, title: h.title, text: h.text }; }).concat((e.cards || []).map(function (h) { return { group: h.tag, title: h.title, text: h.text }; })).concat(e.changes);
           var s = el("summary"); s.appendChild(el("b", {}, "Version " + e.v)); s.appendChild(el("time", { datetime: r.published_at || "" }, when(r)));
           s.appendChild(el("span", { "class": "count" }, plain ? "Improvements and fixes" : e.changes.length + (e.changes.length === 1 ? " change" : " changes")));
           s.appendChild(el("span", { "class": "more" }, "Show changes")); s.appendChild(el("span", { "class": "more less" }, "Hide changes")); d.appendChild(s);
@@ -635,8 +526,8 @@ pages = {
         "download", "Download Clipr", "Download Clipr for macOS, Windows or Linux. Free, including for paid client work. No ads, no account.",
         "Download", "Download Clipr", 'Free for macOS, Windows and Linux. <span id="ver" hidden></span>', OS_TILES,
         '<h2 id="first-launch">First time opening it?</h2>\n<p>Your computer asks once because Clipr is not signed with a paid certificate yet. It means &ldquo;unknown publisher&rdquo;, not &ldquo;unsafe&rdquo;. The <a href="../#install">install steps</a> take under a minute.</p>\n'
-        '<h2 id="older">Older versions</h2>\n<div id="releases" data-mode="older"><p class="status">Loading the list of versions&hellip;</p></div>',
-        JS_RELEASES, '<noscript><p class="status">Turn on JavaScript to see older versions. The three buttons above always get the newest one.</p></noscript>'),
+        '<h2 id="older">Older versions</h2>\n<p>Every version, with what changed in it and its installers, is on <a href="../whats-new/">What&rsquo;s new</a>.</p>',
+        'if (location.hash === "#older") location.replace("../whats-new/");', ''),
     "whats-new": page(
         "whats-new", "What's new", "What changed in each version of Clipr, newest first.",
         "What's new", "What&rsquo;s new", "Every version of Clipr, newest first.", "",
