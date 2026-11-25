@@ -6,7 +6,7 @@
     <title>Clipr: download just the part of a video you need</title>
     <meta name="description" content="Clipr downloads just the part of a YouTube video you pick, ready to edit. Downloads for macOS, Windows and Linux." />
     <link rel="canonical" href="https://xxxxxliam.github.io/clipr/" />
-    <meta name="theme-color" content="#0b0b0c" />
+    <meta name="theme-color" content="#0a0d0f" />
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     <meta property="og:type" content="website" />
@@ -25,16 +25,18 @@
          Type: 48 / 24 / 18 / 16 / 14, weights 400 and 600.
          Space: 4, 8, 12, 16, 24, 32, 48, 64, 96. */
       :root {
-        --bg: #0b0b0c;
-        --panel: #161618;
-        --raised: #1c1c1f;
-        --hover: #252527;
+        --bg: #0a0d0f;
+        --panel: #121619;
+        --raised: #181d21;
+        --hover: #232a2f;
         --hairline: rgba(255, 255, 255, 0.08);
         --hairline-strong: rgba(255, 255, 255, 0.14);
-        --fg: #f5f5f7;
-        --fg-dim: #969697;
-        --disabled: #909092;
-        --accent: #ff6363;
+        --fg: #f2f5f6;
+        --fg-dim: #94a0a5;
+        --disabled: #8b979c;
+        --ice: #5fd8ca;
+        --frost: #b8e4ea;
+        --error: #ff6363;
         --r-panel: 14px;
         --r-control: 8px;
         --r-chip: 5px;
@@ -62,7 +64,7 @@
 
       /* ---- masthead: the mark stands alone ---------------------------- */
       .mast { display: flex; align-items: center; height: 44px; margin-bottom: 48px; }
-      .mast svg { display: block; color: var(--accent); }
+      .mast svg { display: block; color: var(--ice); }
 
       /* ---- type ------------------------------------------------------- */
       h1 { font-size: 48px; line-height: 1.1; font-weight: 600; letter-spacing: -0.02em; }
@@ -111,7 +113,7 @@
         padding: 12px 24px;
         border: 0;
         border-radius: var(--r-panel);
-        background: var(--accent);
+        background: var(--ice);
         color: var(--bg);
         text-decoration: none;
       }
@@ -138,7 +140,7 @@
         transition: color 0.12s, background 0.12s;
       }
       .ghost:hover { color: var(--fg); background: var(--hover); }
-      .ghost:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+      .ghost:focus-visible { outline: 2px solid var(--frost); outline-offset: 2px; }
       .ghost svg { width: 16px; height: 16px; flex: none; }
 
       /* ---- sections: a label on the left, the content on the right ---- */
@@ -175,7 +177,7 @@
       }
       .card > summary::-webkit-details-marker { display: none; }
       .card > summary:hover { background: var(--raised); }
-      .card > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+      .card > summary:focus-visible { outline: 2px solid var(--frost); outline-offset: 2px; }
       .card > summary .os { flex: none; width: 20px; height: 20px; color: var(--fg); }
       .card > summary .os svg { display: block; width: 100%; height: 100%; }
       .card > summary .hint { font-size: 14px; color: var(--fg-dim); flex: 1 1 auto; min-width: 0; }
@@ -220,8 +222,8 @@
         transition: background 0.12s;
       }
       .copy button:hover { background: var(--hover); }
-      .copy button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
-      .copy button[data-done="1"] { color: var(--accent); }
+      .copy button:focus-visible { outline: 2px solid var(--frost); outline-offset: -2px; }
+      .copy button[data-done="1"] { color: var(--ice); }
 
       /* ---- nested disclosure ------------------------------------------ */
       details.more > summary {
@@ -233,7 +235,7 @@
       }
       details.more > summary::-webkit-details-marker { display: none; }
       details.more > summary:hover { color: var(--fg); }
-      details.more > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+      details.more > summary:focus-visible { outline: 2px solid var(--frost); outline-offset: 2px; }
       details.more > summary b { color: var(--fg); }
       details.more > summary .chev { width: 16px; height: 16px; flex: none; transition: transform 0.12s; }
       details.more[open] > summary .chev { transform: rotate(90deg); }
@@ -272,7 +274,7 @@
         font-weight: 600; text-decoration: none;
       }
       .btn:hover { background: var(--hover); }
-      .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+      .btn:focus-visible { outline: 2px solid var(--frost); outline-offset: 2px; }
       .row-body .btn { margin-bottom: 16px; }
       .row-body .btn + p { margin-top: 0; }
 
@@ -286,7 +288,7 @@
       footer .links { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 8px; }
       footer a { display: inline-flex; align-items: center; min-height: 44px; color: var(--fg); text-decoration: underline; text-underline-offset: 3px; }
       footer a:hover { color: var(--fg-dim); }
-      footer a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: var(--r-chip); }
+      footer a:focus-visible { outline: 2px solid var(--frost); outline-offset: 2px; border-radius: var(--r-chip); }
 
       @media (max-width: 1040px) {
         .hero { grid-template-columns: minmax(0, 1fr); gap: 48px; margin-bottom: 64px; }

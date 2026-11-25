@@ -48,6 +48,12 @@ check("README screenshot alts describe the new captures", /alt="[^"]*Clip button
 check("screenshots are real captures at 1440 wide @2x", png("docs/screenshot.png").w === 2880 && png("docs/screenshot.png").h === 1800 && png("docs/segments.png").w === 2880);
 check("1080p copy points at the footer pill", /Sign in for 1080p/.test(html) && /footer/i.test(html.slice(html.indexOf("Getting 1080p"))));
 
+// ---- static: colours are the Clean Cut tokens (CLAUDE.md on rebuild/canvas)
+const tok = { bg: "#0a0d0f", panel: "#121619", raised: "#181d21", hover: "#232a2f", fg: "#f2f5f6", "fg-dim": "#94a0a5", disabled: "#8b979c", ice: "#5fd8ca", frost: "#b8e4ea", error: "#ff6363" };
+check("page colour tokens are the Clean Cut values", Object.entries(tok).every(([k, v]) => new RegExp(`--${k}: ${v};`).test(html)));
+check("no old red accent: error red is not used as a fill or accent", !/--accent/.test(html) && !/var\(--error\)/.test(html) && !/FF6363/i.test(readme + read("logo.svg")));
+check("theme-color matches --bg", meta(/name="theme-color" content="([^"]+)"/) === tok.bg);
+
 // ---- static: download guidance (G-9)
 check("PowerShell line does not hard-code the filename", !/Unblock-File[^<]*Setup\.exe"/.test(html) && /Clipr-Windows-x64-Setup\*\.exe/.test(html));
 

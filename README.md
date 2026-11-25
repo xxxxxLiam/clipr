@@ -12,10 +12,10 @@ down as one joined file. The editing happens in Final Cut Pro, Premiere Pro,
 DaVinci Resolve or CapCut — Clipr's job is to get you there with the right
 footage and the right text, fast.
 
-[![Latest release](https://img.shields.io/github/v/release/xxxxxLiam/clipr?label=latest&color=FF6363&style=flat-square)](https://github.com/xxxxxLiam/clipr/releases/latest)
-[![Downloads](https://img.shields.io/github/downloads/xxxxxLiam/clipr/total?color=FF6363&style=flat-square)](https://github.com/xxxxxLiam/clipr/releases)
-![Platforms](https://img.shields.io/badge/macOS%20·%20Windows%20·%20Linux-1C1C1F?style=flat-square)
-![Licence](https://img.shields.io/badge/licence-source--available-1C1C1F?style=flat-square)
+[![Latest release](https://img.shields.io/github/v/release/xxxxxLiam/clipr?label=latest&color=5FD8CA&style=flat-square)](https://github.com/xxxxxLiam/clipr/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/xxxxxLiam/clipr/total?color=5FD8CA&style=flat-square)](https://github.com/xxxxxLiam/clipr/releases)
+![Platforms](https://img.shields.io/badge/macOS%20·%20Windows%20·%20Linux-181D21?style=flat-square)
+![Licence](https://img.shields.io/badge/licence-source--available-181D21?style=flat-square)
 
 ### [⬇&nbsp; Download Clipr](https://xxxxxliam.github.io/clipr/)
 
