@@ -4,13 +4,12 @@
 
 # Clipr
 
-**Pull the moments you want out of a long video, ready to edit.**
+**Only the seconds you need.**
 
-A desktop downloader for clippers: paste a link, read the transcript to find
-the moment, mark in and out, download just that. Several moments can come
-down as one joined file. The editing happens in Final Cut Pro, Premiere Pro,
-DaVinci Resolve or CapCut — Clipr's job is to get you there with the right
-footage and the right text, fast.
+Stop downloading two-hour videos for forty seconds. Paste a link, mark the
+moments, and Clipr downloads just those, ready for Final Cut Pro, Premiere
+Pro, DaVinci Resolve or CapCut. No ads, no account, and nothing is uploaded.
+Several moments can come down as one joined file.
 
 [![Latest release](https://img.shields.io/github/v/release/xxxxxLiam/clipr?label=latest&color=5FD8CA&style=flat-square)](https://github.com/xxxxxLiam/clipr/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/xxxxxLiam/clipr/total?color=5FD8CA&style=flat-square)](https://github.com/xxxxxLiam/clipr/releases)
@@ -20,7 +19,7 @@ footage and the right text, fast.
 ### [⬇&nbsp; Download Clipr](https://xxxxxliam.github.io/clipr/)
 
 <sub>Picks the right file for your computer and walks you through first launch<br/>
-macOS, Windows and Linux · no account, no sign-up · <a href="#install">or pick a file yourself</a></sub>
+macOS, Windows and Linux · free, no ads, no account · <a href="#install">or pick a file yourself</a></sub>
 
 </div>
 
@@ -39,8 +38,9 @@ Clipr is shaped around that loop rather than around a single download.
 
 | | |
 |---|---|
-| **Transcript-first** | Read the transcript to find the moment and jump straight to it. Long transcripts stay responsive — only what you can see is drawn. |
 | **One file, several moments** | Mark 1:00–2:00 and 10:00–11:00 and get **one** download containing both, joined in order. |
+| **Only the part you mark** | Set in and out. Clipr fetches that section and nothing else, so a two-hour podcast costs you seconds. |
+| **Transcript-first** | Read the transcript to find the moment and jump straight to it. Long transcripts stay responsive — only what you can see is drawn. |
 | **Campaigns** | Several clients a day, each with its own folders, naming and clip bank. Nothing crosses between them. |
 | **Clip bank** | Import a block of timestamps once per video, categorise them, give them tiers, and work down the list. |
 | **Used-range memory** | Clipr remembers what you have already cut and marks it on the transcript, so you do not ship the same moment twice. |
@@ -66,7 +66,7 @@ Everything runs on your machine. Nothing is uploaded anywhere.
 
 [Download .dmg](https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-macOS-AppleSilicon.dmg)
 
-For Apple Silicon Macs (M1 and newer); it does not run on Intel Macs. Apple menu → About This Mac shows which you have. Drag to Applications, then run one Terminal line — below.
+For Apple Silicon Macs (M1, M2, M3 or newer); it does not run on Intel Macs. Apple menu → About This Mac shows which you have: "Chip: Apple M…" works, "Processor: Intel" does not. Drag to Applications, then run one Terminal line — below.
 
 </td>
 <td width="33%" valign="top">
@@ -75,7 +75,7 @@ For Apple Silicon Macs (M1 and newer); it does not run on Intel Macs. Apple menu
 
 [Download .exe](https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-Windows-x64-Setup.exe)
 
-Right-click the file → Properties → tick **Unblock** before running it.
+Right-click the file → Properties → tick **Unblock** before running it. Details below.
 
 </td>
 <td width="33%" valign="top">
@@ -84,15 +84,15 @@ Right-click the file → Properties → tick **Unblock** before running it.
 
 [Download .AppImage](https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-Linux-x64.AppImage)
 
-`chmod +x` it, then run it.
+`chmod +x` it, then run it, or allow it to run as a program in your file manager.
 
 </td>
 </tr>
 </table>
 
-Clipr is not signed with a paid certificate yet, so your computer will warn
-you the first time. That warning means "we cannot verify who published this",
-not "this is dangerous".
+Your computer doesn't recognise Clipr's publisher yet, so it will warn you
+the first time. That warning means "I don't know who made this", not "this
+is harmful".
 
 **macOS — the one Terminal line.** Once Clipr is in Applications, open
 Terminal (<kbd>⌘</kbd><kbd>Space</kbd>, type *terminal*) and paste:
@@ -113,6 +113,23 @@ Terminal at all, let macOS refuse the app once, then go to **System Settings
 <kbd>Ctrl</kbd>+<kbd>J</kbd>, click the `⋯` next to the file and choose
 **Keep**. That step catches most people out, because it happens before the
 file ever reaches your disk.
+
+**Windows: if there is no Unblock tick box**, some versions hide it. Open
+PowerShell and run this instead, then run the installer:
+
+```
+Get-ChildItem "$env:USERPROFILE\Downloads\Clipr-Windows-x64-Setup*.exe" | Unblock-File
+```
+
+The `*` also catches a copy your browser renamed, like `Setup (1).exe`. Change
+`Downloads` if you saved the file somewhere else. If a blue screen then says
+"Windows protected your PC", click **More info**, then **Run anyway**.
+
+**Linux:**
+
+```
+chmod +x Clipr-Linux-x64*.AppImage && ./Clipr-Linux-x64*.AppImage
+```
 
 **Updates.** On Windows and Linux, Clipr updates itself in place — you
 download once. On macOS it checks for new versions and hands you a download
