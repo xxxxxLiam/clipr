@@ -1,0 +1,74 @@
+{
+  "15.0.0": {
+    "intro": "Clearer help, Final Cut layouts, and failures that tell you why.",
+    "highlights": [
+      {
+        "tag": "New",
+        "title": "Help that walks you through it",
+        "text": "Answers come as numbered steps, and Show me in Clipr points at the real buttons."
+      },
+      {
+        "tag": "New",
+        "title": "Final Cut layouts",
+        "text": "Choose how each campaign lands in Final Cut: one Export event, an event per video, per day, or flat."
+      },
+      {
+        "tag": "Improved",
+        "title": "Clear failures",
+        "text": "A failed clip says why, with Retry and Change folder on the same row."
+      }
+    ],
+    "changes": [
+      {
+        "group": "New",
+        "title": "Open in your editor",
+        "text": "Premiere Pro, DaVinci Resolve and CapCut open with the saved clip from the Clip menu."
+      },
+      {
+        "group": "New",
+        "title": "Import moments",
+        "text": "Add several moments at once from a list or a sheet."
+      },
+      {
+        "group": "New",
+        "title": "First-use tips",
+        "text": "Short pointers on first use, which you can replay from Help."
+      },
+      {
+        "group": "Improved",
+        "title": "Sign-in at launch",
+        "text": "Clipr checks your YouTube sign-in when it opens, so 1080p is ready when you are."
+      },
+      {
+        "group": "Improved",
+        "title": "Clip names",
+        "text": "Names come from the words in the range, and the name is the file's name."
+      },
+      {
+        "group": "Improved",
+        "title": "Undo",
+        "text": "Undo takes back every language of a clip you just made."
+      },
+      {
+        "group": "Fixed",
+        "title": "Space on buttons",
+        "text": "Space now presses the button you are on."
+      },
+      {
+        "group": "Fixed",
+        "title": "Speed control",
+        "text": "Speed no longer sits over Back 5."
+      }
+    ]
+  },
+  "14.0.0": {
+    "highlights": [],
+    "changes": [
+      {
+        "group": "Improved",
+        "title": "Two-word clip names",
+        "text": "Clip names are two words, and the name is checked before a project name is suggested."
+      }
+    ]
+  }
+}

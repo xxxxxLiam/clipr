@@ -314,6 +314,35 @@ for (const [n, p] of Object.entries(NAMES)) check(`run 3: ${n} page exists`, !!p
       await ctx.close();
     }
   }
+  // WCAG AA (4.5:1) for every line of text in the grain header, measured on the rendered pixels behind the text
+  for (const rel of PAGES.slice(1)) {
+    for (const w of [375, 1440]) {
+      const { page, ctx } = await openPage(rel, WIN, w);
+      await page.waitForLoadState("networkidle");
+      await page.waitForTimeout(300);
+      const sel = ".p-hero .crumb, .p-hero h1, .p-hero .lead, .p-hero .facts h2, .p-hero .facts p, .nav nav a";
+      const boxes = await page.evaluate((sel) => [...document.querySelectorAll(sel)].filter((e) => e.offsetParent !== null).map((e) => { const r = document.createRange(); r.selectNodeContents(e); return [...r.getClientRects()].filter((q) => q.width > 2 && q.height > 2).map((q) => ({ x: q.left + scrollX, y: q.top + scrollY, w: q.width, h: q.height, color: getComputedStyle(e).color, name: e.className || e.tagName })); }).flat(), sel);
+      await page.addStyleTag({ content: "* { color: transparent !important; text-shadow: none !important; } svg, img { visibility: hidden !important; }" });
+      let worst = { ratio: 99 };
+      for (const b of boxes) {
+        const buf = await page.screenshot({ clip: { x: b.x, y: b.y, width: Math.ceil(b.w), height: Math.ceil(b.h) }, fullPage: true });
+        const ratio = await page.evaluate(async ({ data, color }) => {
+          const img = await createImageBitmap(await (await fetch("data:image/png;base64," + data)).blob());
+          const c = document.createElement("canvas"); c.width = img.width; c.height = img.height; const g = c.getContext("2d"); g.drawImage(img, 0, 0);
+          const px = g.getImageData(0, 0, c.width, c.height).data;
+          const lin = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
+          const L = (r, gg, b2) => 0.2126 * lin(r) + 0.7152 * lin(gg) + 0.0722 * lin(b2);
+          const t = color.match(/[\d.]+/g).map(Number), lt = L(t[0], t[1], t[2]);
+          let worstR = 99;
+          for (let i = 0; i < px.length; i += 4) { const lb = L(px[i], px[i + 1], px[i + 2]); const r = (Math.max(lt, lb) + 0.05) / (Math.min(lt, lb) + 0.05); if (r < worstR) worstR = r; }
+          return worstR;
+        }, { data: buf.toString("base64"), color: b.color });
+        if (ratio < worst.ratio) worst = { ratio, name: b.name };
+      }
+      check(`run 3: /${rel} at ${w}px: every line of header text has at least 4.5:1 contrast on its background (worst ${worst.ratio.toFixed(2)})`, boxes.length > 3 && worst.ratio >= 4.5, JSON.stringify(worst));
+      await ctx.close();
+    }
+  }
   for (const rel of PAGES.slice(1)) {
     const { page, ctx } = await openPage(rel, WIN, 1440);
     const m = await page.evaluate(() => { const h = document.querySelector(".p-hero h1"), lh = parseFloat(getComputedStyle(h).lineHeight), n = [...document.querySelectorAll(".nav nav a, .nav .pill")]; return { lines: Math.round(h.getBoundingClientRect().height / lh), nav: n.every((a) => a.getBoundingClientRect().height < 48), credit: (() => { const [x, y] = [...document.querySelectorAll(".foot-bottom > span")].map((e) => e.getBoundingClientRect()); return Math.abs(x.top + x.height / 2 - (y.top + y.height / 2)) < 6 && y.height < 48; })() }; });
@@ -325,13 +354,42 @@ for (const [n, p] of Object.entries(NAMES)) check(`run 3: ${n} page exists`, !!p
     await p2.ctx.close();
   }
   {
-    const { page, ctx } = await openPage("whats-new/", WIN, 1440);
-    await page.waitForSelector(".rel");
-    const t = await page.locator("#releases").innerText();
-    check("run 3: What's new lists newest first, hides drafts, strips [skip release], drops refactor/chore lines", /Version 15\.0\.0[\s\S]*Version 14\.0\.0/.test(t) && !/13\.0\.0|hidden draft|skip release|refactor|chore|Release v15/.test(t), t.slice(0, 300));
-    check("run 3: What's new folds long lists behind a 'Show more' control", /Show 2 more changes/.test(t) && (await page.locator(".rel details").count()) === 1);
-    check("run 3: each version offers its three installers", (await page.locator(".rel").first().locator(".dls a").count()) === 3 && (await page.locator(".rel .dls a").first().getAttribute("href")).includes("/releases/download/v15.0.0/Clipr-macOS-AppleSilicon.dmg"));
+    const feed = FEED.concat([{ tag_name: "v12.0.0", published_at: "2026-11-17T10:00:00Z", draft: false, prerelease: false, body: "- Release v12.0.0\n- Plain thing one [skip release]\n- refactor(main): split things [skip release]\n- chore: tidy\n- Plain thing two" }]);
+    const ctx = await browser.newContext({ userAgent: MAC, viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
+    await ctx.route("https://api.github.com/**", (r) => r.fulfill({ json: feed }));
+    const page = await ctx.newPage();
+    await page.goto(url + "whats-new/");
+    await page.waitForSelector(".wn-latest");
+    const body = await page.locator("#releases").innerText();
+    check("run 4: What's new puts the newest version first, in its own card, with Latest, and lists older ones after it; drafts are hidden", /^Version 15\.0\.0/.test(await page.locator(".wn-latest").innerText()) && (await page.locator(".wn-latest .chip.ice").innerText()) === "Latest" && (await page.locator(".wn-row > summary b").allInnerTexts()).join() === "Version 14.0.0,Version 12.0.0" && !/13\.0\.0|hidden draft/.test(body));
+    check("run 4: the latest card has a one-line intro, three numbered highlight tiles, jump pills that land on them, and 'Smaller updates' underneath", (await page.locator(".wn-intro").count()) === 1 && (await page.locator(".wn-tile").count()) === 3 && (await page.locator(".wn-pill").evaluateAll((a) => a.every((x, i) => x.getAttribute("href") === "#wn-h" + (i + 1) && x.getBoundingClientRect().height >= 44 && !!document.getElementById("wn-h" + (i + 1))))) && (await page.locator(".wn-num").allInnerTexts()).join() === "1,2,3" && (await page.locator(".wn-all > summary").innerText()) === "Smaller updates" && (await page.locator(".wn-all .wn-group").count()) === 3);
+    check("run 4: the latest card's button downloads the installer for this computer", (await page.locator(".wn-latest a.dl").getAttribute("href")).endsWith("Clipr-macOS-AppleSilicon.dmg") && /Download for macOS/.test(await page.locator(".wn-latest a.dl").innerText()));
+    check("run 4: earlier versions are folded rows (closed by default, 44px or taller) that open from the keyboard", (await page.locator(".wn-row[open]").count()) === 0 && (await page.locator(".wn-row > summary").evaluateAll((s) => s.every((x) => x.getBoundingClientRect().height >= 44))));
+    await page.locator(".wn-row").nth(1).locator("summary").focus();
+    await page.keyboard.press("Enter");
+    const open = await page.locator(".wn-row").nth(1).innerText();
+    check("run 4: a version without hand-written notes falls back to the feed with [skip release], refactor/chore and 'Release v' lines removed", /Plain thing one/.test(open) && /Plain thing two/.test(open) && !/skip release|refactor|chore|Release v12/.test(open), open);
+    check("run 4: each earlier version offers its three installers", (await page.locator(".wn-row").nth(1).locator(".wn-dls a").count()) === 3 && (await page.locator(".wn-row").nth(1).locator(".wn-dls a").first().getAttribute("href")).includes("/releases/download/v12.0.0/Clipr-macOS-AppleSilicon.dmg"));
     await ctx.close();
+    const c2 = await browser.newContext({ userAgent: WIN, viewport: { width: 375, height: 900 }, reducedMotion: "reduce" });
+    await c2.route("https://api.github.com/**", (r) => r.fulfill({ json: [{ tag_name: "v99.0.0", published_at: "2026-12-01T10:00:00Z", draft: false, prerelease: false, body: "- A new thing [skip release]\n- Another thing" }] }));
+    const p2 = await c2.newPage();
+    await p2.goto(url + "whats-new/");
+    await p2.waitForSelector(".wn-latest");
+    check("run 4: a newest version with no hand-written notes still renders (no tiles, cleaned list, no earlier-versions block)", (await p2.locator(".wn-tile").count()) === 0 && /A new thing/.test(await p2.locator(".wn-latest").innerText()) && !/skip release/.test(await p2.locator(".wn-latest").innerText()) && (await p2.locator(".wn-row").count()) === 0 && (await p2.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)) <= 0);
+    await c2.close();
+    const notes = JSON.parse(fs.readFileSync(path.join(ROOT, "src/whats-new.json"), "utf8"));
+    const jargon = /skip release|refactor|chore|\bIPC\b|\bPR\b|parity|fixture|tsc|hook|lint/i;
+    const probs = [];
+    for (const [v, n] of Object.entries(notes)) {
+      if (!/^\d+\.\d+\.\d+$/.test(v)) probs.push(v + ": version key");
+      if (n.highlights.length > 3) probs.push(v + ": more than three highlights");
+      if (n.intro && (n.intro.length > 120 || jargon.test(n.intro))) probs.push(v + ": intro");
+      for (const x of n.highlights) if (!["New", "Improved", "Fixed"].includes(x.tag) || !x.title || !x.text) probs.push(v + ": bad highlight " + x.title);
+      for (const x of n.changes) if (!["New", "Improved", "Fixed"].includes(x.group) || !x.title || !x.text || x.text.length > 140) probs.push(v + ": bad change " + x.title);
+      for (const x of [].concat(n.highlights, n.changes)) if (jargon.test(x.title + " " + x.text)) probs.push(v + ": jargon in " + x.title);
+    }
+    check("run 4: the hand-written notes are plain: groups are New/Improved/Fixed, at most three highlights, no developer words", Object.keys(notes).length >= 2 && probs.length === 0, probs.join("; "));
   }
   {
     const { page, ctx } = await openPage("download/", MAC, 1440);
