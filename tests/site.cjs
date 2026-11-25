@@ -354,7 +354,7 @@ for (const [n, p] of Object.entries(NAMES)) check(`run 3: ${n} page exists`, !!p
     await p2.ctx.close();
   }
   {
-    const feed = FEED.concat([{ tag_name: "v12.0.0", published_at: "2026-11-17T10:00:00Z", draft: false, prerelease: false, body: "- Release v12.0.0\n- Plain thing one [skip release]\n- Renderer: Fit keeps the ruler centred (A2-6, A2-1) (#146) [skip release]\n- refactor(main): split things [skip release]\n- chore: tidy\n- Plain thing two" }]);
+    const feed = FEED.concat([{ tag_name: "v12.0.0", published_at: "2026-11-17T10:00:00Z", draft: false, prerelease: false, body: "- Release v12.0.0\n- Plain thing one [skip release]\n- Renderer: Fit keeps the ruler centred (A2-6, A2-1) (#146) [skip release]\n- refactor(main): split things [skip release]\n- chore: tidy\n- Plain thing two" }, { tag_name: "v11.0.0", published_at: "2026-11-16T10:00:00Z", draft: false, prerelease: false, body: "- Release v11.0.0\n- chore: tidy [skip release]" }]);
     const ctx = await browser.newContext({ userAgent: MAC, viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
     await ctx.route("https://api.github.com/**", (r) => r.fulfill({ json: feed }));
     const page = await ctx.newPage();
@@ -370,7 +370,8 @@ for (const [n, p] of Object.entries(NAMES)) check(`run 3: ${n} page exists`, !!p
     await page.locator(".wn-row").nth(1).locator("summary").focus();
     await page.keyboard.press("Enter");
     const open = await page.locator(".wn-row").nth(1).innerText();
-    check("run 4: a version without hand-written notes falls back to the feed with [skip release], refactor/chore and 'Release v' lines removed", /Plain thing one/.test(open) && /Plain thing two/.test(open) && /Fit keeps the ruler centred/.test(open) && !/skip release|refactor|chore|Release v12|Renderer:|A2-6|#146/.test(open), open);
+    check("run 5 G3-1: an earlier version without hand-written notes shows one plain line, never raw commit lines", /Smaller improvements and fixes/.test(open) && !/Plain thing|Fit keeps|MarkBar|skip release|refactor|chore|Release v12|Renderer:|A2-6|#146/.test(open), open);
+    check("run 5 G3-1: an earlier version with nothing to say (empty after cleaning) is hidden, not shown as '0 changes'", !/11\.0\.0/.test(body) && !/\b0 changes\b/.test(body));
     check("run 4: each earlier version offers its three installers", (await page.locator(".wn-row").nth(1).locator(".wn-dls a").count()) === 3 && (await page.locator(".wn-row").nth(1).locator(".wn-dls a").first().getAttribute("href")).includes("/releases/download/v12.0.0/Clipr-macOS-AppleSilicon.dmg"));
     await ctx.close();
     const c2 = await browser.newContext({ userAgent: WIN, viewport: { width: 375, height: 900 }, reducedMotion: "reduce" });

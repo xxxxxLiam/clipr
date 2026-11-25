@@ -1,4 +1,56 @@
 {
+  "19.0.0": {
+    "intro": "A quiet download-progress pill for updates, safer end points, and a round of timeline polish.",
+    "highlights": [
+      {
+        "tag": "New",
+        "title": "Update progress",
+        "text": "While an update downloads, a small pill in the top bar shows how far along it is."
+      },
+      {
+        "tag": "Improved",
+        "title": "Out point past the end",
+        "text": "If you set an out point beyond the end of the video, it stops at the end with one dim line. An in point past the end is refused."
+      },
+      {
+        "tag": "Fixed",
+        "title": "Start fresh",
+        "text": "No folders are made in Downloads until a clip is saved, and the prompt asks only once per session."
+      }
+    ],
+    "changes": [
+      {
+        "group": "New",
+        "title": "Window strip",
+        "text": "The start and crash screens can be dragged by a strip along the top edge."
+      },
+      {
+        "group": "Improved",
+        "title": "Timeline",
+        "text": "Zoom keeps its centre and follows the pointer. Both ends of a range move together, and clip names show on the bars."
+      },
+      {
+        "group": "Improved",
+        "title": "Sign-in",
+        "text": "A rejected sign-in now shows in its own row, and private videos are told apart from members-only ones."
+      },
+      {
+        "group": "Improved",
+        "title": "Offline",
+        "text": "After repeated offline failures, Copy details is offered so you can send a report."
+      },
+      {
+        "group": "Fixed",
+        "title": "Updating",
+        "text": "Restart to update waits until the clip you are making is done."
+      },
+      {
+        "group": "Fixed",
+        "title": "Clip count and length",
+        "text": "Each clip made with the Clip button counts once, and a clip longer than 24 hours is refused."
+      }
+    ]
+  },
   "18.0.0": {
     "intro": "Clearer clip failures, a space check before each clip, and Final Cut timelines that follow your look.",
     "highlights": [
