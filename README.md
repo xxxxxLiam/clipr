@@ -8,14 +8,14 @@
 
 A desktop downloader for clippers: paste a link, read the transcript to find
 the moment, mark in and out, download just that. Several moments can come
-down as one joined file. The editing happens in Final Cut, CapCut or
-Premiere — Clipr's job is to get you there with the right footage and the
-right text, fast.
+down as one joined file. The editing happens in Final Cut Pro, Premiere Pro,
+DaVinci Resolve or CapCut — Clipr's job is to get you there with the right
+footage and the right text, fast.
 
-[![Latest release](https://img.shields.io/github/v/release/xxxxxLiam/clipr?label=latest&color=FF6363&style=flat-square)](https://github.com/xxxxxLiam/clipr/releases/latest)
-[![Downloads](https://img.shields.io/github/downloads/xxxxxLiam/clipr/total?color=FF6363&style=flat-square)](https://github.com/xxxxxLiam/clipr/releases)
-![Platforms](https://img.shields.io/badge/macOS%20·%20Windows%20·%20Linux-1C1C1F?style=flat-square)
-![Licence](https://img.shields.io/badge/licence-source--available-1C1C1F?style=flat-square)
+[![Latest release](https://img.shields.io/github/v/release/xxxxxLiam/clipr?label=latest&color=5FD8CA&style=flat-square)](https://github.com/xxxxxLiam/clipr/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/xxxxxLiam/clipr/total?color=5FD8CA&style=flat-square)](https://github.com/xxxxxLiam/clipr/releases)
+![Platforms](https://img.shields.io/badge/macOS%20·%20Windows%20·%20Linux-181D21?style=flat-square)
+![Licence](https://img.shields.io/badge/licence-source--available-181D21?style=flat-square)
 
 ### [⬇&nbsp; Download Clipr](https://xxxxxliam.github.io/clipr/)
 
@@ -25,7 +25,7 @@ macOS, Windows and Linux · no account, no sign-up · <a href="#install">or pick
 </div>
 
 <p align="center">
-  <img src="docs/screenshot.png" alt="The Clipr workspace: transcript on the left, preview in the middle, saved clips on the right" width="900" />
+  <img src="docs/screenshot.png" alt="The Clipr workspace: your videos on the left, the video in the middle with a timeline below it showing a 42-second range marked, a Clip button with an editor menu beside it, and the clips waiting to be made on the right" width="900" />
 </p>
 
 ---
@@ -44,15 +44,15 @@ Clipr is shaped around that loop rather than around a single download.
 | **Campaigns** | Several clients a day, each with its own folders, naming and clip bank. Nothing crosses between them. |
 | **Clip bank** | Import a block of timestamps once per video, categorise them, give them tiers, and work down the list. |
 | **Used-range memory** | Clipr remembers what you have already cut and marks it on the transcript, so you do not ship the same moment twice. |
-| **Editor handoff** | Send a download into a named Final Cut library and event, with the project created for you on a vertical 1080×1920 timeline, ready to reframe. CapCut too. Premiere Pro is coming. |
+| **Editor handoff** | Pick Final Cut Pro, Premiere Pro, DaVinci Resolve or CapCut in the Clip menu. Final Cut (Mac only) gets the clip in a named library and event, with a project made for you. The others open with the file shown in Finder or File Explorer, ready to drop in. |
 | **Copy blocks** | Title, description, timestamps and the rest, each one click away. |
 | **Symbol palette** | Honorifics and other symbols that are a nuisance to type, copied exactly. |
 
 <p align="center">
-  <img src="docs/segments.png" alt="Two separate moments marked in one clip, with a warning that part of the second overlaps something already published" width="900" />
+  <img src="docs/segments.png" alt="The timeline with two marked moments, 1 (18 seconds) and 2 (16 seconds), roughly nine minutes apart. The gap is folded away, and one clip called Hook Question shows 0:34 in total, ready for the Clip button." width="900" />
 </p>
 
-<p align="center"><sub>Two moments from different parts of the same interview, going out as one file &mdash; and a warning that part of the second was already published.</sub></p>
+<p align="center"><sub>Two moments from different parts of the same interview, joined: the gap folds away and they go out as one 0:34 file.</sub></p>
 
 Everything runs on your machine. Nothing is uploaded anywhere.
 
@@ -66,7 +66,7 @@ Everything runs on your machine. Nothing is uploaded anywhere.
 
 [Download .dmg](https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-macOS-AppleSilicon.dmg)
 
-Apple Silicon. Drag to Applications, then run one Terminal line — below.
+For Apple Silicon Macs (M1 and newer); it does not run on Intel Macs. Apple menu → About This Mac shows which you have. Drag to Applications, then run one Terminal line — below.
 
 </td>
 <td width="33%" valign="top">
@@ -126,38 +126,21 @@ YouTube serves 360p to anyone who is not signed in. Clipr asks once for a
 `cookies.txt` exported from your own browser, and walks you through it. The
 file stays on your computer and is never uploaded.
 
-You can skip it and work at 360p — the header always says which you are
-getting, and you can sign in later from the status chip.
+You can skip it and work at 360p. The bar at the bottom of the window says
+"at 360p" while you are, and its **Sign in for 1080p** button opens the steps
+whenever you are ready. There is no quality setting to pick: clips come down at
+1080p, or the highest the video has.
 
 ## Something went wrong?
 
-Say so. You don't need to be technical about it — *"it got to 90% and said
-export failed"* is a genuinely useful report.
+In Clipr, open **Help** (the **?** at the top right), choose
+**Report a problem**, write what you were doing in plain words and press
+**Send report**. *"It got to 90% and said export failed"* is a genuinely useful report. Clipr
+adds the error, the version numbers and a cleaned-up log, and nothing is sent
+unless you press **Send report**. You do not need an account of any kind.
 
-<div align="center">
-
-### [🛟&nbsp; Report a problem](https://github.com/xxxxxLiam/clipr/issues/new/choose)
-
-</div>
-
-That opens a short form with the questions already in it. It asks three
-things:
-
-1. **What you were trying to do**, in plain words.
-2. **What happened instead.** You can drag a screenshot or a screen recording
-   straight into the box if that's easier than describing it.
-3. **Diagnostics**, if Clipr offered them.
-
-On that last one: when an error appears, look for a **Copy diagnostics**
-button next to it. Click it, then paste into the form. That single paste is
-worth more than everything else combined — it records the exact version and
-the exact point things failed, so the problem can be found without a
-back-and-forth. Cookies, sign-in tokens and your personal file paths are
-stripped out before it copies, so it's safe to post in public. If there's no
-button next to your error, skip it; it isn't offered for every failure.
-
-Posting needs a free GitHub account — it's a minute to make, and it's how
-replies reach you.
+If a crash screen appears, it has the same **Send report** button, plus **Copy
+details** if you would rather pass the details on yourself.
 
 ## Licence
 
