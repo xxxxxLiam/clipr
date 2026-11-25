@@ -391,10 +391,12 @@ JS_WHATS_NEW = r"""
           }
           return c;
         }
+        function noted(r) { return !!NOTES[String(r.tag_name).replace(/^v/, "")]; }
         function row(r) {
-          var e = entry(r), d = el("details", { "class": "wn-row" });
+          var e = entry(r), plain = !noted(r), d = el("details", { "class": "wn-row" });
+          if (plain) e.changes = [{ group: "Improved", text: "Smaller improvements and fixes. See the installers below to get this version." }];
           var s = el("summary"); s.appendChild(el("b", {}, "Version " + e.v)); s.appendChild(el("time", { datetime: r.published_at || "" }, when(r)));
-          s.appendChild(el("span", { "class": "count" }, e.changes.length + (e.changes.length === 1 ? " change" : " changes")));
+          s.appendChild(el("span", { "class": "count" }, plain ? "Improvements and fixes" : e.changes.length + (e.changes.length === 1 ? " change" : " changes")));
           s.appendChild(el("span", { "class": "more" }, "Show changes")); s.appendChild(el("span", { "class": "more less" }, "Hide changes")); d.appendChild(s);
           var b = el("div", { "class": "body" }); if (e.changes.length) b.appendChild(groups(e.changes)); b.appendChild(installers(r)); d.appendChild(b);
           return d;
@@ -409,7 +411,7 @@ JS_WHATS_NEW = r"""
             if (window.cliprDl) window.cliprDl(box);
             if (list.length > 1) {
               box.appendChild(el("h2", { "class": "wn-earlier" }, "Earlier versions"));
-              var l = el("div", { "class": "wn-list" }); list.slice(1).forEach(function (r) { l.appendChild(row(r)); }); box.appendChild(l);
+              var l = el("div", { "class": "wn-list" }); list.slice(1).filter(function (r) { return noted(r) || clean(r.body).length; }).forEach(function (r) { l.appendChild(row(r)); }); box.appendChild(l);
             }
           })
           .catch(function () { box.textContent = ""; box.appendChild(el("p", { "class": "status" }, "The version list could not load. Check your connection and reload; the download page always has the newest version.")); });
