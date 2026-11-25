@@ -65,6 +65,7 @@ check("footer credit links to idksolutions.co.za (not .org)", /Proudly developed
 
 check("message match: title, description and share text carry the hero promise, not the transcript feature", /forty seconds/.test((html.match(/name="description" content="([^"]*)"/)||[])[1]||"") && /forty seconds/.test((html.match(/og:description" content="([^"]*)"/)||[])[1]||"") && /only the seconds you need/i.test((html.match(/<title>([^<]*)/)||[])[1]||"") && !/transcript/.test((html.match(/og:description" content="([^"]*)"/)||[])[1]||""));
 check("install copy is plain language: no 'certificate' or '&&' explainer", !/paid (Windows )?certificate/.test(html) && !/<code>&amp;&amp;<\/code> means/.test(html));
+check("lockup C in header and footer: five outlined paths each (mark Frost + Ice, Clip, r stem, Ice r-cut), no old block-stem r", (html.match(/<svg class="lockup"[^>]*viewBox="0 0 436.92 144.29">(?:<path fill="#(?:B8E4EA|5FD8CA|F2F5F6)" d="[^"]+"\/>){5}<\/svg>/gi) || []).length === 2 && !/class="cutr"/.test(html));
 check("install notes are cards, not loose paragraphs", (html.match(/class="(note|tile)[ "]/g) || []).length >= 4 && !/<div class="notes">\s*<p>/.test(html));
 check("version line sits below the tabs, centred", /role="tablist"[\s\S]*?<\/div>\s*<p class="ver" id="ver"/.test(html) && /\.ver \{ text-align: center/.test(html));
 
