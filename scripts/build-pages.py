@@ -116,25 +116,29 @@ EXTRA_CSS = """
       .wn-sec .wn-num { width: 32px; height: 32px; font-size: 13px; flex: none; }
       .wn-sec h3 { margin: 0; font-size: 28px; font-weight: 500; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
       .wn-sec p { margin: 16px 0 0; font-size: 15px; line-height: 1.7; color: var(--fg-dim); max-width: 640px; }
-      .wn-vis { margin: 32px 0 0; padding: 32px; background: var(--panel); border: 1px solid var(--hairline); border-radius: var(--r-panel); overflow: hidden; }
-      .wn-vis figcaption { margin-top: 24px; font-size: 12px; color: var(--fg-dim); }
-      .v-bar { display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 48px; padding: 0 16px; background: var(--raised); border: 1px solid var(--hairline); border-radius: var(--r-control); font-size: 13px; }
-      .v-bar b { font-weight: 500; }
-      .v-pill { display: inline-flex; align-items: center; gap: 12px; color: var(--fg-dim); white-space: nowrap; }
-      .v-pill b { color: var(--fg); }
-      .v-prog { display: block; width: 96px; height: 4px; border-radius: var(--r-chip); background: var(--hover); overflow: hidden; }
-      .v-prog i { display: block; height: 100%; width: 42%; background: var(--frost); }
-      .v-skel { margin-top: 16px; display: grid; gap: 12px; }
-      .v-skel i { display: block; height: 12px; border-radius: var(--r-chip); background: var(--hover); }
-      .v-ruler { position: relative; height: 56px; background: var(--raised); border: 1px solid var(--hairline); border-radius: var(--r-control); overflow: hidden; }
-      .v-range { position: absolute; top: 0; bottom: 0; left: 58%; right: 0; background: var(--hover); border-left: 2px solid var(--frost); }
-      .v-range::after { content: ""; position: absolute; top: 0; bottom: 0; right: 0; width: 2px; background: var(--fg-dim); }
-      .v-cap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 12px; font-size: 13px; color: var(--fg-dim); }
-      .v-cap b { color: var(--fg); font-weight: 500; }
-      .v-rows { border: 1px solid var(--hairline); border-radius: var(--r-control); background: var(--raised); }
-      .v-row { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 16px; font-size: 13px; color: var(--fg-dim); }
-      .v-row + .v-row { border-top: 1px solid var(--hairline); }
-      .v-row b { color: var(--fg); font-weight: 500; }
+      .wn-eyebrow { display: block; margin: 0 0 12px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-dim); }
+      .wn-win { margin: 0; border: 1px solid var(--hairline-strong); border-radius: var(--r-panel); background: var(--panel); overflow: hidden; position: relative; z-index: 1; }
+      .wn-win-bar { display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 16px; border-bottom: 1px solid var(--hairline); background: var(--raised); }
+      .wn-win-bar i { width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--hairline-strong); }
+      .wn-win img { display: block; width: 100%; height: auto; }
+      .wn-cap { margin: 16px 0 0; font-size: 12px; line-height: 1.5; color: var(--fg-dim); }
+      .wn-stage { position: relative; margin-top: 32px; }
+      .wn-stage::before { content: ""; position: absolute; inset: -64px -48px; z-index: 0; pointer-events: none; background: radial-gradient(55% 55% at 50% 50%, rgba(95, 216, 202, 0.24), rgba(184, 228, 234, 0.08) 60%, rgba(184, 228, 234, 0) 100%); }
+      .wn-split { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 48px; align-items: center; }
+      .wn-split.flip { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+      .wn-split .wn-win { width: fit-content; max-width: 100%; justify-self: end; }
+      .wn-split.flip .wn-win { justify-self: start; }
+      .wn-split .wn-win img { width: auto; max-width: 100%; }
+      .wn-split.flip .wn-copy { order: 2; }
+      .wn-split .wn-sec-head { margin-bottom: 0; }
+      .wn-cards { margin-top: 48px; }
+      .wn-cards-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+      .wn-card { border: 1px solid var(--hairline); border-radius: var(--r-panel); background: var(--panel); padding: 24px; min-width: 0; display: flex; flex-direction: column; }
+      .wn-card .wn-win { border-radius: var(--r-control); background: var(--bg); margin-bottom: 24px; }
+      .wn-card .chip { align-self: flex-start; }
+      .wn-card h4 { margin: 12px 0 0; font-size: 20px; font-weight: 500; }
+      .wn-card p { margin: 8px 0 0; font-size: 15px; line-height: 1.7; color: var(--fg-dim); }
+      .wn-card .wn-cap { margin-top: auto; padding-top: 16px; }
       .wn-all > summary, .wn-row > summary { cursor: pointer; list-style: none; display: flex; align-items: center; min-height: 44px; color: var(--fg); font-size: 13px; }
       .wn-all > summary::-webkit-details-marker, .wn-row > summary::-webkit-details-marker { display: none; }
       .wn-all { margin-top: 32px; }
@@ -160,7 +164,7 @@ EXTRA_CSS = """
       .wn-row .wn-groups { grid-template-columns: 1fr; }
       .wn-dls { display: flex; gap: 8px 16px; flex-wrap: wrap; margin-top: 8px; font-size: 13px; }
       .wn-dls a { color: var(--fg); text-decoration: underline; text-underline-offset: 3px; display: inline-flex; min-height: 44px; align-items: center; }
-      @media (max-width: 760px) { .wn-sec { padding: 32px 0; } .wn-sec h3 { font-size: 24px; } .wn-vis { padding: 16px; } .wn-title h2 { font-size: 28px; } .wn-row > summary { padding: 8px 16px; gap: 4px 16px; grid-template-columns: 1fr auto; } .wn-row > summary b { grid-column: 1 / -1; } .wn-row .body { padding: 0 16px 16px; } }
+      @media (max-width: 760px) { .wn-sec { padding: 32px 0; } .wn-sec h3 { font-size: 24px; } .wn-split, .wn-split.flip { grid-template-columns: minmax(0, 1fr); gap: 24px; } .wn-split.flip .wn-copy { order: 0; } .wn-split .wn-win, .wn-split.flip .wn-win { justify-self: start; } .wn-cards-grid { grid-template-columns: minmax(0, 1fr); } .wn-stage::before { inset: -32px -16px; } .wn-title h2 { font-size: 28px; } .wn-row > summary { padding: 8px 16px; gap: 4px 16px; grid-template-columns: 1fr auto; } .wn-row > summary b { grid-column: 1 / -1; } .wn-row .body { padding: 0 16px 16px; } }
       .status { color: var(--fg-dim); font-size: 15px; padding: 24px 0; }
       .rail-note { color: var(--fg-dim); font-size: 13px; margin-top: 16px; }
       @media (max-width: 1040px) { .p-hero { padding: 64px 24px 80px; } .p-body { padding: 16px 24px 64px; } }
@@ -343,6 +347,59 @@ JS_RELEASES = r"""
 JS_WHATS_NEW = r"""
       (function () {
         var NOTES = __NOTES__;
+        var API = "https://api.github.com/repos/xxxxxLiam/clipr/releases?per_page=30";
+        var ASSETS = [["macOS", "Clipr-macOS-AppleSilicon.dmg"], ["Windows", "Clipr-Windows-x64-Setup.exe"], ["Linux", "Clipr-Linux-x64.AppImage"]];
+        var DEV = /^(refactor|chore|test|docs|ci|build)\b|^fix\(ci\)/i;
+        function clean(body) {
+          return String(body || "").split("\n").map(function (l) { return l.replace(/^\s*[-*]\s*/, "").replace(/\s*\[skip release\]\s*/gi, "").replace(/\s*\((?:#\d+|[A-Z]\d?-\d+(?:, [A-Z]\d?-\d+)*)\)/g, "").replace(/^Renderer:\s*/i, "").trim(); })
+            .filter(function (l) { return l && !/^Release v?\d/i.test(l) && !DEV.test(l); });
+        }
+        function el(tag, attrs, text) {
+          var e = document.createElement(tag);
+          Object.keys(attrs || {}).forEach(function (k) { e.setAttribute(k, attrs[k]); });
+          if (text) e.textContent = text;
+          return e;
+        }
+        function card(r, mode) {
+          var v = String(r.tag_name).replace(/^v/, "");
+          var d = r.published_at ? new Date(r.published_at).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "";
+          var c = el("article", { "class": "rel" });
+          var h = el("header");
+          h.appendChild(el("h2", {}, "Version " + v));
+          var t = el("time", { datetime: r.published_at || "" }, d);
+          h.appendChild(t); c.appendChild(h);
+          if (mode === "notes") {
+            var items = clean(r.body);
+            if (!items.length) items = ["Improvements and fixes."];
+            var ul = el("ul"), more = el("details");
+            var mu = el("ul");
+            items.forEach(function (x, i) { (i < 6 ? ul : mu).appendChild(el("li", {}, x)); });
+            c.appendChild(ul);
+            if (items.length > 6) { more.appendChild(el("summary", {}, "Show " + (items.length - 6) + " more changes")); more.appendChild(mu); c.appendChild(more); }
+          }
+          var dls = el("div", { "class": "dls" });
+          ASSETS.forEach(function (a) { dls.appendChild(el("a", { href: "https://github.com/xxxxxLiam/clipr/releases/download/" + r.tag_name + "/" + a[1] }, a[0])); });
+          c.appendChild(dls);
+          return c;
+        }
+        var mode = document.getElementById("releases").getAttribute("data-mode");
+        var box = document.getElementById("releases");
+        fetch(API, { headers: { Accept: "application/vnd.github+json" } })
+          .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+          .then(function (list) {
+            list = list.filter(function (r) { return !r.draft && !r.prerelease && r.published_at; });
+            box.textContent = "";
+            if (!list.length) { box.appendChild(el("p", { "class": "status" }, "No versions to list yet.")); return; }
+            list.forEach(function (r, i) { if (mode === "older" && i === 0) return; box.appendChild(card(r, mode)); });
+          })
+          .catch(function () { box.textContent = ""; box.appendChild(el("p", { "class": "status" }, "The version list could not load. Check your connection and reload; the download buttons above still work.")); });
+      })();
+"""
+
+
+JS_WHATS_NEW = r"""
+      (function () {
+        var NOTES = __NOTES__;
         var VIS = {
           update: '<div class="v-bar"><b>Clipr</b><span class="v-pill">Downloading update <b>42%</b><span class="v-prog"><i></i></span></span></div><div class="v-skel"><i style="width:72%"></i><i style="width:58%"></i><i style="width:64%"></i></div>',
           outpoint: '<div class="v-ruler"><span class="v-range"></span></div><div class="v-cap"><span>Out point set past the end</span><span><b>Stops at the end of the video</b></span></div>',
@@ -361,7 +418,7 @@ JS_WHATS_NEW = r"""
         function entry(r) {
           var v = String(r.tag_name).replace(/^v/, "");
           var n = NOTES[v];
-          if (n) return { v: v, intro: n.intro || "", highlights: n.highlights || [], changes: n.changes || [] };
+          if (n) return { v: v, intro: n.intro || "", highlights: n.highlights || [], cards: n.cards || [], changes: n.changes || [] };
           return { v: v, highlights: [], changes: clean(r.body).map(function (t) { return { group: "Changes", text: t }; }) };
         }
         function when(r) { return r.published_at ? new Date(r.published_at).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : ""; }
@@ -384,6 +441,27 @@ JS_WHATS_NEW = r"""
           ASSETS.forEach(function (a) { d.appendChild(el("a", { href: "https://github.com/xxxxxLiam/clipr/releases/download/" + r.tag_name + "/" + a[1] }, a[0])); });
           return d;
         }
+        function win(file, alt) {
+          var f = el("figure", { "class": "wn-win" });
+          var bar = el("div", { "class": "wn-win-bar", "aria-hidden": "true" }); bar.appendChild(el("i")); bar.appendChild(el("i")); bar.appendChild(el("i"));
+          f.appendChild(bar);
+          var im = el("img", { src: "../docs/whats-new/" + file, alt: alt || "", loading: "lazy", decoding: "async" });
+          f.appendChild(im); return f;
+        }
+        function cards(list) {
+          var wrap = el("section", { "class": "wn-cards", id: "wn-also" });
+          wrap.appendChild(el("span", { "class": "wn-eyebrow" }, "Also in this release"));
+          var g = el("div", { "class": "wn-cards-grid" });
+          list.slice(0, 2).forEach(function (x) {
+            var c = el("article", { "class": "wn-card" });
+            c.appendChild(win(x.shot, x.alt));
+            c.appendChild(el("span", { "class": "chip" }, x.tag));
+            c.appendChild(el("h4", {}, x.title)); c.appendChild(el("p", {}, x.text));
+            if (x.caption) c.appendChild(el("p", { "class": "wn-cap" }, x.caption));
+            g.appendChild(c);
+          });
+          wrap.appendChild(g); return wrap;
+        }
         function latest(r) {
           var e = entry(r), c = el("article", { "class": "wn-latest" });
           var dt = el("time", { "class": "wn-date", datetime: r.published_at || "" });
@@ -402,15 +480,23 @@ JS_WHATS_NEW = r"""
             c.appendChild(jump);
             var secs = el("div", { "class": "wn-sections" });
             e.highlights.slice(0, 3).forEach(function (x, i) {
-              var d = el("section", { "class": "wn-sec", id: "wn-h" + (i + 1) });
+              var split = x.layout === "split" || x.layout === "split-flip";
+              var d = el("section", { "class": "wn-sec" + (split ? " wn-split" + (x.layout === "split-flip" ? " flip" : "") : ""), id: "wn-h" + (i + 1) });
+              var copy = el("div", { "class": "wn-copy" });
+              if (x.eyebrow) copy.appendChild(el("span", { "class": "wn-eyebrow" }, x.eyebrow));
               var hd = el("div", { "class": "wn-sec-head" }), h3 = el("h3", {}, x.title);
               hd.appendChild(el("span", { "class": "wn-num" }, String(i + 1))); hd.appendChild(h3); hd.appendChild(el("span", { "class": "chip" }, x.tag));
-              d.appendChild(hd); d.appendChild(el("p", {}, x.text));
-              if (x.visual && VIS[x.visual]) { var fg = el("figure", { "class": "wn-vis" }); fg.innerHTML = VIS[x.visual]; fg.appendChild(el("figcaption", {}, "Illustration of the feature, not a screenshot.")); d.appendChild(fg); }
+              copy.appendChild(hd); copy.appendChild(el("p", {}, x.text));
+              if (split) { if (x.caption) copy.appendChild(el("p", { "class": "wn-cap" }, x.caption)); d.appendChild(copy); d.appendChild(win(x.shot, x.alt)); }
+              else {
+                d.appendChild(copy);
+                if (x.shot) { var st = el("div", { "class": "wn-stage" }); st.appendChild(win(x.shot, x.alt)); d.appendChild(st); if (x.caption) d.appendChild(el("p", { "class": "wn-cap" }, x.caption)); }
+              }
               secs.appendChild(d);
             });
             c.appendChild(secs);
           }
+          if (e.cards && e.cards.length) c.appendChild(cards(e.cards));
           if (e.changes.length) {
             var all = el("details", { "class": "wn-all", open: "" });
             all.appendChild(el("summary", {}, e.highlights.length ? "Smaller updates" : "What changed"));
