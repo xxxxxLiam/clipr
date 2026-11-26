@@ -403,7 +403,7 @@ for (const [n, p] of Object.entries(NAMES)) check(`run 3: ${n} page exists`, !!p
           const r = s.getBoundingClientRect(), b = getComputedStyle(s, "::before"), px = (v) => parseFloat(v) || 0;
           return r.left + px(b.left) < fr.left || r.right - px(b.right) > fr.right;
         });
-        return { n: st.length, secs: document.querySelectorAll(".wn-sec").length, fades: bg.every((b) => /radial-gradient\(closest-side/.test(b)), ice: bg.every((b) => /rgba\(95, 216, 202, 0\.4\)/.test(b)), clipped };
+        return { n: st.length, secs: document.querySelectorAll(".wn-sec").length, fades: bg.every((b) => /radial-gradient\(closest-side/.test(b)), ice: bg.every((b) => /rgba\(95, 216, 202, 0\.22\)/.test(b) && (b.match(/rgba\(95, 216, 202/g) || []).length === 8 && !/184, 228, 234/.test(b)), clipped };
       });
       if (vt === "v19.2.1") check("run 11 glow: at " + w + "px every glow fades out inside its box and no parent clips it, and glow is behind only some blocks (it is always the turquoise Ice glow)", gl.fades && gl.ice && !gl.clipped && gl.n >= 2 && gl.n < gl.secs, JSON.stringify(gl));
       if (vt === "v19.2.1" && w === 1440) { await pv.screenshot({ path: "/tmp/claude-0/wn-v19.png", fullPage: true }); }
