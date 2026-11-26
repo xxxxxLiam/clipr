@@ -54,6 +54,49 @@ Note that this build includes GPL-licensed components such as **libx264**,
 which the re-encode path uses. That is why the bundled ffmpeg is GPL rather
 than LGPL.
 
+## bgutil-ytdlp-pot-provider — GNU General Public License v3.0
+
+Not shipped in any Clipr release yet. This section describes what will be
+true once it is: see the note at the end of this entry.
+
+Used only on YouTube links, as a local PO (Proof of Origin) token provider
+that lets yt-dlp request formats some player clients withhold from an
+anonymous session. It runs as its own **separate process** on
+`127.0.0.1`, started and stopped by Clipr, and is never linked into Clipr's
+own code — the same arrangement as ffmpeg and yt-dlp above.
+
+The exact version shipped is recorded at build time from the upstream
+project's own release tag, pinned deliberately (unlike yt-dlp's nightly
+tracking above) so each release names one reviewable version:
+
+- Source, tag `2.0.2`:
+  https://github.com/Brainicism/bgutil-ytdlp-pot-provider/tree/2.0.2
+- Licence text (as published with that tag):
+  https://github.com/Brainicism/bgutil-ytdlp-pot-provider/blob/2.0.2/LICENSE
+  and https://www.gnu.org/licenses/gpl-3.0.txt
+
+**Your rights to this component come from the GPL, not from this project's
+licence.** You may redistribute and modify it under the GPL's terms,
+entirely independently of Clipr.
+
+### Corresponding source
+
+GPL-3.0 section 6 requires that anyone distributing this binary makes the
+corresponding source available. The tag linked above carries both the
+source and the build steps it was produced with (`npm ci && npx tsc` in its
+`server/` folder — the same steps Clipr's own build runs; see
+`scripts/bundle-binaries.cjs` in the source repository).
+
+If you want the corresponding source for the exact build in a particular
+release of Clipr and cannot obtain it from the link above, open an issue at
+https://github.com/xxxxxLiam/clipr/issues and it will be provided.
+
+*Note: this entry is being added ahead of the feature itself shipping, so
+that the disclosure is in place from the first release that includes it. If
+you are reading this and your copy of Clipr does not actually include a PO
+token provider, this project has not shipped it yet — check the release
+notes for the version you have.*
+
 ## yt-dlp — The Unlicense (public domain)
 
 Downloaded at build time from the [yt-dlp nightly
