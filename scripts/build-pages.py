@@ -140,8 +140,8 @@ EXTRA_CSS = """
       .wn-stage { position: relative; margin-top: 32px; }
       /* The one glow colour is Ice, the turquoise (Liam, 25 Nov: he prefers it to violet, amber or frost glows). */
       .wn-stage { --glow: 95, 216, 202; --glow-soft: 184, 228, 234; }
-      /* closest-side ends the fade exactly at the box edge, so the glow never shows a cut-off edge; the box reaches well past the window. */
-      .wn-stage::before { content: ""; position: absolute; inset: -96px -88px; z-index: 0; pointer-events: none; background: radial-gradient(closest-side, rgba(var(--glow), 0.4), rgba(var(--glow-soft), 0.17) 58%, rgba(var(--glow-soft), 0.04) 82%, rgba(var(--glow-soft), 0) 100%); }
+      /* Eased glow (Liam, 26 Nov, option A): 8 stops following an eased falloff, as wide as the page gutter allows (so it is never cropped), peak Ice .22, ends at the box edge so it never shows a cut-off edge. */
+      .wn-stage::before { content: ""; position: absolute; left: -80px; right: -80px; top: -45%; bottom: -45%; z-index: 0; pointer-events: none; background: radial-gradient(closest-side, rgba(var(--glow), 0.22) 0%, rgba(var(--glow), 0.2024) 12%, rgba(var(--glow), 0.165) 25%, rgba(var(--glow), 0.1144) 40%, rgba(var(--glow), 0.066) 55%, rgba(var(--glow), 0.0308) 70%, rgba(var(--glow), 0.0099) 85%, rgba(var(--glow), 0) 100%); }
       .wn-split { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 48px; align-items: center; }
       .wn-split.flip { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
       .wn-split .wn-win { width: 100%; justify-self: end; }
@@ -184,7 +184,7 @@ EXTRA_CSS = """
       .wn-row .wn-groups { grid-template-columns: 1fr; }
       .wn-dls { display: flex; gap: 8px 16px; flex-wrap: wrap; margin-top: 8px; font-size: 13px; }
       .wn-dls a { color: var(--fg); text-decoration: underline; text-underline-offset: 3px; display: inline-flex; min-height: 44px; align-items: center; }
-      @media (max-width: 760px) { .wn-sec { padding: 32px 0; } .wn-sec h3 { font-size: 24px; } .wn-split, .wn-split.flip { grid-template-columns: minmax(0, 1fr); gap: 24px; } .wn-split.flip .wn-copy { order: 0; } .wn-split .wn-win, .wn-split.flip .wn-win { justify-self: start; } .wn-cards-grid { grid-template-columns: minmax(0, 1fr); } .wn-stage::before { inset: -32px -16px; } .wn-title h2 { font-size: 28px; } .wn-row > summary { padding: 8px 16px; gap: 4px 16px; grid-template-columns: 1fr auto; } .wn-row > summary b { grid-column: 1 / -1; } .wn-row .body { padding: 0 16px 16px; } }
+      @media (max-width: 760px) { .wn-sec { padding: 32px 0; } .wn-sec h3 { font-size: 24px; } .wn-split, .wn-split.flip { grid-template-columns: minmax(0, 1fr); gap: 24px; } .wn-split.flip .wn-copy { order: 0; } .wn-split .wn-win, .wn-split.flip .wn-win { justify-self: start; } .wn-cards-grid { grid-template-columns: minmax(0, 1fr); } .wn-stage::before { left: -16px; right: -16px; top: -20%; bottom: -20%; } .wn-title h2 { font-size: 28px; } .wn-row > summary { padding: 8px 16px; gap: 4px 16px; grid-template-columns: 1fr auto; } .wn-row > summary b { grid-column: 1 / -1; } .wn-row .body { padding: 0 16px 16px; } }
       .status { color: var(--fg-dim); font-size: 15px; padding: 24px 0; }
       .rail-note { color: var(--fg-dim); font-size: 13px; margin-top: 16px; }
       @media (max-width: 1040px) { .p-hero { padding: 64px 24px 80px; } .p-body { padding: 16px 24px 64px; } }
