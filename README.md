@@ -24,7 +24,7 @@ macOS, Windows and Linux · free, no ads, no account · <a href="#install">or pi
 </div>
 
 <p align="center">
-  <img src="docs/screenshot.png" alt="The Clipr workspace: your videos on the left, the video in the middle with a timeline below it showing a 42-second range marked, a Clip button with an editor menu beside it, and the clips waiting to be made on the right" width="900" />
+  <img src="docs/screenshot.png" alt="The Clipr workspace with labels: your videos on the left, the video preview in the middle, the timeline with a 42-second range marked, a Clip button in the footer, and the clips to export on the right." width="900" />
 </p>
 
 ---

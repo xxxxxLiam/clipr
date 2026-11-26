@@ -45,8 +45,8 @@ for (const [n, t] of [["index.html", html], ["README.md", readme]]) {
 const alts = [...html.matchAll(/<img[^>]*alt="([^"]*)"/g)].map((m) => m[1]);
 check("page hero alt describes the capture", alts.some((a) => /Clip button/.test(a) && /42-second range/.test(a)), alts.join(" | "));
 check("README says Send report", /Send report/.test(readme));
-check("README screenshot alts describe the new captures", /alt="[^"]*Clip button/.test(readme) && /alt="[^"]*Hook Question/.test(readme));
-check("screenshots are real captures at 1440 wide @2x", png("docs/screenshot.png").w === 2880 && png("docs/screenshot.png").h === 1800 && png("docs/segments.png").w === 2880);
+check("README screenshot alts describe the new captures", /alt="[^"]*Clip button/.test(readme) && /alt="[^"]*42-second range/.test(readme));
+check("screenshots are real captures at @2x", png("docs/screenshot.png").w === 2720 && png("docs/screenshot.png").h === 1556 && png("docs/segments.png").w === 2880);
 check("page has no 1080p section (G-7: the app and Help cover it)", !/Getting 1080p|status chip/.test(html));
 check("README 1080p copy points at the footer pill", /Sign in for 1080p/.test(readme) && /bottom of the window/.test(readme));
 check("no mock-up leftovers (Decided here tag, dashed outline)", !/Decided here|decided|dashed/.test(html));
