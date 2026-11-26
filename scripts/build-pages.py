@@ -524,9 +524,9 @@ def page(slug, title, desc, crumb, h1, lead, facts_html, body_html, extra_script
 
 
 OS_TILES = """
-<a class="os" href="https://github.com/xxxxxLiam/clipr/releases/download/v20.0.0/Clipr-macOS-AppleSilicon.dmg"><h2>macOS</h2><p>Apple Silicon (M1 and newer)</p></a>
-<a class="os" href="https://github.com/xxxxxLiam/clipr/releases/download/v20.0.0/Clipr-Windows-x64-Setup.exe"><h2>Windows</h2><p>64-bit Windows</p></a>
-<a class="os" href="https://github.com/xxxxxLiam/clipr/releases/download/v20.0.0/Clipr-Linux-x64.AppImage"><h2>Linux</h2><p>64-bit Linux</p></a>
+<a class="os" href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-macOS-AppleSilicon.dmg"><h2>macOS</h2><p>Apple Silicon (M1 and newer)</p></a>
+<a class="os" href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-Windows-x64-Setup.exe"><h2>Windows</h2><p>64-bit Windows</p></a>
+<a class="os" href="https://github.com/xxxxxLiam/clipr/releases/latest/download/Clipr-Linux-x64.AppImage"><h2>Linux</h2><p>64-bit Linux</p></a>
 """
 
 WN_SKELETON = (

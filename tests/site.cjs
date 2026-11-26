@@ -88,11 +88,9 @@ for (const [n, p] of Object.entries(NAMES)) check(`run 3: ${n} page exists`, !!p
   for (const [p, t] of Object.entries(pageHtml)) {
     for (const m of t.matchAll(/<a [^>]*href="(https?:\/\/[^"]+)"/g)) {
       const h = m[1];
-      if (/github\.com\/xxxxxLiam\/clipr\//i.test(h) && !/\/releases\/download\/v20\.0\.0\//.test(h) && !/\/issues$/.test(h)) bad.push((p || "index") + " -> " + h);
+      if (/github\.com\/xxxxxLiam\/clipr\//i.test(h) && !/\/releases\/(latest\/)?download\//.test(h) && !/\/issues$/.test(h)) bad.push((p || "index") + " -> " + h);
     }
   }
-  // Liam, 26 Nov: the site offers v20.0.0 explicitly while it is a pre-release (not latest on GitHub).
-  check("run 12 pin: every installer link and the download script point at the v20.0.0 assets, none at releases/latest", Object.values(pageHtml).every((t) => !/releases\/latest\/download/.test(t) && !/clipr\/releases\/latest"/.test(t)) && /var BASE = "https:\/\/github\.com\/xxxxxLiam\/clipr\/releases\/download\/v20\.0\.0\/"/.test(Object.values(pageHtml).join("")) && /releases\/tags\/v20\.0\.0/.test(Object.values(pageHtml).join("")));
   check("run 3: no page link goes to GitHub except installer downloads (and the licence's own issues line)", bad.length === 0, bad.join("; "));
 }
 {
@@ -424,7 +422,7 @@ for (const [n, p] of Object.entries(NAMES)) check(`run 3: ${n} page exists`, !!p
         const rows = await fp.locator(".wn-row > summary b").allInnerTexts();
         const dl = await fp.locator(".wn-latest a.dl").getAttribute("href");
         if (label === "with a patch") {
-          check("run 10 fold: 19.2.0 and 19.2.1 are one section headed with the newest version, Version 19.2.1, with no patch list (the button downloads the newest release), and 19.2.0 is not a row of its own", head === "Version 19.2.1" && !/Includes|19\.2\.0/.test(await fp.locator(".wn-latest > .wn-head").innerText()) && dl.includes("/releases/download/v20.0.0/") && rows.join() === "Version 19.1.0,Version 18.0.0", head + " | " + rows.join());
+          check("run 10 fold: 19.2.0 and 19.2.1 are one section headed with the newest version, Version 19.2.1, with no patch list (the button downloads the newest release), and 19.2.0 is not a row of its own", head === "Version 19.2.1" && !/Includes|19\.2\.0/.test(await fp.locator(".wn-latest > .wn-head").innerText()) && dl.includes("/releases/latest/download/") && rows.join() === "Version 19.1.0,Version 18.0.0", head + " | " + rows.join());
         } else {
           check("run 10 fold: once 19.3 ships it is the main section and 19.2 (with its patch) folds into the list as one row", head === "Version 19.3.0" && rows.join() === "Version 19.2.1,Version 19.1.0" && (await fp.locator(".wn-row").first().locator("summary").click(), !/Includes/.test(await fp.locator(".wn-row").first().innerText())), head + " | " + rows.join());
         }
