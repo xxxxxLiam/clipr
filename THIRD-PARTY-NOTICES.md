@@ -19,6 +19,7 @@ binaries shipped with Clipr.
 | Component | Licence | What Clipr uses it for | Where it ships |
 |---|---|---|---|
 | [**ffmpeg**](#ffmpeg) | GPL v3 or later | Cuts segments and joins them into one file | `resources/bin/` |
+| [**bgutil-ytdlp-pot-provider**](#bgutil-ytdlp-pot-provider) | GPL v3.0 | Mints a PO token so yt-dlp can get better-than-360p formats anonymously | not shipped yet |
 | [**yt-dlp**](#yt-dlp) | The Unlicense (public domain) | Reads video metadata, subtitles and comments; downloads media | `resources/bin/` |
 | [**Deno**](#deno) | MIT | JavaScript runtime that yt-dlp's challenge step needs | `resources/bin/` |
 | [**Electron**](#electron) | MIT (embeds Chromium and Node.js) | The application shell | Inside the app |
@@ -28,7 +29,8 @@ binaries shipped with Clipr.
 > **How the bundled programs run.** Each of the three bundled binaries (ffmpeg,
 > yt-dlp, Deno) runs as a **separate process**, started with command-line
 > arguments. None is linked into the application. They are installed under
-> `resources/bin/`, with a `.exe` suffix on Windows.
+> `resources/bin/`, with a `.exe` suffix on Windows. The PO token provider
+> below runs the same way, once it ships.
 
 ---
 
@@ -71,6 +73,48 @@ scripts they were produced with.
 | Licence text | <https://www.gnu.org/licenses/gpl-3.0.txt> |
 
 If you want the corresponding source for the exact binary in a particular
+release of Clipr and cannot obtain it from the links above, open an issue at
+<https://github.com/xxxxxLiam/clipr/issues> and it will be provided.
+
+---
+
+## bgutil-ytdlp-pot-provider
+
+**GNU General Public License v3.0**
+
+**Not shipped in any Clipr release yet.** This entry is added ahead of the
+feature so the disclosure is already in place for the first release that
+includes it — if your copy of Clipr does not have a PO token provider,
+check that release's notes; this project has not shipped it yet.
+
+Used only on YouTube links, as a local PO (Proof of Origin) token provider
+that lets yt-dlp request formats some player clients withhold from an
+anonymous session. It runs as its own **separate process** on
+`127.0.0.1`, started and stopped by Clipr — never linked into Clipr's own
+code, the same arrangement as ffmpeg, yt-dlp and Deno above.
+
+The exact version shipped is pinned to one upstream release tag, rather than
+tracked at build time like yt-dlp above, so each release names one
+reviewable version: **tag `2.0.2`**.
+
+**Your rights to this component come from the GPL, not from this project's
+licence.** You may redistribute and modify it under the GPL's terms,
+entirely independently of Clipr.
+
+### Corresponding source
+
+GPL-3.0 section 6 requires that anyone distributing this binary makes the
+corresponding source available. The tag below carries both the source and
+the build steps it was produced with (`npm ci && npx tsc` in its `server/`
+folder — the same steps Clipr's own build runs; see
+`scripts/bundle-binaries.cjs` in the source repository).
+
+| What | Where |
+|---|---|
+| Source, tag `2.0.2` | <https://github.com/Brainicism/bgutil-ytdlp-pot-provider/tree/2.0.2> |
+| Licence text | <https://github.com/Brainicism/bgutil-ytdlp-pot-provider/blob/2.0.2/LICENSE> and <https://www.gnu.org/licenses/gpl-3.0.txt> |
+
+If you want the corresponding source for the exact build in a particular
 release of Clipr and cannot obtain it from the links above, open an issue at
 <https://github.com/xxxxxLiam/clipr/issues> and it will be provided.
 
